@@ -1,0 +1,137 @@
+.blog-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.blog-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.blog-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.blog-header p {
+  font-size: 1.1rem;
+  color: #666;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.blog-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.blog-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+}
+
+.blog-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.blog-placeholder {
+  width: 100%;
+  height: 200px;
+  background-color: #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.blog-content {
+  padding: 1.5rem;
+}
+
+.blog-tag {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  background-color: #f0f4f8;
+  color: #4a6fa5;
+}
+
+.blog-title {
+  font-size: 1.4rem;
+  margin: 0.5rem 0;
+  line-height: 1.3;
+}
+
+.blog-meta {
+  font-size: 0.9rem;
+  color: #777;
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.blog-author {
+  margin-right: 1rem;
+}
+
+.blog-excerpt {
+  color: #555;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.blog-link {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: #4a6fa5;
+  color: white;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.blog-link:hover {
+  background-color: #3a5a80;
+}
+
+.loading-spinner {
+  text-align: center;
+  padding: 3rem;
+}
+
+.error-message {
+  text-align: center;
+  color: #dc3545;
+  padding: 1rem;
+  margin: 2rem 0;
+  background-color: rgba(220, 53, 69, 0.1);
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  .blog-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .blog-grid {
+    grid-template-columns: 1fr;
+  }
+}

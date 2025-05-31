@@ -1,0 +1,80 @@
+<div class="article-container">
+  <a routerLink="/blog" class="back-link">
+    <i class="bi bi-arrow-left"></i> Retour aux articles
+  </a>
+
+  <div *ngIf="loading" class="loading-spinner">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    <p>{{ error }}</p>
+  </div>
+
+  <article *ngIf="!loading && !error && article">
+    <header class="article-header">
+      <h1 class="article-title">{{ article.titre }}</h1>
+      
+      <div class="article-meta">
+        <div class="article-author">
+          <i class="bi bi-person-circle"></i> {{ article.auteur?.nom || 'Auteur' }}
+        </div>
+        <div class="article-date">
+          <i class="bi bi-calendar3"></i> {{ formatDate(article.datePublication) }}
+        </div>
+      </div>
+
+      <div *ngIf="article.image" class="article-image-container">
+        <img [src]="article.image" [alt]="article.titre" class="article-image">
+      </div>
+      
+      <div *ngIf="article.categories && article.categories.length > 0" class="article-categories">
+        <span *ngFor="let category of article.categories" class="article-category">{{ category }}</span>
+      </div>
+    </header>
+
+    <div class="article-content">
+      <p [innerHTML]="article.contenu"></p>
+    </div>
+
+    <section class="comments-section">
+      <h2 class="comments-title">Commentaires</h2>
+      
+      <div *ngIf="isAuthenticated" class="comment-form">
+        <textarea 
+          class="comment-textarea" 
+          placeholder="Laisser un commentaire..." 
+          [(ngModel)]="commentContent"
+        ></textarea>
+        <button 
+          class="comment-button" 
+          [disabled]="!commentContent.trim() || isSubmittingComment"
+          (click)="submitComment()"
+        >
+          <span *ngIf="!isSubmittingComment">Publier</span>
+          <span *ngIf="isSubmittingComment">Publication...</span>
+        </button>
+      </div>
+      
+      <div *ngIf="!isAuthenticated" class="comment-login">
+        <p>Pour laisser un commentaire, veuillez <a routerLink="/auth/login">vous connecter</a>.</p>
+      </div>
+      
+      <ul *ngIf="article.commentaires && article.commentaires.length > 0" class="comments-list">
+        <li *ngFor="let comment of article.commentaires" class="comment-item">
+          <div class="comment-header">
+            <span class="comment-author">{{ comment.utilisateur?.nom || 'Utilisateur' }}</span>
+            <span class="comment-date">{{ formatDate(comment.date) }}</span>
+          </div>
+          <p class="comment-text">{{ comment.texte }}</p>
+        </li>
+      </ul>
+      
+      <p *ngIf="!article.commentaires || article.commentaires.length === 0" class="text-center my-4">
+        Aucun commentaire pour le moment. Soyez le premier à réagir !
+      </p>
+    </section>
+  </article>
+</div>

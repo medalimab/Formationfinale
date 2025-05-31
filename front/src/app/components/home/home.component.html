@@ -1,0 +1,131 @@
+<div class="home-container">
+  <!-- Hero Section -->
+  <header class="hero-section">
+    <div class="hero-content">
+      <h1>Bienvenue sur notre plateforme de formation</h1>
+      <p>Des formations de qualité pour développer vos compétences en développement, IoT et IA</p>
+      <div class="hero-buttons">
+        <a class="btn btn-primary" routerLink="/formations">Voir nos formations</a>
+        <a class="btn btn-outline" routerLink="/services">Découvrir nos services</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Formations Populaires -->
+  <section class="section formations-section">
+    <div class="section-header">
+      <h2>Formations populaires</h2>
+      <p>Découvrez nos formations les plus demandées</p>
+    </div>
+    <div class="formations-grid" *ngIf="formations.length > 0; else noFormations">
+      <div class="formation-card" *ngFor="let formation of formations.slice(0, 3)">
+        <div class="formation-image" [style.backgroundImage]="'url(' + formation.image + ')'"></div>
+        <div class="formation-content">
+          <h3>{{ formation.titre }}</h3>
+          <p>{{ formation.description | slice:0:100 }}...</p>
+          <div class="formation-details">
+            <span><i class="fa fa-clock-o"></i> {{ formation.duree }}</span>
+            <span><i class="fa fa-tag"></i> {{ formation.prix | currency:'EUR' }}</span>
+          </div>
+          <a class="btn btn-primary" [routerLink]="['/formations', formation._id]">Voir détails</a>
+        </div>
+      </div>
+    </div>
+    <ng-template #noFormations>
+      <p class="no-content">Aucune formation disponible pour le moment</p>
+    </ng-template>
+    <div class="text-center mt-4">
+      <a class="btn btn-outline" routerLink="/formations">Voir toutes les formations</a>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="section services-section bg-light">
+    <div class="section-header">
+      <h2>Nos services</h2>
+      <p>Des services adaptés à vos besoins</p>
+    </div>
+    <div class="services-grid" *ngIf="services.length > 0; else noServices">
+      <div class="service-card" *ngFor="let service of services.slice(0, 3)">
+        <div class="service-icon">
+          <i class="fa fa-cogs"></i>
+        </div>
+        <h3>{{ service.titre }}</h3>
+        <p>{{ service.description | slice:0:120 }}...</p>
+        <a class="btn btn-sm btn-primary" [routerLink]="['/services', service._id]">En savoir plus</a>
+      </div>
+    </div>
+    <ng-template #noServices>
+      <p class="no-content">Aucun service disponible pour le moment</p>
+    </ng-template>
+    <div class="text-center mt-4">
+      <a class="btn btn-outline" routerLink="/services">Voir tous nos services</a>
+    </div>
+  </section>
+
+  <!-- Témoignages -->
+  <section class="section testimonials-section">
+    <div class="section-header">
+      <h2>Ce que disent nos clients</h2>
+      <p>Des retours d'expérience de clients satisfaits</p>
+    </div>
+    <div class="testimonials-slider" *ngIf="temoignages.length > 0; else noTemoignages">
+      <div class="testimonial-card" *ngFor="let temoignage of temoignages">
+        <div class="testimonial-rating">
+          <span *ngFor="let i of [1,2,3,4,5]">
+            <i class="fa" [ngClass]="{'fa-star': i <= temoignage.note, 'fa-star-o': i > temoignage.note}"></i>
+          </span>
+        </div>
+        <p class="testimonial-comment">{{ temoignage.commentaire }}</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" *ngIf="temoignage.image">
+            <img [src]="temoignage.image" alt="{{ temoignage.nom }}">
+          </div>
+          <div class="testimonial-info">
+            <h4>{{ temoignage.nom }}</h4>
+            <p *ngIf="temoignage.poste || temoignage.entreprise">
+              {{ temoignage.poste }} {{ temoignage.poste && temoignage.entreprise ? '- ' : '' }} {{ temoignage.entreprise }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #noTemoignages>
+      <p class="no-content">Aucun témoignage disponible pour le moment</p>
+    </ng-template>
+  </section>
+
+  <!-- Blog -->
+  <section class="section blog-section bg-light">
+    <div class="section-header">
+      <h2>Nos derniers articles</h2>
+      <p>Restez informé des dernières actualités</p>
+    </div>
+    <div class="blog-grid" *ngIf="articles.length > 0; else noArticles">
+      <div class="blog-card" *ngFor="let article of articles.slice(0, 3)">
+        <div class="blog-image" [style.backgroundImage]="'url(' + article.image + ')'"></div>
+        <div class="blog-content">
+          <div class="blog-date">{{ article.datePublication | date }}</div>
+          <h3>{{ article.titre }}</h3>
+          <p>{{ article.contenu | slice:0:150 }}...</p>
+          <a class="btn btn-link" [routerLink]="['/blog', article._id]">Lire la suite</a>
+        </div>
+      </div>
+    </div>
+    <ng-template #noArticles>
+      <p class="no-content">Aucun article disponible pour le moment</p>
+    </ng-template>
+    <div class="text-center mt-4">
+      <a class="btn btn-outline" routerLink="/blog">Voir tous les articles</a>
+    </div>
+  </section>
+
+  <!-- Contact CTA -->
+  <section class="section contact-cta">
+    <div class="cta-content">
+      <h2>Une question? Un projet?</h2>
+      <p>N'hésitez pas à nous contacter pour discuter de votre projet ou pour toute information</p>
+      <a class="btn btn-primary" routerLink="/contact">Nous contacter</a>
+    </div>
+  </section>
+</div>

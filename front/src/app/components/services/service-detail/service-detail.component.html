@@ -1,0 +1,69 @@
+<div class="service-container">
+  <a routerLink="/services" class="back-link">
+    <i class="bi bi-arrow-left"></i> Retour aux services
+  </a>
+
+  <div *ngIf="loading" class="loading-spinner">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    <p>{{ error }}</p>
+  </div>
+
+  <div *ngIf="!loading && !error && service">
+    <div class="service-header">
+      <div class="service-image-container">
+        <img *ngIf="service.image" [src]="service.image" [alt]="service.titre" class="service-image">
+        <div *ngIf="!service.image" class="service-image-placeholder">
+          <i class="bi bi-image" style="font-size: 4rem;"></i>
+        </div>
+      </div>
+      
+      <div class="service-info">
+        <span class="service-category">{{ service.categorie }}</span>
+        <h1 class="service-title">{{ service.titre }}</h1>
+        
+        <p *ngIf="service.prix" class="service-price">
+          {{ service.prix | currency:'EUR':'symbol':'1.0-2' }}
+        </p>
+        
+        <div class="service-description" [innerHTML]="service.description"></div>
+        
+        <div class="service-actions">
+          <button *ngIf="service.disponible" class="action-button primary-button" (click)="demanderDevis()">
+            <i class="bi bi-file-earmark-text"></i> Demander un devis
+          </button>
+          
+          <button *ngIf="service.disponible" class="action-button secondary-button" (click)="prendreRendezVous()">
+            <i class="bi bi-calendar-check"></i> Prendre rendez-vous
+          </button>
+          
+          <a href="tel:+33123456789" class="action-button secondary-button" *ngIf="service.disponible">
+            <i class="bi bi-telephone"></i> Nous contacter
+          </a>
+        </div>
+        
+        <div *ngIf="!service.disponible" class="alert alert-warning">
+          <i class="bi bi-exclamation-triangle"></i> Ce service n'est pas disponible actuellement.
+        </div>
+      </div>
+    </div>
+    
+    <div class="service-details">
+      <h2 class="details-title">Caractéristiques</h2>
+      
+      <ul *ngIf="service.caracteristiques && service.caracteristiques.length > 0" class="features-list">
+        <li *ngFor="let feature of service.caracteristiques" class="feature-item">
+          <i class="bi bi-check-circle-fill"></i> {{ feature }}
+        </li>
+      </ul>
+      
+      <p *ngIf="!service.caracteristiques || service.caracteristiques.length === 0">
+        Aucune caractéristique spécifiée pour ce service.
+      </p>
+    </div>
+  </div>
+</div>

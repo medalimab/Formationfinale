@@ -5,6 +5,7 @@ import { FormationService } from '../../services/formation.service';
 import { Formation } from '../../models/formation.model';
 import { FormsModule } from '@angular/forms';
 import { CartService } from '../../services/cart.service';
+import { StorageService } from '../../services/storage.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -31,12 +32,13 @@ export class formationListComponent implements OnInit {
 
   constructor(
     private formationService: FormationService,
-    private cartService: CartService
+    private cartService: CartService,
+    private storageService: StorageService
   ) {}
 
   ngOnInit(): void {
     this.loadArticles();
-    const role = localStorage.getItem('userRole');
+    const role = this.storageService.getItem('userRole');
     this.userRole = role ? role : 'user';
   }
 

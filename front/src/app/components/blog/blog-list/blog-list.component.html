@@ -1,0 +1,46 @@
+<div class="blog-container">
+  <div class="blog-header">
+    <h1>Notre blog</h1>
+    <p>Découvrez nos derniers articles, conseils et actualités du monde de la formation professionnelle.</p>
+  </div>
+
+  <div *ngIf="loading" class="loading-spinner">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    <p>{{ error }}</p>
+  </div>
+
+  <div *ngIf="!loading && !error" class="blog-grid">
+    <div *ngFor="let article of articles" class="blog-card">
+      <div *ngIf="article.image; else placeholderImage">
+        <img [src]="article.image" [alt]="article.titre" class="blog-image">
+      </div>
+      <ng-template #placeholderImage>
+        <div class="blog-placeholder">
+          <i class="bi bi-file-earmark-text" style="font-size: 3rem; opacity: 0.7;"></i>
+        </div>
+      </ng-template>
+      
+      <div class="blog-content">
+        <div *ngIf="article.categories && article.categories.length > 0">
+          <span *ngFor="let category of article.categories" class="blog-tag">{{ category }}</span>
+        </div>
+        <h2 class="blog-title">{{ article.titre }}</h2>
+        <div class="blog-meta">
+          <span class="blog-author">Par {{ article.auteur?.nom || 'Auteur' }}</span>
+          <span class="blog-date">{{ formatDate(article.datePublication) }}</span>
+        </div>
+        <p class="blog-excerpt">{{ truncateContent(article.contenu) }}</p>
+        <a [routerLink]="['/blog', article._id]" class="blog-link">Lire la suite</a>
+      </div>
+    </div>
+  </div>
+  
+  <div *ngIf="!loading && !error && articles.length === 0" class="text-center my-5">
+    <p>Aucun article disponible pour le moment.</p>
+  </div>
+</div>

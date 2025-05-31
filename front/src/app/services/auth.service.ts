@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
+import { StorageService } from './storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,21 +13,22 @@ export class AuthService {
   private apiUrl = `${environment.apiUrl}/auth`;
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   private userRoleSubject = new BehaviorSubject<string | null>(this.getUserRole());
+  private currentUserSubject = new BehaviorSubject<any>(this.getStoredUserData());
   
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
   public userRole$ = this.userRoleSubject.asObservable();
+  public currentUser = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(
+    private http: HttpClient, 
+    private router: Router,
+    private storageService: StorageService
+  ) {
     this.checkToken();
   }
-
   private checkToken(): void {
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('authToken');
-      this.isAuthenticatedSubject.next(!!token);
-    } else {
-      this.isAuthenticatedSubject.next(false);
-    }
+    const token = this.storageService.getItem('authToken');
+    this.isAuthenticatedSubject.next(!!token);
   }
 
   private updateAuthState() {
@@ -38,13 +40,12 @@ export class AuthService {
     return this.http.post<{ success: boolean; token: string; role: string }>(
       `${this.apiUrl}/login`,
       credentials
-    ).pipe(
-      tap(res => {
+    ).pipe(      tap(res => {
         if (res && res.success && res.token) {
-          localStorage.setItem('authToken', res.token);
-          localStorage.setItem('userEmail', credentials.email);
+          this.storageService.setItem('authToken', res.token);
+          this.storageService.setItem('userEmail', credentials.email);
           if (res.role) {
-            localStorage.setItem('userRole', res.role);
+            this.storageService.setItem('userRole', res.role);
           }
           this.updateAuthState();
         }
@@ -65,40 +66,46 @@ export class AuthService {
       backendData
     );
   }
-
   isLoggedIn(): boolean {
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('authToken');
-      return !!token;
-    }
-    return false;
+    const token = this.storageService.getItem('authToken');
+    return !!token;
   }
-
   logout(): void {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('userEmail');
-      localStorage.removeItem('userRole');
-    }
+    this.storageService.removeItem('authToken');
+    this.storageService.removeItem('userEmail');
+    this.storageService.removeItem('userRole');
     this.updateAuthState();
     this.router.navigate(['/login']);
   }
-
   getUserEmail(): string | null {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('userEmail');
-    }
-    return null;
+    return this.storageService.getItem('userEmail');
   }
-  
-  getUserRole(): string | null {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('userRole');
-    }
-    return null;
+    getUserRole(): string | null {
+    return this.storageService.getItem('userRole');
   }
-  
-  isAdmin(): boolean {
+    isAdmin(): boolean {
     return this.getUserRole() === 'admin';
+  }
+    getStoredUserData(): any {
+    const email = this.storageService.getItem('userEmail');
+    const role = this.storageService.getItem('userRole');
+    
+    if (email && role) {
+      return { email, role };
+    }
+    return null;
+  }
+    updateStoredUserData(userData: any): void {
+    if (userData) {
+      if (userData.email) {
+        this.storageService.setItem('userEmail', userData.email);
+      }
+      
+      if (userData.role) {
+        this.storageService.setItem('userRole', userData.role);
+      }
+      
+      this.currentUserSubject.next(userData);
+    }
   }
 }

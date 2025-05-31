@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Formation } from '../models/formation.model';
+import { StorageService } from './storage.service';
 
 export interface CartItem {
   article: Formation;
@@ -15,18 +16,13 @@ export class CartService {
   private cartItemsSubject = new BehaviorSubject<CartItem[]>(this.getCartFromStorage());
   public cartItems$ = this.cartItemsSubject.asObservable();
 
-  constructor() {}
-
+  constructor(private storageService: StorageService) {}
   private getCartFromStorage(): CartItem[] {
-    if (typeof window !== 'undefined') {
-      const cartItems = localStorage.getItem('cartItems');
-      return cartItems ? JSON.parse(cartItems) : [];
-    }
-    return [];
+    const cartItems = this.storageService.getItem('cartItems');
+    return cartItems ? JSON.parse(cartItems) : [];
   }
-
   private saveCartToStorage(items: CartItem[]): void {
-    localStorage.setItem('cartItems', JSON.stringify(items));
+    this.storageService.setItem('cartItems', JSON.stringify(items));
     this.cartItemsSubject.next(items);
   }
   addToCart(article: Formation, quantity: number = 1): void {

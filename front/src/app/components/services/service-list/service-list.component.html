@@ -1,0 +1,92 @@
+<div class="services-container">
+  <div class="services-header">
+    <h1>Nos Services</h1>
+    <p>Découvrez notre gamme complète de solutions technologiques</p>
+  </div>
+
+  <div class="services-filters">
+    <h3>Filtrer par catégorie</h3>
+    <div class="category-buttons">
+      <button 
+        class="btn btn-filter" 
+        [ngClass]="{'active': selectedCategory === ''}" 
+        (click)="resetFilters()">
+        Tous
+      </button>
+      <button 
+        *ngFor="let category of categories" 
+        class="btn btn-filter" 
+        [ngClass]="{'active': selectedCategory === category}" 
+        (click)="filterByCategory(category)">
+        {{ category }}
+      </button>
+    </div>
+  </div>
+
+  <div class="loading-spinner" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Chargement des services...</p>
+  </div>
+
+  <div class="error-message" *ngIf="error">
+    <p><i class="fas fa-exclamation-circle"></i> {{ error }}</p>
+    <button class="btn btn-primary" (click)="loadServices()">Réessayer</button>
+  </div>
+
+  <div class="services-grid" *ngIf="!loading && !error && filteredServices.length > 0">
+    <div class="service-card" *ngFor="let service of filteredServices">
+      <div class="service-image" *ngIf="service.image; else defaultImage">
+        <img [src]="service.image" [alt]="service.titre">
+      </div>
+      <ng-template #defaultImage>
+        <div class="service-image default-image">
+          <i class="fas fa-cogs"></i>
+        </div>
+      </ng-template>
+
+      <div class="service-content">
+        <h3>{{ service.titre }}</h3>
+        <div class="service-category">{{ service.categorie }}</div>
+        <p>{{ service.description | slice:0:150 }}{{ service.description.length > 150 ? '...' : '' }}</p>
+        
+        <div class="service-features" *ngIf="service.caracteristiques && service.caracteristiques.length > 0">
+          <ul>
+            <li *ngFor="let feature of service.caracteristiques.slice(0, 3)">
+              <i class="fas fa-check"></i> {{ feature }}
+            </li>
+            <li *ngIf="service.caracteristiques.length > 3" class="more-features">
+              +{{ service.caracteristiques.length - 3 }} autres caractéristiques
+            </li>
+          </ul>
+        </div>
+
+        <div class="service-price" *ngIf="service.prix">
+          <span class="price-label">À partir de</span>
+          <span class="price">{{ service.prix | currency:'EUR' }}</span>
+        </div>
+
+        <div class="service-actions">
+          <a [routerLink]="['/services', service._id]" class="btn btn-primary">Détails</a>
+          <a [routerLink]="['/contact']" [queryParams]="{service: service._id}" class="btn btn-outline">Demander un devis</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="no-services" *ngIf="!loading && !error && filteredServices.length === 0">
+    <div class="no-services-content">
+      <i class="fas fa-search"></i>
+      <h3>Aucun service trouvé</h3>
+      <p>Aucun service ne correspond à vos critères de recherche.</p>
+      <button class="btn btn-primary" (click)="resetFilters()">Réinitialiser les filtres</button>
+    </div>
+  </div>
+
+  <div class="contact-section">
+    <div class="contact-content">
+      <h2>Besoin d'un service personnalisé?</h2>
+      <p>Contactez-nous pour discuter de vos besoins spécifiques et obtenir une solution sur mesure.</p>
+      <a routerLink="/contact" class="btn btn-primary">Nous contacter</a>
+    </div>
+  </div>
+</div>

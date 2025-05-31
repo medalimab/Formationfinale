@@ -27,6 +27,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
   userRole: string | null = null;
   cartCount: number = 0;
   
+  // États des menus déroulants
+  isUserDropdownOpen: boolean = false;
+  isFormationDropdownOpen: boolean = false;
+  isAdminDropdownOpen: boolean = false;
+  
   private authSubscription: Subscription | null = null;
   private cartSubscription: Subscription | null = null;
 
@@ -67,8 +72,32 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private updateCartCount(): void {
     this.cartCount = this.cartService.getCartCount();
   }
-
   logout(): void {
     this.authService.logout();
+  }
+  
+  toggleUserDropdown(): void {
+    this.isUserDropdownOpen = !this.isUserDropdownOpen;
+    this.isFormationDropdownOpen = false;
+    this.isAdminDropdownOpen = false;
+  }
+  
+  toggleFormationDropdown(): void {
+    this.isFormationDropdownOpen = !this.isFormationDropdownOpen;
+    this.isUserDropdownOpen = false;
+    this.isAdminDropdownOpen = false;
+  }
+  
+  toggleAdminDropdown(): void {
+    this.isAdminDropdownOpen = !this.isAdminDropdownOpen;
+    this.isUserDropdownOpen = false;
+    this.isFormationDropdownOpen = false;
+  }
+  
+  // Fermer tous les menus déroulants en cliquant à l'extérieur
+  closeAllDropdowns(): void {
+    this.isUserDropdownOpen = false;
+    this.isFormationDropdownOpen = false;
+    this.isAdminDropdownOpen = false;
   }
 }

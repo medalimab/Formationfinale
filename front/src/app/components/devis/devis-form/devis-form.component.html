@@ -1,0 +1,127 @@
+<div class="devis-form-container">
+  <div class="devis-header">
+    <h1>Demande de devis</h1>
+    <p>Remplissez le formulaire ci-dessous pour recevoir une proposition personnalisée</p>
+  </div>
+  
+  <div class="devis-content">
+    <form [formGroup]="devisForm" (ngSubmit)="onSubmit()" class="devis-form">
+      <div class="form-group">
+        <label for="service">Service concerné *</label>
+        <select 
+          formControlName="service" 
+          class="form-control" 
+          [ngClass]="{ 'is-invalid': submitted && f['service'].errors }"
+        >
+          <option value="" disabled>Sélectionnez un service</option>
+          <option *ngFor="let service of services" [value]="service._id">{{ service.titre }}</option>
+        </select>
+        <div *ngIf="submitted && f['service'].errors" class="invalid-feedback">
+          <div *ngIf="f['service'].errors['required']">Veuillez sélectionner un service</div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="description">Description détaillée de votre besoin *</label>
+        <textarea 
+          formControlName="description" 
+          class="form-control" 
+          [ngClass]="{ 'is-invalid': submitted && f['description'].errors }" 
+          rows="6" 
+          placeholder="Décrivez votre projet ou besoin en détail..."
+        ></textarea>
+        <div *ngIf="submitted && f['description'].errors" class="invalid-feedback">
+          <div *ngIf="f['description'].errors['required']">La description est requise</div>
+          <div *ngIf="f['description'].errors['minlength']">La description doit contenir au moins 50 caractères</div>
+        </div>
+        <div class="form-hint">La description détaillée nous permet de mieux comprendre vos besoins et de vous proposer une solution adaptée.</div>
+      </div>
+      
+      <div class="form-group">
+        <label for="fichiers">Fichiers joints (optionnel)</label>
+        <div class="file-upload">
+          <input 
+            type="file" 
+            id="fichiers" 
+            (change)="onFileChange($event)" 
+            multiple 
+            accept=".jpg,.jpeg,.png,.pdf,.doc,.docx"
+          >
+          <div class="file-upload-label">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <span>Glisser-déposer vos fichiers ici ou cliquer pour sélectionner</span>
+            <small>Formats acceptés: JPG, PNG, PDF, DOC, DOCX. Max 5MB par fichier.</small>
+          </div>
+        </div>
+        
+        <div *ngIf="fileErrors.length > 0" class="file-errors">
+          <p *ngFor="let error of fileErrors" class="error-message">
+            <i class="fas fa-exclamation-circle"></i> {{ error }}
+          </p>
+        </div>
+        
+        <div *ngIf="selectedFiles.length > 0" class="selected-files">
+          <h4>Fichiers sélectionnés ({{ selectedFiles.length }})</h4>
+          <ul>
+            <li *ngFor="let file of selectedFiles; let i = index">
+              <span class="file-name">{{ file.name }}</span>
+              <span class="file-size">({{ (file.size / 1024 / 1024).toFixed(2) }} MB)</span>
+              <button type="button" class="btn-remove" (click)="removeFile(i)">
+                <i class="fas fa-times"></i>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div *ngIf="success" class="alert alert-success">
+        <i class="fas fa-check-circle"></i> {{ success }}
+      </div>
+      
+      <div *ngIf="error" class="alert alert-danger">
+        <i class="fas fa-exclamation-circle"></i> {{ error }}
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="loading">
+          <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Envoyer la demande de devis
+        </button>
+        <a routerLink="/services" class="btn btn-outline">Retour aux services</a>
+      </div>
+    </form>
+    
+    <div class="devis-info">
+      <div class="info-card">
+        <h3><i class="fas fa-info-circle"></i> Comment ça marche ?</h3>
+        <ol>
+          <li>Soumettez votre demande de devis en détaillant vos besoins</li>
+          <li>Notre équipe analyse votre demande dans les 24-48h</li>
+          <li>Nous vous envoyons une proposition détaillée avec tarifs et délais</li>
+          <li>Vous acceptez la proposition ou demandez des ajustements</li>
+          <li>Nous planifions et démarrons votre projet</li>
+        </ol>
+      </div>
+      
+      <div class="info-card">
+        <h3><i class="fas fa-star"></i> Pourquoi nous choisir ?</h3>
+        <ul>
+          <li>Expertise reconnue en développement, IoT et IA</li>
+          <li>Solutions sur mesure adaptées à vos besoins</li>
+          <li>Transparence totale sur les prix et les délais</li>
+          <li>Suivi régulier et communication claire</li>
+          <li>Support technique après livraison</li>
+        </ul>
+      </div>
+      
+      <div class="contact-card">
+        <h3>Besoin d'une réponse rapide ?</h3>
+        <p>Contactez-nous directement :</p>
+        <div class="contact-info">
+          <p><i class="fas fa-phone"></i> +33 1 23 45 67 89</p>
+          <p><i class="fas fa-envelope"></i> devis&#64;votreentreprise.com</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -5,6 +5,7 @@ import { tap, map } from 'rxjs/operators';
 import { Formation } from '../models/formation.model';
 import { environment } from '../../environments/environment';
 import { Panier, PanierItem } from '../models/panier.model';
+import { StorageService } from './storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,26 +14,21 @@ export class PanierService {
   private apiUrl = `${environment.apiUrl}/panier`;
   private panierItemsSubject = new BehaviorSubject<PanierItem[]>(this.getPanierFromStorage());
   public panierItems$ = this.panierItemsSubject.asObservable();
-  
-  constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private storageService: StorageService) {
     this.syncPanierFromServer();
   }
   /**
    * Récupère le panier stocké localement
-   */
-  private getPanierFromStorage(): PanierItem[] {
-    if (typeof window !== 'undefined') {
-      const panierItems = localStorage.getItem('panierItems');
-      return panierItems ? JSON.parse(panierItems) : [];
-    }
-    return [];
+   */  private getPanierFromStorage(): PanierItem[] {
+    const panierItems = this.storageService.getItem('panierItems');
+    return panierItems ? JSON.parse(panierItems) : [];
   }
 
   /**
    * Sauvegarde le panier localement
    */
   private savePanierToStorage(items: PanierItem[]): void {
-    localStorage.setItem('panierItems', JSON.stringify(items));
+    this.storageService.setItem('panierItems', JSON.stringify(items));
     this.panierItemsSubject.next(items);
   }
   /**

@@ -1,0 +1,71 @@
+<div class="rdv-container">
+  <div class="rdv-header">
+    <h1 class="rdv-title">Mes rendez-vous</h1>
+    <p class="rdv-subtitle">Consultez et gérez vos rendez-vous planifiés</p>
+  </div>
+
+  <div class="rdv-actions">
+    <a routerLink="/rendez-vous/new" class="new-rdv-btn">
+      <i class="bi bi-plus-circle"></i> Nouveau rendez-vous
+    </a>
+  </div>
+
+  <div *ngIf="loading" class="loading-spinner">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    <p>{{ error }}</p>
+  </div>
+
+  <div *ngIf="!loading && !error">
+    <ul class="rdv-list" *ngIf="rendezVousList.length > 0">
+      <li *ngFor="let rdv of rendezVousList" class="rdv-item">
+        <div class="rdv-card">
+          <div class="rdv-info">
+            <h3 class="rdv-service">{{ getServiceTitle(rdv.service) }}</h3>
+            <div class="rdv-datetime">
+              <i class="bi bi-calendar-date"></i>
+              <span>{{ formatDate(rdv.date) }} à {{ rdv.heure }}</span>
+            </div>
+            <div class="rdv-duration">
+              <i class="bi bi-clock"></i>
+              <span>{{ rdv.duree }} minutes</span>
+            </div>
+            <div class="rdv-notes" *ngIf="rdv.notes">
+              <strong>Notes :</strong> {{ rdv.notes }}
+            </div>
+            <div class="rdv-datetime">
+              <i class="bi bi-calendar-check"></i>
+              <span>Demande faite le {{ formatDate(rdv.dateDemande) }}</span>
+            </div>
+          </div>
+          
+          <div class="rdv-status-container">
+            <div [ngClass]="['rdv-status', getStatutClass(rdv.statut)]">
+              {{ getStatutLabel(rdv.statut) }}
+            </div>
+            
+            <div class="rdv-actions-btn">
+              <button 
+                class="cancel-btn" 
+                *ngIf="rdv.statut === 'en_attente' || rdv.statut === 'confirme'"
+                (click)="annulerRendezVous(rdv._id!)"
+              >
+                Annuler
+              </button>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+    
+    <div *ngIf="rendezVousList.length === 0" class="empty-state">
+      <i class="bi bi-calendar-x"></i>
+      <p>Vous n'avez pas encore de rendez-vous planifiés.</p>
+      <p>Cliquez sur "Nouveau rendez-vous" pour en créer un.</p>
+    </div>
+  </div>
+</div>

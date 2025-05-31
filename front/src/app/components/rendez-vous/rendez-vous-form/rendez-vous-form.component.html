@@ -1,0 +1,93 @@
+<div class="rdv-container">
+  <div class="rdv-header">
+    <h1 class="rdv-title">Prendre un rendez-vous</h1>
+    <p class="rdv-subtitle">Planifiez une consultation selon vos disponibilités</p>
+  </div>
+
+  <div class="form-card">
+    <div *ngIf="success" class="alert alert-success">
+      <p>Votre demande de rendez-vous a bien été enregistrée ! Nous vous contacterons prochainement pour confirmer votre rendez-vous.</p>
+    </div>
+
+    <div *ngIf="error" class="alert alert-danger">
+      <p>{{ error }}</p>
+    </div>
+
+    <div *ngIf="loadingService" class="text-center my-4">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Chargement...</span>
+      </div>
+    </div>
+
+    <div *ngIf="service" class="service-info">
+      <h3 class="service-title">{{ service.titre }}</h3>
+      <p class="service-description">{{ service.description | slice:0:100 }}{{ service.description.length > 100 ? '...' : '' }}</p>
+      <p *ngIf="service.prix" class="service-price">Prix: {{ service.prix | currency:'EUR':'symbol':'1.0-2' }}</p>
+    </div>
+
+    <form [formGroup]="rendezVousForm" (ngSubmit)="onSubmit()" *ngIf="!success">
+      <div class="form-group" *ngIf="!serviceId">
+        <label for="service" class="form-label">Service *</label>
+        <select id="service" formControlName="service" class="form-select" [class.is-invalid]="rendezVousForm.get('service')?.invalid && rendezVousForm.get('service')?.touched">
+          <option value="" disabled selected>Sélectionnez un service</option>
+          <!-- Ici, vous pouvez ajouter une logique pour charger dynamiquement les services disponibles -->
+        </select>
+        <div class="invalid-feedback" *ngIf="rendezVousForm.get('service')?.invalid && rendezVousForm.get('service')?.touched">
+          Veuillez sélectionner un service
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-col">
+          <div class="form-group">
+            <label for="date" class="form-label">Date de rendez-vous *</label>
+            <input type="date" id="date" formControlName="date" class="form-control" [min]="minDate"
+              [class.is-invalid]="rendezVousForm.get('date')?.invalid && rendezVousForm.get('date')?.touched">
+            <div class="invalid-feedback" *ngIf="rendezVousForm.get('date')?.invalid && rendezVousForm.get('date')?.touched">
+              Veuillez sélectionner une date
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-col">
+          <div class="form-group">
+            <label for="heure" class="form-label">Heure de rendez-vous *</label>
+            <select id="heure" formControlName="heure" class="form-select"
+              [class.is-invalid]="rendezVousForm.get('heure')?.invalid && rendezVousForm.get('heure')?.touched">
+              <option value="" disabled selected>Sélectionnez une heure</option>
+              <option *ngFor="let heure of plageHoraires" [value]="heure">{{ heure }}</option>
+            </select>
+            <div class="invalid-feedback" *ngIf="rendezVousForm.get('heure')?.invalid && rendezVousForm.get('heure')?.touched">
+              Veuillez sélectionner une heure
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="duree" class="form-label">Durée (minutes) *</label>
+        <select id="duree" formControlName="duree" class="form-select"
+          [class.is-invalid]="rendezVousForm.get('duree')?.invalid && rendezVousForm.get('duree')?.touched">
+          <option [value]="30">30 minutes</option>
+          <option [value]="60">1 heure</option>
+          <option [value]="90">1 heure 30</option>
+          <option [value]="120">2 heures</option>
+        </select>
+        <div class="invalid-feedback" *ngIf="rendezVousForm.get('duree')?.invalid && rendezVousForm.get('duree')?.touched">
+          Veuillez sélectionner une durée
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="notes" class="form-label">Notes supplémentaires</label>
+        <textarea id="notes" formControlName="notes" rows="4" class="form-control" 
+          placeholder="Précisez vos besoins ou questions spécifiques"></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn" [disabled]="rendezVousForm.invalid || submitting">
+        <span *ngIf="submitting" class="loading-spinner"></span>
+        {{ submitting ? 'Envoi en cours...' : 'Prendre rendez-vous' }}
+      </button>
+    </form>
+  </div>
+</div>

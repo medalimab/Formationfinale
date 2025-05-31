@@ -1,0 +1,150 @@
+<div class="contact-container">
+  <div class="contact-header">
+    <h1>Contactez-nous</h1>
+    <p>N'hésitez pas à nous contacter pour toute question ou demande d'information</p>
+  </div>
+  
+  <div class="contact-content">
+    <div class="contact-info">
+      <div class="info-card">
+        <div class="info-icon">
+          <i class="fas fa-map-marker-alt"></i>
+        </div>
+        <h3>Notre adresse</h3>
+        <p>123 Avenue de l'Innovation<br>75000 Paris, France</p>
+      </div>
+      
+      <div class="info-card">
+        <div class="info-icon">
+          <i class="fas fa-phone"></i>
+        </div>
+        <h3>Téléphone</h3>
+        <p>+33 1 23 45 67 89</p>
+      </div>
+      
+      <div class="info-card">
+        <div class="info-icon">
+          <i class="fas fa-envelope"></i>
+        </div>        <h3>Email</h3>
+        <p>contact&#64;votreentreprise.com</p>
+      </div>
+      
+      <div class="info-card">
+        <div class="info-icon">
+          <i class="fas fa-clock"></i>
+        </div>
+        <h3>Horaires</h3>
+        <p>Lun-Ven: 9h-18h<br>Sam: 9h-12h</p>
+      </div>
+      
+      <div class="social-links">
+        <h3>Suivez-nous</h3>
+        <div class="social-icons">
+          <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="contact-form">
+      <h2>Envoyez-nous un message</h2>
+      
+      <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="nom">Nom *</label>
+          <input 
+            type="text" 
+            formControlName="nom" 
+            class="form-control" 
+            [ngClass]="{ 'is-invalid': submitted && f['nom'].errors }" 
+            placeholder="Votre nom" 
+          />
+          <div *ngIf="submitted && f['nom'].errors" class="invalid-feedback">
+            <div *ngIf="f['nom'].errors['required']">Le nom est requis</div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input 
+            type="email" 
+            formControlName="email" 
+            class="form-control" 
+            [ngClass]="{ 'is-invalid': submitted && f['email'].errors }" 
+            placeholder="Votre email" 
+          />
+          <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+            <div *ngIf="f['email'].errors['required']">L'email est requis</div>
+            <div *ngIf="f['email'].errors['email']">Veuillez entrer un email valide</div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="telephone">Téléphone</label>
+          <input 
+            type="tel" 
+            formControlName="telephone" 
+            class="form-control" 
+            placeholder="Votre numéro de téléphone" 
+          />
+        </div>
+        
+        <div class="form-group">
+          <label for="sujet">Sujet *</label>
+          <input 
+            type="text" 
+            formControlName="sujet" 
+            class="form-control" 
+            [ngClass]="{ 'is-invalid': submitted && f['sujet'].errors }" 
+            placeholder="Sujet de votre message" 
+          />
+          <div *ngIf="submitted && f['sujet'].errors" class="invalid-feedback">
+            <div *ngIf="f['sujet'].errors['required']">Le sujet est requis</div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="message">Message *</label>
+          <textarea 
+            formControlName="message" 
+            class="form-control" 
+            [ngClass]="{ 'is-invalid': submitted && f['message'].errors }" 
+            rows="5" 
+            placeholder="Votre message"
+          ></textarea>
+          <div *ngIf="submitted && f['message'].errors" class="invalid-feedback">
+            <div *ngIf="f['message'].errors['required']">Le message est requis</div>
+            <div *ngIf="f['message'].errors['minlength']">Le message doit contenir au moins 10 caractères</div>
+          </div>
+        </div>
+        
+        <div *ngIf="success" class="alert alert-success">
+          {{ success }}
+        </div>
+        
+        <div *ngIf="error" class="alert alert-danger">
+          {{ error }}
+        </div>
+        
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary" [disabled]="loading">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Envoyer le message
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <div class="map-container">
+    <h2>Nous trouver</h2>
+    <div class="map">
+      <!-- Insérez ici une iframe Google Maps ou une autre solution de carte -->
+      <div class="map-placeholder">
+        Carte Google Maps ici
+      </div>
+    </div>
+  </div>
+</div>

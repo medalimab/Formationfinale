@@ -1,0 +1,321 @@
+.devis-form-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.devis-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.devis-header h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+.devis-header p {
+  font-size: 1.1rem;
+  color: #7f8c8d;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.devis-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+}
+
+.devis-form {
+  flex: 3;
+  min-width: 300px;
+}
+
+.devis-info {
+  flex: 2;
+  min-width: 250px;
+}
+
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.form-control:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+.form-control.is-invalid {
+  border-color: #e74c3c;
+}
+
+.invalid-feedback {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+.form-hint {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+.file-upload {
+  position: relative;
+  border: 2px dashed #bdc3c7;
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.file-upload input[type="file"] {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.file-upload-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.file-upload-label i {
+  font-size: 2rem;
+  color: #3498db;
+  margin-bottom: 10px;
+}
+
+.file-upload-label span {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.file-upload-label small {
+  color: #95a5a6;
+}
+
+.file-errors {
+  margin-top: 10px;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+}
+
+.error-message i {
+  margin-right: 5px;
+}
+
+.selected-files {
+  margin-top: 20px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  padding: 15px;
+}
+
+.selected-files h4 {
+  font-size: 1.1rem;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.selected-files ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.selected-files li {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.selected-files li:last-child {
+  border-bottom: none;
+}
+
+.file-name {
+  flex: 1;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.file-size {
+  color: #7f8c8d;
+  margin: 0 10px;
+}
+
+.btn-remove {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 5px;
+}
+
+.alert {
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.alert i {
+  margin-right: 10px;
+  font-size: 1.2rem;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.form-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.btn {
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.btn-primary {
+  background-color: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+.btn-primary:hover {
+  background-color: #2980b9;
+  border-color: #2980b9;
+}
+
+.btn-primary:disabled {
+  background-color: #95a5a6;
+  border-color: #95a5a6;
+  cursor: not-allowed;
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: #3498db;
+  border-color: #3498db;
+}
+
+.btn-outline:hover {
+  background-color: #3498db;
+  color: white;
+}
+
+.info-card, .contact-card {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 25px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.info-card h3, .contact-card h3 {
+  display: flex;
+  align-items: center;
+  font-size: 1.3rem;
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+.info-card h3 i, .contact-card h3 i {
+  margin-right: 10px;
+  color: #3498db;
+}
+
+.info-card ol, .info-card ul {
+  padding-left: 20px;
+  margin-bottom: 0;
+}
+
+.info-card li {
+  margin-bottom: 10px;
+  color: #2c3e50;
+  line-height: 1.5;
+}
+
+.contact-card {
+  background-color: #2c3e50;
+  color: white;
+}
+
+.contact-card h3 {
+  color: white;
+}
+
+.contact-info {
+  margin-top: 15px;
+}
+
+.contact-info p {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.contact-info i {
+  margin-right: 10px;
+  width: 20px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .devis-content {
+    flex-direction: column;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+}
