@@ -1,0 +1,36 @@
+
+<nav class="navbar">  <div class="navbar-brand">
+    <a routerLink="/articles" class="logo">FormationExpress</a>
+  </div>  <div class="navbar-menu">
+    <div class="navbar-start">
+      <a routerLink="/articles" class="navbar-item">
+        <i class="icon fas fa-list"></i>
+        <span>Liste des formations</span>
+      </a>      <a *ngIf="userRole === 'admin' || userRole === 'formateur'" routerLink="/articles/new" class="navbar-item">
+        <i class="icon fas fa-plus"></i>
+        <span>Ajouter une formation</span>
+      </a>      <a *ngIf="userRole === 'user'" routerLink="/cart" class="navbar-item cart-item">
+        <i class="icon fas fa-graduation-cap"></i>
+        <span>Mes formations</span>
+        <span *ngIf="cartCount > 0" class="cart-badge">{{ cartCount }}</span>
+      </a>
+    </div>
+
+    <div class="navbar-end" *ngIf="!(authService.isAuthenticated$ | async)">
+      <a routerLink="/login" class="navbar-item">Connexion</a>
+      <a routerLink="/register" class="navbar-item">Inscription</a>
+    </div>
+    <div class="navbar-end" *ngIf="authService.isAuthenticated$ | async">
+      <div class="navbar-item user-info">
+        <i class="icon fas fa-user"></i>
+        <span>{{ userEmail }}</span>
+      </div>
+      <div class="navbar-item">
+        <button class="logout-btn" (click)="logout()">
+          <i class="icon fas fa-sign-out-alt"></i>
+          <span>Déconnexion</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>

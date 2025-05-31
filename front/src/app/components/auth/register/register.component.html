@@ -1,0 +1,79 @@
+<!-- register.component.html -->
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h2>Inscription</h2>
+      <p>Créez votre compte</p>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <div *ngIf="errorMessage" class="alert alert-danger">
+        <i class="fas fa-exclamation-circle"></i> {{ errorMessage }}
+      </div>
+
+      <div class="form-group">
+        <label for="name">
+          <i class="fas fa-user"></i> Nom
+        </label>
+        <input 
+          type="text" 
+          id="name" 
+          formControlName="name" 
+          class="form-control"
+          placeholder="Entrez votre nom">
+        <div *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched" class="error-message">
+          <i class="fas fa-exclamation-circle"></i> Veuillez entrer votre nom
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">
+          <i class="fas fa-envelope"></i> Email
+        </label>
+        <input 
+          type="email" 
+          id="email" 
+          formControlName="email" 
+          class="form-control"
+          placeholder="Entrez votre adresse email">
+        <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="error-message">
+          <i class="fas fa-exclamation-circle"></i> Veuillez entrer un email valide
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">
+          <i class="fas fa-lock"></i> Mot de passe
+        </label>
+        <input 
+          type="password" 
+          id="password" 
+          formControlName="password" 
+          class="form-control"
+          placeholder="Entrez votre mot de passe">
+        <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="error-message">
+          <i class="fas fa-exclamation-circle"></i> Le mot de passe doit contenir au moins 6 caractères
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="role">
+          <i class="fas fa-user-tag"></i> Rôle
+        </label>
+        <select id="role" formControlName="role" class="form-control">
+          <option *ngFor="let role of roles" [value]="role.value">{{ role.label }}</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary" [disabled]="registerForm.invalid || isLoading">
+        <span *ngIf="isLoading" class="spinner"></span>
+        <span *ngIf="!isLoading">S'inscrire</span>
+        <span *ngIf="isLoading">Inscription en cours...</span>
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Déjà un compte ? <a routerLink="/login">Se connecter</a></p>
+    </div>
+  </div>
+</div>
