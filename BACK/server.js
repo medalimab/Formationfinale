@@ -13,8 +13,15 @@ app.use(express.json());
 
 // Routes
 app.use('/api/auth', require('./routes/auth.routes'));
+app.use('/api/users', require('./routes/user.routes'));
 app.use('/api/formations', require('./routes/formation.routes'));
 app.use('/api/panier', require('./routes/panier.routes'));
+app.use('/api/blog', require('./routes/blog.routes'));
+app.use('/api/contact', require('./routes/contact.routes'));
+app.use('/api/temoignages', require('./routes/temoignage.routes'));
+app.use('/api/services', require('./routes/service.routes'));
+app.use('/api/devis', require('./routes/devis.routes'));
+app.use('/api/rendezvous', require('./routes/rendezVous.routes'));
 
 app.use(errorHandler);
 
