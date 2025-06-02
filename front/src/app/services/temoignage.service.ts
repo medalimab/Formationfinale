@@ -3,13 +3,15 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Temoignage } from '../models/temoignage.model';
 import { environment } from '../../environments/environment';
+import { StorageService } from './storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TemoignageService {  private apiUrl = `${environment.apiUrl}/temoignages`;
+export class TemoignageService {
+  private apiUrl = `${environment.apiUrl}/temoignages`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private storageService: StorageService) { }
 
   getTemoignages(): Observable<any> {
     return this.http.get<any>(this.apiUrl);
@@ -28,7 +30,12 @@ export class TemoignageService {  private apiUrl = `${environment.apiUrl}/temoig
   }
 
   approuverTemoignage(id: string): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}/approuver`, {});
+    const token = this.storageService.getItem('authToken');
+    return this.http.put<any>(
+      `${this.apiUrl}/${id}/approuver`,
+      {},
+      token ? { headers: { Authorization: `Bearer ${token}` } } : {}
+    );
   }
 
   updateTemoignage(id: string, temoignageData: Partial<Temoignage>): Observable<any> {

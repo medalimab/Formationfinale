@@ -1,0 +1,76 @@
+<div class="temoignages-container">
+  <div class="temoignages-header">
+    <h1>Témoignages</h1>
+    <p>Découvrez les retours d'expérience de nos clients satisfaits</p>
+  </div>
+
+  <div *ngIf="success" class="alert alert-success">{{ success }}</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <div class="loading-spinner" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Chargement des témoignages...</p>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && temoignages.length === 0">
+    <i class="fas fa-inbox"></i>
+    <h3>Aucun témoignage pour le moment.</h3>
+    <p>Partagez votre expérience en ajoutant le premier témoignage !</p>
+    <button *ngIf="userRole !== 'admin' && !showForm" class="btn btn-primary" (click)="afficherFormulaire()">Ajouter un témoignage</button>
+  </div>
+
+  <div class="temoignages-grid" *ngIf="!loading && temoignages.length > 0">
+    <div class="temoignage-card" *ngFor="let t of temoignages">
+      <div class="temoignage-header">
+        <span class="temoignage-nom">{{ t.nom }}</span>
+        <span class="temoignage-note">
+          <ng-container *ngFor="let n of [1,2,3,4,5]">
+            <i class="fa" [ngClass]="{'fa-star': n <= t.note, 'fa-star-o': n > t.note}"></i>
+          </ng-container>
+        </span>
+      </div>
+      <div class="temoignage-poste" *ngIf="t.poste || t.entreprise">{{ t.poste }}<span *ngIf="t.poste && t.entreprise">, </span>{{ t.entreprise }}</div>
+      <div class="temoignage-commentaire">{{ t.commentaire }}</div>
+      <div class="temoignage-date">{{ t.dateCreation | date:'dd/MM/yyyy' }}</div>
+      <span *ngIf="userRole === 'admin' && !t.approuve" class="badge badge-warning">En attente</span>
+      <span *ngIf="userRole === 'admin' && t.approuve" class="badge badge-success">Approuvé</span>
+    </div>
+  </div>
+
+  <div class="text-center mt-4" *ngIf="userRole !== 'admin' && !showForm && temoignages.length > 0">
+    <button class="btn btn-primary" (click)="afficherFormulaire()">Ajouter un témoignage</button>
+  </div>
+
+  <form class="temoignage-form mt-4" (ngSubmit)="submitTemoignage()" *ngIf="showForm && userRole !== 'admin'">
+    <div class="form-group">
+      <label>Nom *</label>
+      <input type="text" [(ngModel)]="newTemoignage.nom" name="nom" class="form-control" required />
+    </div>
+    <div class="form-group">
+      <label>Poste</label>
+      <input type="text" [(ngModel)]="newTemoignage.poste" name="poste" class="form-control" />
+    </div>
+    <div class="form-group">
+      <label>Entreprise</label>
+      <input type="text" [(ngModel)]="newTemoignage.entreprise" name="entreprise" class="form-control" />
+    </div>
+    <div class="form-group">
+      <label>Commentaire *</label>
+      <textarea [(ngModel)]="newTemoignage.commentaire" name="commentaire" class="form-control" required rows="3"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Note *</label>
+      <select [(ngModel)]="newTemoignage.note" name="note" class="form-control" required>
+        <option *ngFor="let n of [1,2,3,4,5]" [value]="n">{{ n }} / 5</option>
+      </select>
+    </div>
+    <div class="form-group d-flex justify-content-between">
+      <button class="btn btn-secondary" type="button" (click)="masquerFormulaire()">Annuler</button>
+      <button class="btn btn-primary" type="submit" [disabled]="submitting">Envoyer</button>
+    </div>
+  </form>
+
+  <div class="text-center mt-3" *ngIf="userRole === 'admin' && temoignages.length > 0">
+    <button class="btn btn-success" (click)="approuverDernierTemoignage()">Approuver le dernier témoignage</button>
+  </div>
+</div>
