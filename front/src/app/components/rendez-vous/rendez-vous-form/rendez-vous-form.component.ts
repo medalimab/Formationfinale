@@ -28,6 +28,8 @@ export class RendezVousFormComponent implements OnInit {
   ];
   
   minDate: string = '';
+  rendezVousId?: string;
+  isEditMode: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -41,14 +43,40 @@ export class RendezVousFormComponent implements OnInit {
     // Calculer la date minimum (aujourd'hui)
     const today = new Date();
     this.minDate = today.toISOString().split('T')[0];
-    
     this.initForm();
-    
+    this.route.paramMap.subscribe(params => {
+      this.rendezVousId = params.get('id') || undefined;
+      this.isEditMode = !!this.rendezVousId;
+      if (this.rendezVousId) {
+        this.loadRendezVous();
+      }
+    });
     this.route.queryParamMap.subscribe(params => {
       this.serviceId = params.get('serviceId') || undefined;
-      
       if (this.serviceId) {
         this.loadServiceDetails();
+      }
+    });
+  }
+
+  loadRendezVous(): void {
+    if (!this.rendezVousId) return;
+    this.loading = true;
+    this.rendezVousService.getRendezVousById(this.rendezVousId).subscribe({
+      next: (response) => {
+        const rdv = response.data;
+        this.rendezVousForm.patchValue({
+          service: rdv.service?._id || rdv.service,
+          date: rdv.date ? rdv.date.substring(0, 10) : '',
+          heure: rdv.heure,
+          duree: rdv.duree,
+          notes: rdv.notes || ''
+        });
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = "Impossible de charger le rendez-vous à modifier.";
+        this.loading = false;
       }
     });
   }
@@ -91,27 +119,51 @@ export class RendezVousFormComponent implements OnInit {
     
     const formData = this.rendezVousForm.value;
     
-    this.rendezVousService.createRendezVous({
-      service: formData.service,
-      date: formData.date,
-      heure: formData.heure,
-      duree: formData.duree,
-      notes: formData.notes,
-      statut: 'en_attente'
-    }).subscribe({
-      next: (response) => {
-        this.submitting = false;
-        this.success = true;
-        
-        setTimeout(() => {
-          this.router.navigate(['/rendez-vous/mes-rendez-vous']);
-        }, 2000);
-      },
-      error: (err) => {
-        this.submitting = false;
-        this.error = err.error.message || "Une erreur s'est produite lors de la prise de rendez-vous";
-        console.error('Erreur lors de la création du rendez-vous', err);
-      }
-    });
+    if (this.isEditMode && this.rendezVousId) {
+      // Appel update
+      this.rendezVousService.updateRendezVous(this.rendezVousId, {
+        service: formData.service,
+        date: formData.date,
+        heure: formData.heure,
+        duree: formData.duree,
+        notes: formData.notes
+      }).subscribe({
+        next: () => {
+          this.submitting = false;
+          this.success = true;
+          
+          setTimeout(() => {
+            this.router.navigate(['/rendez-vous/mes-rendez-vous']);
+          }, 2000);
+        },
+        error: (err) => {
+          this.submitting = false;
+          this.error = err.error.message || "Une erreur s'est produite lors de la modification du rendez-vous";
+        }
+      });
+    } else {
+      // Création
+      this.rendezVousService.createRendezVous({
+        service: formData.service,
+        date: formData.date,
+        heure: formData.heure,
+        duree: formData.duree,
+        notes: formData.notes,
+        statut: 'en_attente'
+      }).subscribe({
+        next: (response) => {
+          this.submitting = false;
+          this.success = true;
+          
+          setTimeout(() => {
+            this.router.navigate(['/rendez-vous/mes-rendez-vous']);
+          }, 2000);
+        },
+        error: (err) => {
+          this.submitting = false;
+          this.error = err.error.message || "Une erreur s'est produite lors de la prise de rendez-vous";
+        }
+      });
+    }
   }
 }

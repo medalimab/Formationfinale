@@ -1,0 +1,159 @@
+<div class="form-container">
+  <div class="form-card">
+    <div class="form-header">
+      <div class="form-icon-container">
+        <i class="form-icon {{ isEditMode ? 'fas fa-edit' : 'fas fa-plus-circle' }}"></i>
+      </div>
+      <h2 class="form-title">
+        {{ isEditMode ? 'Modifier le Service' : 'Créer un Nouveau Service' }}
+      </h2>
+      <p class="form-subtitle">
+        {{ isEditMode ? 'Mettez à jour les détails de votre service' : 'Complétez les informations pour créer un nouveau service' }}
+      </p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #serviceForm="ngForm" class="service-form" enctype="multipart/form-data">
+      <!-- Upload d'image -->
+      <div class="form-section">
+        <label class="section-label">
+          <i class="fas fa-image"></i> Image Principale
+        </label>
+        <div class="image-upload-container" [class.active]="imagePreview" (click)="fileInput.click()">
+          <input #fileInput type="file" id="imageUpload" (change)="onFileChange($event)" accept="image/*" class="upload-input">
+          
+          <div *ngIf="!imagePreview" class="upload-content">
+            <div class="upload-icon">
+              <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <div class="upload-text">
+              <h4>Glissez-déposez votre image ici</h4>
+              <p>ou cliquez pour parcourir vos fichiers</p>
+              <small class="file-requirements">Formats supportés: JPG, PNG, WEBP (Max. 5MB)</small>
+            </div>
+          </div>
+          
+          <div *ngIf="imagePreview" class="image-preview-container">
+            <img [src]="imagePreview" alt="Aperçu de l'image" class="preview-image">
+            <div class="image-overlay">
+              <button type="button" class="change-image-btn" (click)="fileInput.click()">
+                <i class="fas fa-sync-alt"></i> Changer
+              </button>
+              <button type="button" class="remove-image-btn" (click)="removeImage()">
+                <i class="fas fa-trash-alt"></i> Supprimer
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Informations de base -->
+      <div class="form-section">
+        <label class="section-label">
+          <i class="fas fa-info-circle"></i> Informations de Base
+        </label>
+        
+        <div class="form-group">
+          <input type="text" id="titre" name="titre" [(ngModel)]="service.titre" 
+                 required class="modern-input" placeholder=" ">
+          <label for="titre" class="input-label">
+            <i class="fas fa-tag"></i> Titre du service
+          </label>
+          <div class="input-bar"></div>
+        </div>
+
+        <div class="form-group">
+          <div class="select-container">
+            <select id="categorie" name="categorie" [(ngModel)]="service.categorie" 
+                    required class="modern-select">
+              <option value="" disabled>Sélectionnez une catégorie</option>
+              <option value="Développement Web">Développement Web</option>
+              <option value="Design">Design</option>
+              <option value="Marketing Digital">Marketing Digital</option>
+              <option value="Formation">Formation</option>
+              <option value="Consulting">Consulting</option>
+              <option value="Autre">Autre</option>
+            </select>
+            <label for="categorie" class="select-label">
+              <i class="fas fa-list-alt"></i> Catégorie
+            </label>
+            <div class="select-arrow">
+              <i class="fas fa-chevron-down"></i>
+            </div>
+          </div>
+          <div *ngIf="serviceForm.submitted && !service.categorie" class="error-message">
+            La catégorie est obligatoire.
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <input type="number" id="prix" name="prix" [(ngModel)]="service.prix" 
+                 required class="modern-input" placeholder=" " min="0">
+          <label for="prix" class="input-label">
+            <i class="fas fa-euro-sign"></i> Prix
+          </label>
+          <div class="input-bar"></div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="form-section">
+        <label class="section-label">
+          <i class="fas fa-align-left"></i> Description
+        </label>
+        <div class="form-group">
+          <textarea id="description" name="description" [(ngModel)]="service.description"
+                    required class="modern-textarea" placeholder=" " maxlength="500"></textarea>
+          <label for="description" class="textarea-label">Description détaillée du service</label>
+          <div class="textarea-bar"></div>
+          <div class="char-counter">
+            <span>{{ service.description.length || 0 }}</span>/500 caractères
+          </div>
+        </div>
+      </div>
+
+      <!-- Caractéristiques -->
+      <div class="form-section">
+        <label class="section-label">
+          <i class="fas fa-list-ul"></i> Caractéristiques
+        </label>
+        
+        <div class="add-caracteristique-container">
+          <input type="text" [(ngModel)]="newCaracteristique" name="newCaracteristique" 
+                 class="add-caracteristique-input" placeholder="Ajouter une caractéristique...">
+          <button type="button" class="add-caracteristique-btn" (click)="addCaracteristique()">
+            <i class="fas fa-plus"></i> Ajouter
+          </button>
+        </div>
+        
+        <ul class="caracteristiques-list" *ngIf="service.caracteristiques && service.caracteristiques.length > 0">
+          <li class="caracteristique-item" *ngFor="let carac of service.caracteristiques; let i = index">
+            <span class="caracteristique-text">{{ carac }}</span>
+            <button type="button" class="remove-caracteristique" (click)="removeCaracteristique(i)">
+              <i class="fas fa-times"></i>
+            </button>
+          </li>
+        </ul>
+        
+        <p *ngIf="!service.caracteristiques || service.caracteristiques.length === 0" class="no-caracteristiques">
+          Aucune caractéristique ajoutée
+        </p>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button type="button" [routerLink]="['/services']" class="cancel-btn">
+          <i class="fas fa-arrow-left"></i> Annuler
+        </button>
+        <button type="submit" class="submit-btn" [disabled]="serviceForm.invalid || isUploading">
+          <span *ngIf="!isUploading">
+            <i class="fas {{ isEditMode ? 'fa-save' : 'fa-plus' }}"></i>
+            {{ isEditMode ? 'Mettre à Jour' : 'Créer Service' }}
+          </span>
+          <span *ngIf="isUploading" class="loading-text">
+            <i class="fas fa-circle-notch fa-spin"></i> Envoi en cours...
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -3,6 +3,8 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { BlogService } from '../../../services/blog.service';
 import { Blog } from '../../../models/blog.model';
+import { AuthFixService } from '../../../services/auth-fix.service';
+import { StorageService } from '../../../services/storage.service';
 
 @Component({
   selector: 'app-blog-list',
@@ -11,15 +13,25 @@ import { Blog } from '../../../models/blog.model';
   standalone: true,
   imports: [CommonModule, RouterModule]
 })
-export class BlogListComponent implements OnInit {
-  articles: Blog[] = [];
+export class BlogListComponent implements OnInit {  articles: Blog[] = [];
   loading: boolean = true;
   error: string | null = null;
+  canCreateBlog: boolean = false;
   
-  constructor(private blogService: BlogService) { }
-
+  constructor(
+    private blogService: BlogService,
+    private authFixService: AuthFixService,
+    private storageService: StorageService
+  ) { }
   ngOnInit(): void {
     this.fetchArticles();
+    this.checkUserPermissions();
+  }
+  
+  checkUserPermissions(): void {
+    const isLoggedIn = this.authFixService.hasToken();
+    const userRole = this.storageService.getItem('userRole');
+    this.canCreateBlog = isLoggedIn && (userRole === 'admin' || userRole === 'formateur');
   }
 
   fetchArticles(): void {

@@ -26,12 +26,34 @@ exports.getService = asyncHandler(async (req, res, next) => {
 // @desc    Créer un service
 // @route   POST /api/services
 exports.createService = asyncHandler(async (req, res, next) => {
-  const service = await Service.create(req.body);
+  // Vérifier si l'utilisateur est authentifié
+  if (!req.user || !req.user.id) {
+    console.error('Tentative de création de service sans utilisateur authentifié');
+    return next(new ErrorResponse('Non autorisé - utilisateur non authentifié', 401));
+  }
 
-  res.status(201).json({
-    success: true,
-    data: service
-  });
+  // Ajouter l'ID de l'utilisateur authentifié au service
+  req.body.user = req.user.id;
+
+  // Si un fichier image est uploadé, stocker son nom dans req.body.image
+  if (req.file) {
+    req.body.image = req.file.originalname;
+  }
+
+  console.log('Création de service avec utilisateur:', req.user.id);
+  console.log('Données du service:', req.body);
+
+  try {
+    const service = await Service.create(req.body);
+    console.log('Service créé avec succès:', service._id);
+    res.status(201).json({
+      success: true,
+      data: service
+    });
+  } catch (error) {
+    console.error('Erreur lors de la création du service:', error.message);
+    return next(new ErrorResponse(`Erreur lors de la création du service: ${error.message}`, 400));
+  }
 });
 
 // @desc    Mettre à jour un service
@@ -80,5 +102,22 @@ exports.getServicesByCategorie = asyncHandler(async (req, res, next) => {
     success: true,
     count: services.length,
     data: services
+  });
+});
+
+// @desc    Récupérer les services d'un utilisateur
+// @route   GET /api/services/mes-services
+exports.getUserServices = asyncHandler(async (req, res, next) => {
+  console.log('Recherche des services pour utilisateur:', req.user.id);
+  
+  const services = await Service.find({ user: req.user.id });
+  
+  console.log(`Services trouvés: ${services.length}`);
+
+  // Ne pas retourner une erreur si aucun service n'est trouvé
+  res.status(200).json({
+    success: true,
+    count: services.length,
+    data: services || []
   });
 });

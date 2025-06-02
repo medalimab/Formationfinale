@@ -3,23 +3,28 @@
     <h1>Nos Services</h1>
     <p>Découvrez notre gamme complète de solutions technologiques</p>
   </div>
-
   <div class="services-filters">
-    <h3>Filtrer par catégorie</h3>
-    <div class="category-buttons">
-      <button 
-        class="btn btn-filter" 
-        [ngClass]="{'active': selectedCategory === ''}" 
-        (click)="resetFilters()">
-        Tous
-      </button>
-      <button 
-        *ngFor="let category of categories" 
-        class="btn btn-filter" 
-        [ngClass]="{'active': selectedCategory === category}" 
-        (click)="filterByCategory(category)">
-        {{ category }}
-      </button>
+    <div class="filters-header">
+      <div>
+        <h3>Filtrer par catégorie</h3>
+        <div class="category-buttons">
+          <button 
+            class="btn btn-filter" 
+            [ngClass]="{'active': selectedCategory === ''}" 
+            (click)="resetFilters()">
+            Tous
+          </button>
+          <button 
+            *ngFor="let category of categories" 
+            class="btn btn-filter" 
+            [ngClass]="{'active': selectedCategory === category}" 
+            (click)="filterByCategory(category)">
+            {{ category }}
+          </button>
+        </div>
+      </div>      <a *ngIf="userRole === 'admin' || userRole === 'formateur'" routerLink="service/new" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Nouveau service
+      </a>
     </div>
   </div>
 

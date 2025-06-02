@@ -1,6 +1,6 @@
 import { Formation } from './../../models/formation.model';
 
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { FormationService } from '../../services/formation.service';
@@ -10,11 +10,10 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-formation-form',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterModule],
-  templateUrl: './formation-form.component.html',
+  imports: [FormsModule, CommonModule, RouterModule],  templateUrl: './formation-form.component.html',
   styleUrls: ['./formation-form.component.css']
 })
-export class FormationFormComponent {
+export class FormationFormComponent implements OnInit {
   article: Formation = {
     titre: '',
     description: '',
@@ -94,6 +93,17 @@ export class FormationFormComponent {
   }  onSubmit(): void {
     if (this.isUploading) return;
 
+    // Vérifions que toutes les données requises sont présentes
+    if (!this.article.titre || !this.article.description || !this.article.categorie) {
+      Swal.fire({
+        title: 'Attention',
+        text: 'Tous les champs obligatoires doivent être remplis',
+        icon: 'warning',
+        confirmButtonColor: '#4361ee'
+      });
+      return;
+    }
+
     const formData = new FormData();
     formData.append('titre', this.article.titre);
     formData.append('categorie', this.article.categorie);
@@ -103,6 +113,9 @@ export class FormationFormComponent {
     
     if (this.selectedFile) {
       formData.append('image', this.selectedFile);
+    } else if (this.article.image) {
+      // Si on est en mode édition et qu'une image existe déjà
+      formData.append('imageUrl', this.article.image);
     }
 
     this.isUploading = true;
@@ -120,16 +133,29 @@ export class FormationFormComponent {
           }).then(() => {
             this.router.navigate(['/formations']);
           });
-        },
-        error: (err: any) => {
+        },        error: (err: any) => {
           console.error('Erreur lors de la mise à jour de la formation :', err);
           this.isUploading = false;
-          Swal.fire({
-            title: 'Erreur',
-            text: 'Une erreur est survenue lors de la mise à jour de la formation.',
-            icon: 'error',
-            confirmButtonColor: '#4361ee'
-          });
+          
+          if (err.status === 401) {
+            Swal.fire({
+              title: 'Erreur d\'authentification',
+              text: 'Votre session a expiré. Veuillez vous reconnecter.',
+              icon: 'warning',
+              confirmButtonColor: '#4361ee'
+            }).then(() => {
+              this.router.navigate(['/auth/login'], { 
+                queryParams: { returnUrl: this.router.url }
+              });
+            });
+          } else {
+            Swal.fire({
+              title: 'Erreur',
+              text: 'Une erreur est survenue lors de la mise à jour de la formation.',
+              icon: 'error',
+              confirmButtonColor: '#4361ee'
+            });
+          }
         }
       });
     } else {
@@ -145,16 +171,29 @@ export class FormationFormComponent {
           }).then(() => {
             this.router.navigate(['/formations']);
           });
-        },
-        error: (err: any) => {
+        },        error: (err: any) => {
           console.error('Erreur lors de la création de la formation:', err);
           this.isUploading = false;
-          Swal.fire({
-            title: 'Erreur',
-            text: 'Une erreur est survenue lors de l\'envoi',
-            icon: 'error',
-            confirmButtonColor: '#4361ee'
-          });
+          
+          if (err.status === 401) {
+            Swal.fire({
+              title: 'Erreur d\'authentification',
+              text: 'Votre session a expiré. Veuillez vous reconnecter.',
+              icon: 'warning',
+              confirmButtonColor: '#4361ee'
+            }).then(() => {
+              this.router.navigate(['/auth/login'], { 
+                queryParams: { returnUrl: '/formation/new' }
+              });
+            });
+          } else {
+            Swal.fire({
+              title: 'Erreur',
+              text: err.error?.message || 'Une erreur est survenue lors de l\'envoi',
+              icon: 'error',
+              confirmButtonColor: '#4361ee'
+            });
+          }
         }
       });
     }

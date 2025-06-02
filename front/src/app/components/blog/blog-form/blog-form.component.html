@@ -1,0 +1,63 @@
+<div class="blog-form-container">
+  <div class="blog-form-header">
+    <h2>{{ isEditMode ? 'Modifier l\'article' : 'Créer un nouvel article' }}</h2>
+    <p>{{ isEditMode ? 'Mettez à jour les informations de votre article.' : 'Partagez vos connaissances avec la communauté.' }}</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <form [formGroup]="blogForm" (ngSubmit)="onSubmit()">
+    <!-- Titre -->
+    <div class="form-group">
+      <label for="titre">Titre *</label>
+      <input type="text" id="titre" formControlName="titre" class="form-control" [ngClass]="{ 'ng-invalid': submitted && f['titre'].errors }">
+      <div *ngIf="submitted && f['titre'].errors" class="field-error">
+        <span *ngIf="f['titre'].errors['required']">Le titre est obligatoire</span>
+      </div>
+    </div>
+
+    <!-- Contenu -->
+    <div class="form-group">
+      <label for="contenu">Contenu *</label>
+      <textarea id="contenu" formControlName="contenu" class="form-control" [ngClass]="{ 'ng-invalid': submitted && f['contenu'].errors }"></textarea>
+      <div *ngIf="submitted && f['contenu'].errors" class="field-error">
+        <span *ngIf="f['contenu'].errors['required']">Le contenu est obligatoire</span>
+        <span *ngIf="f['contenu'].errors['minlength']">Le contenu doit contenir au moins 50 caractères</span>
+      </div>
+      <div class="help-text">Utilisez du markdown pour mettre en forme votre texte.</div>
+    </div>
+
+    <!-- Image -->
+    <div class="form-group">
+      <label for="image">Image (URL)</label>
+      <input type="text" id="image" formControlName="image" class="form-control">
+      <div class="help-text">Entrez l'URL d'une image pour illustrer votre article</div>
+      <div *ngIf="f['image'].value" class="image-preview">
+        <img [src]="f['image'].value" alt="Prévisualisation">
+      </div>
+    </div>
+
+    <!-- Catégories -->
+    <div class="form-group">
+      <label for="categories">Catégories</label>
+      <input type="text" id="categories" formControlName="categories" class="form-control">
+      <div class="help-text">Séparez les catégories par des virgules (ex: Développement, Web, JavaScript)</div>
+    </div>
+
+    <!-- Tags -->
+    <div class="form-group">
+      <label for="tags">Tags</label>
+      <input type="text" id="tags" formControlName="tags" class="form-control">
+      <div class="help-text">Séparez les tags par des virgules (ex: angular, tutorial, frontend)</div>
+    </div>    <!-- Actions -->
+    <div class="form-actions">
+      <a class="btn btn-secondary" [routerLink]="['/blog']">Annuler</a>
+      <button type="submit" class="btn btn-primary" [disabled]="loading">
+        <span *ngIf="loading" class="loading-spinner"></span>
+        {{ isEditMode ? 'Mettre à jour' : 'Publier' }}
+      </button>
+    </div>
+  </form>
+</div>

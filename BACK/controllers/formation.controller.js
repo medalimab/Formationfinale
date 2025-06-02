@@ -19,6 +19,10 @@ exports.getFormation = asyncHandler(async (req, res, next) => {
 
 exports.createFormation = asyncHandler(async (req, res, next) => {
   req.body.formateur = req.user.id;
+  // Si un fichier image est uploadé, stocker son nom dans req.body.image
+  if (req.file) {
+    req.body.image = req.file.originalname;
+  }
   const formation = await Formation.create(req.body);
   
   // Ajouter la formation au formateur
@@ -75,4 +79,14 @@ exports.deleteFormation = asyncHandler(async (req, res, next) => {
     success: true,
     data: {}
   });
+});
+
+exports.getUserFormations = asyncHandler(async (req, res, next) => {
+  const formations = await Formation.find({ formateur: req.user.id });
+
+  if (!formations || formations.length === 0) {
+    return next(new ErrorResponse('Aucune formation trouvée pour cet utilisateur', 404));
+  }
+
+  res.status(200).json({ success: true, data: formations });
 });

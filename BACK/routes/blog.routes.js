@@ -16,11 +16,11 @@ const router = express.Router();
 
 router.route('/')
   .get(advancedResults(Blog, 'auteur'), getArticles)
-  .post(protect, authorize('admin'), createArticle);
+  .post(protect, authorize('admin', 'formateur'), createArticle);
 
 router.route('/:id')
   .get(getArticle)
-  .put(protect, authorize('admin'), updateArticle)
+  .put(protect, authorize('admin', 'formateur'), updateArticle)
   .delete(protect, authorize('admin'), deleteArticle);
 
 router.route('/:id/commentaires')

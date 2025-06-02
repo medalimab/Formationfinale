@@ -11,7 +11,7 @@ exports.getRendezVous = asyncHandler(async (req, res, next) => {
 // @desc    Récupérer mes rendez-vous
 // @route   GET /api/rendezvous/me
 exports.getMesRendezVous = asyncHandler(async (req, res, next) => {
-  const rendezvous = await RendezVous.find({ client: req.user.id });
+  const rendezvous = await RendezVous.find({ client: req.user.id }).populate('service', 'titre');
 
   res.status(200).json({
     success: true,
@@ -45,6 +45,11 @@ exports.getRendezVousById = asyncHandler(async (req, res, next) => {
 exports.createRendezVous = asyncHandler(async (req, res, next) => {
   // Ajouter l'ID de l'utilisateur au corps de la requête
   req.body.client = req.user.id;
+
+  // Si un fichier image est uploadé, stocker son nom dans req.body.image
+  if (req.file) {
+    req.body.image = req.file.originalname;
+  }
 
   // Vérifier si le créneau est disponible
   const creneauExiste = await RendezVous.findOne({
@@ -93,6 +98,29 @@ exports.updateRendezVousStatut = asyncHandler(async (req, res, next) => {
     { new: true, runValidators: true }
   );
 
+  res.status(200).json({
+    success: true,
+    data: rendezvous
+  });
+});
+
+// @desc    Modifier un rendez-vous
+// @route   PUT /api/rendezvous/:id
+exports.updateRendezVous = asyncHandler(async (req, res, next) => {
+  let rendezvous = await RendezVous.findById(req.params.id);
+  if (!rendezvous) {
+    return next(new ErrorResponse(`Rendez-vous non trouvé avec l'id ${req.params.id}`, 404));
+  }
+  // Seul le client ou un admin peut modifier
+  const isClient = rendezvous.client.toString() === req.user.id;
+  const isAdmin = req.user.role === 'admin';
+  if (!isClient && !isAdmin) {
+    return next(new ErrorResponse(`Non autorisé à modifier ce rendez-vous`, 401));
+  }
+  rendezvous = await RendezVous.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true
+  });
   res.status(200).json({
     success: true,
     data: rendezvous

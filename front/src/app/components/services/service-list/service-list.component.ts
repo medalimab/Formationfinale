@@ -3,6 +3,7 @@ import { CommonModule, CurrencyPipe, SlicePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ServiceApiService } from '../../../services/service-api.service';
 import { Service } from '../../../models/service.model';
+import { StorageService } from '../../../services/storage.service';
 
 @Component({
   selector: 'app-service-list',
@@ -13,16 +14,20 @@ import { Service } from '../../../models/service.model';
 })
 export class ServiceListComponent implements OnInit {
   services: Service[] = [];
-  filteredServices: Service[] = [];
-  categories: string[] = [];
+  filteredServices: Service[] = [];  categories: string[] = [];
   selectedCategory: string = '';
   loading: boolean = false;
   error: string = '';
+  userRole: string = 'user';
 
-  constructor(private serviceApi: ServiceApiService) { }
-
+  constructor(
+    private serviceApi: ServiceApiService,
+    private storageService: StorageService
+  ) { }
   ngOnInit(): void {
     this.loadServices();
+    const role = this.storageService.getItem('userRole');
+    this.userRole = role || 'user';
   }
 
   loadServices(): void {

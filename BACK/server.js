@@ -8,7 +8,11 @@ connectDB();
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  allowedHeaders: ['authorization', 'content-type']
+}));
 app.use(express.json());
 
 // Routes
@@ -22,6 +26,7 @@ app.use('/api/temoignages', require('./routes/temoignage.routes'));
 app.use('/api/services', require('./routes/service.routes'));
 app.use('/api/devis', require('./routes/devis.routes'));
 app.use('/api/rendezvous', require('./routes/rendezVous.routes'));
+app.use('/api/debug', require('./routes/debug.routes'));
 
 app.use(errorHandler);
 

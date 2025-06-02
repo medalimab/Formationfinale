@@ -12,4 +12,4 @@ export class ArticleService {
   constructor() {
     console.warn('ArticleService est déprécié. Veuillez utiliser FormationService à la place.');
   }
-}}
+}

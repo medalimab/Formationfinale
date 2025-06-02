@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Service } from '../models/service.model';
 import { environment } from '../../environments/environment';
@@ -22,16 +22,31 @@ export class ServiceApiService {  private apiUrl = `${environment.apiUrl}/servic
   getServicesByCategorie(categorie: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/categorie/${categorie}`);
   }
-
-  createService(serviceData: Service): Observable<any> {
-    return this.http.post<any>(this.apiUrl, serviceData);
+  createService(serviceData: FormData | Service): Observable<any> {
+    const token = localStorage.getItem('authToken');
+    if (serviceData instanceof FormData) {
+      // Envoi d'un FormData (avec image)
+      return this.http.post<any>(this.apiUrl, serviceData, {
+        headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
+      });
+    } else {
+      // Envoi d'un JSON (sans image)
+      const headers = new HttpHeaders({
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      });
+      return this.http.post<any>(this.apiUrl, serviceData, { headers });
+    }
   }
 
-  updateService(id: string, serviceData: Partial<Service>): Observable<any> {
+  updateService(id: string, serviceData: FormData | Partial<Service>): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/${id}`, serviceData);
   }
-
   deleteService(id: string): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/${id}`);
+  }
+
+  getUserServices(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/mes-services`);
   }
 }

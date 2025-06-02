@@ -89,12 +89,11 @@ export class RendezVousListComponent implements OnInit {
     }
   }
 
+  // Affiche le nom du service au lieu de l'id
   getServiceTitle(service: any): string {
-    if (service && typeof service === 'object' && service.titre) {
-      return service.titre;
-    } else if (typeof service === 'string') {
-      return service;
-    }
-    return 'Service non spécifié';
+    if (!service) return '';
+    if (typeof service === 'object' && service.titre) return service.titre;
+    if (typeof service === 'string') return service; // fallback si pas peuplé
+    return '';
   }
 }

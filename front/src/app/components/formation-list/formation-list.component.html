@@ -30,9 +30,7 @@
                 [class.active]="activeFilter === categorie"
                 class="filter-btn">
           {{ categorie | titlecase }}
-        </button>
-      </div>
-    </div>    <a *ngIf="userRole === 'admin' || userRole === 'formateur'" routerLink="/articles/new" class="add-button">
+        </button>      </div>    </div>    <a *ngIf="userRole === 'admin' || userRole === 'formateur'" routerLink="formation/new" class="add-button">
       <i class="fas fa-plus"></i> Nouvelle formation
     </a>
   </div>
@@ -59,12 +57,11 @@
             <span class="prix">{{ article.prix | currency:'EUR' }}</span> | 
             <span class="duree">{{ article.duree }}</span>
           </p>
-        </div>
-          <div class="card-footer">
-          <a [routerLink]="['/articles', article._id]" class="action-btn view-btn">
+        </div>        <div class="card-footer">
+          <a [routerLink]="['/formations', article._id]" class="action-btn view-btn">
             <i class="fas fa-eye"></i> Détails
           </a>          <div class="action-group">
-            <a *ngIf="userRole === 'admin' || userRole === 'formateur'" [routerLink]="['/articles', article._id, 'edit']" class="action-btn edit-btn">
+            <a *ngIf="userRole === 'admin' || userRole === 'formateur'" [routerLink]="['/formations', article._id, 'edit']" class="action-btn edit-btn">
               <i class="fas fa-edit"></i>
             </a>
             <button *ngIf="userRole === 'admin' || userRole === 'formateur'" (click)="deleteArticle(article._id!)" class="btn btn-danger btn-sm">
@@ -108,9 +105,7 @@
       </div>
     </div>    <div *ngIf="filteredArticles().length === 0 && !isLoading" class="empty-state">
       <div class="empty-content">
-        <i class="fas fa-inbox"></i>
-        <h3>Aucune formation trouvée</h3>
-        <p *ngIf="searchTerm || activeFilter">Essayez de modifier vos critères de recherche</p>        <a *ngIf="userRole === 'admin' || userRole === 'formateur'" routerLink="/articles/new" class="add-button">
+        <i class="fas fa-inbox"></i>        <h3>Aucune formation trouvée</h3>        <p *ngIf="searchTerm || activeFilter">Essayez de modifier vos critères de recherche</p>        <a *ngIf="userRole === 'admin' || userRole === 'formateur'" routerLink="formation/new" class="add-button">
           <i class="fas fa-plus-circle"></i> Créer une nouvelle formation
         </a>
         <p *ngIf="userRole === 'user'">Aucune formation correspondant à votre recherche</p>

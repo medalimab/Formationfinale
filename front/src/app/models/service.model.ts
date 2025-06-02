@@ -6,6 +6,6 @@ export interface Service {
   image?: string;
   prix?: number;
   caracteristiques?: string[];
-  disponible: boolean;
-  dateCreation: Date;
+  disponible?: boolean;
+  dateCreation?: Date;
 }

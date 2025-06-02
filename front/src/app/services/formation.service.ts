@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Formation } from '../models/formation.model';
 import { environment } from '../../environments/environment';
@@ -47,7 +47,12 @@ export class FormationService {
    * Crée une nouvelle formation
    */
   createFormation(formationData: Formation | FormData): Observable<{ success: boolean, data: Formation }> {
-    return this.http.post<{ success: boolean, data: Formation }>(this.apiUrl, formationData);
+    // Récupérer le token manuellement
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    return this.http.post<{ success: boolean, data: Formation }>(this.apiUrl, formationData, { headers });
   }
 
   /**
@@ -63,7 +68,6 @@ export class FormationService {
   deleteFormation(id: string): Observable<{ success: boolean, data: {} }> {
     return this.http.delete<{ success: boolean, data: {} }>(`${this.apiUrl}/${id}`);
   }
-
   /**
    * Recherche des formations par mot-clé
    */
@@ -72,6 +76,15 @@ export class FormationService {
     return this.http.get<{ success: boolean, data: Formation[] }>(
       `${this.apiUrl}`,
       { params }
+    );
+  }
+
+  /**
+   * Récupérer les formations de l'utilisateur connecté
+   */
+  getUserFormations(): Observable<{ success: boolean, data: Formation[] }> {
+    return this.http.get<{ success: boolean, data: Formation[] }>(
+      `${this.apiUrl}/mes-formations`
     );
   }
 }

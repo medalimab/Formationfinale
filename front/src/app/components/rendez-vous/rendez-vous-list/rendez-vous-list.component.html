@@ -56,6 +56,13 @@
               >
                 Annuler
               </button>
+              <a 
+                class="edit-btn" 
+                [routerLink]="['/rendez-vous/edit', rdv._id]"
+                *ngIf="rdv.statut === 'en_attente' || rdv.statut === 'confirme'"
+              >
+                Modifier
+              </a>
             </div>
           </div>
         </div>

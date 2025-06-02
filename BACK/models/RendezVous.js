@@ -6,7 +6,7 @@ const RendezVousSchema = new mongoose.Schema({
     ref: 'User', 
     required: true 
   },
-  service: { type: String, required: true },
+  service: { type: mongoose.Schema.Types.ObjectId, ref: 'Service', required: true },
   date: { type: Date, required: true },
   heure: { type: String, required: true },
   duree: { type: Number, required: true }, // en minutes

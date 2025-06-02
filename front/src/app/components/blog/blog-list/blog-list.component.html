@@ -1,7 +1,16 @@
 <div class="blog-container">
   <div class="blog-header">
-    <h1>Notre blog</h1>
-    <p>Découvrez nos derniers articles, conseils et actualités du monde de la formation professionnelle.</p>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <h1>Notre blog</h1>
+        <p>Découvrez nos derniers articles, conseils et actualités du monde de la formation professionnelle.</p>
+      </div>
+      <div *ngIf="canCreateBlog" class="text-end">
+        <a routerLink="/blog/new" class="btn btn-primary">
+          <i class="bi bi-plus-circle me-1"></i> Nouvel article
+        </a>
+      </div>
+    </div>
   </div>
 
   <div *ngIf="loading" class="loading-spinner">

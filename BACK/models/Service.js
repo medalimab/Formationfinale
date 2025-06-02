@@ -8,7 +8,12 @@ const ServiceSchema = new mongoose.Schema({
   prix: { type: Number },
   caracteristiques: [String],
   disponible: { type: Boolean, default: true },
-  dateCreation: { type: Date, default: Date.now }
+  dateCreation: { type: Date, default: Date.now },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  }
 });
 
 module.exports = mongoose.model('Service', ServiceSchema);

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Blog, Commentaire } from '../models/blog.model';
 import { environment } from '../../environments/environment';
@@ -20,7 +20,12 @@ export class BlogService {  private apiUrl = `${environment.apiUrl}/blog`;
   }
 
   createArticle(articleData: Blog): Observable<any> {
-    return this.http.post<any>(this.apiUrl, articleData);
+    // Récupérer le token manuellement
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    return this.http.post<any>(this.apiUrl, articleData, { headers });
   }
 
   updateArticle(id: string, articleData: Partial<Blog>): Observable<any> {

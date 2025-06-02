@@ -25,6 +25,14 @@
       <div class="profile-tab" [class.active]="activeTab === 'history'" (click)="switchTab('history')">
         Historique d'activité
       </div>
+      <div class="profile-tab" [class.active]="activeTab === 'formations'" (click)="switchTab('formations')" 
+           *ngIf="user.role === 'formateur' || user.role === 'admin'">
+        Mes formations
+      </div>
+      <div class="profile-tab" [class.active]="activeTab === 'services'" (click)="switchTab('services')"
+           *ngIf="user.role === 'admin'">
+        Mes services
+      </div>
     </div>
 
     <div class="profile-content">
@@ -154,6 +162,85 @@
       <div *ngIf="activeTab === 'history'">
         <p class="my-3 text-center">Cette fonctionnalité sera disponible prochainement.</p>
         <!-- Ici, vous pourriez ajouter un historique des activités de l'utilisateur -->
+      </div>
+      
+      <!-- Onglet Mes formations -->
+      <div *ngIf="activeTab === 'formations'">
+        <h3 class="section-title">Mes formations</h3>
+        
+        <div *ngIf="loadingFormations" class="text-center my-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Chargement...</span>
+          </div>
+        </div>
+        
+        <div *ngIf="formationsError" class="alert alert-info">
+          <p>{{ formationsError }}</p>
+        </div>
+        
+        <div *ngIf="!loadingFormations && !formationsError && userFormations.length === 0" class="alert alert-info">
+          <p>Vous n'avez pas encore créé de formations.</p>
+        </div>
+        
+        <div class="formation-list" *ngIf="!loadingFormations && userFormations.length > 0">
+          <div class="formation-card" *ngFor="let formation of userFormations">
+            <div class="formation-header">
+              <img [src]="formation.image || 'assets/images/placeholder.jpg'" alt="{{ formation.titre }}" class="formation-image">
+              <h4 class="formation-title">{{ formation.titre }}</h4>
+            </div>
+            <div class="formation-body">
+              <p class="formation-category">{{ formation.categorie }}</p>
+              <p class="formation-price">{{ formation.prix | currency:'EUR' }}</p>
+              <p class="formation-duration">{{ formation.duree }}</p>
+            </div>
+            <div class="formation-actions">
+              <a [routerLink]="['/formations', formation._id]" class="btn btn-outline-primary btn-sm">Voir</a>
+              <a [routerLink]="['/formations', formation._id, 'edit']" class="btn btn-outline-secondary btn-sm ms-2">Modifier</a>
+            </div>
+          </div>        </div>
+        
+        <div class="text-center mt-4">
+          <a routerLink="formation/new" class="btn btn-primary">Créer une nouvelle formation</a>
+        </div>
+      </div>
+      
+      <!-- Onglet Mes services -->
+      <div *ngIf="activeTab === 'services'">
+        <h3 class="section-title">Mes services</h3>
+        
+        <div *ngIf="loadingServices" class="text-center my-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Chargement...</span>
+          </div>
+        </div>
+        
+        <div *ngIf="servicesError" class="alert alert-info">
+          <p>{{ servicesError }}</p>
+        </div>
+        
+        <div *ngIf="!loadingServices && !servicesError && userServices.length === 0" class="alert alert-info">
+          <p>Vous n'avez pas encore créé de services.</p>
+        </div>
+        
+        <div class="service-list" *ngIf="!loadingServices && userServices.length > 0">
+          <div class="service-card" *ngFor="let service of userServices">
+            <div class="service-header">
+              <img [src]="service.image || 'assets/images/placeholder.jpg'" alt="{{ service.titre }}" class="service-image">
+              <h4 class="service-title">{{ service.titre }}</h4>
+            </div>
+            <div class="service-body">
+              <p class="service-category">{{ service.categorie }}</p>
+              <p class="service-price">{{ service.prix | currency:'EUR' }}</p>
+            </div>
+            <div class="service-actions">
+              <a [routerLink]="['/services', service._id]" class="btn btn-outline-primary btn-sm">Voir</a>
+              <a [routerLink]="['/services', service._id, 'edit']" class="btn btn-outline-secondary btn-sm ms-2">Modifier</a>
+            </div>
+          </div>
+        </div>
+          <div class="text-center mt-4">
+          <a routerLink="service/new" class="btn btn-primary">Créer un nouveau service</a>
+        </div>
       </div>
       
       <button class="logout-btn" (click)="logout()">

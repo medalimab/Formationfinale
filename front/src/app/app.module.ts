@@ -5,6 +5,9 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { routes } from './app.routes';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { FixedAuthInterceptor } from './interceptors/fixed-auth.interceptor';
+// Import facultatif de l'intercepteur d'erreur dans app.module
+// import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { CommonModule, DatePipe, CurrencyPipe, SlicePipe } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -16,17 +19,9 @@ import { LoginComponent } from './components/auth/login/login.component';
 import { RegisterComponent } from './components/auth/register/register.component';
 import { CartComponent } from './components/cart/cart.component';
 
-@NgModule({
-  declarations: [
-    // Déclarer seulement les composants non-standalone
-    formationListComponent,
-    FormationDetailComponent,
-    FormationFormComponent,
-    LoginComponent,
-    RegisterComponent,
-    CartComponent
-  ],
-  imports: [
+@NgModule({  declarations: [
+    // Laisser vide car tous les composants sont standalone
+  ],imports: [
     BrowserModule,
     BrowserAnimationsModule,
     CommonModule,
@@ -34,9 +29,12 @@ import { CartComponent } from './components/cart/cart.component';
     ReactiveFormsModule,
     HttpClientModule,
     RouterModule.forRoot(routes)
-  ],
-  providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  ],  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: FixedAuthInterceptor,
+      multi: true
+    },
     DatePipe,
     CurrencyPipe,
     SlicePipe

@@ -5,6 +5,8 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { StorageService } from './storage.service';
+import { JwtDebugService } from './jwt-debug.service';
+import { AuthManagerService } from './auth-manager.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,31 +24,33 @@ export class AuthService {
   constructor(
     private http: HttpClient, 
     private router: Router,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private jwtDebugService: JwtDebugService,
+    private authManager: AuthManagerService
   ) {
     this.checkToken();
+    
+    // S'abonner aux changements de statut d'authentification du AuthManagerService
+    this.authManager.authStatus$.subscribe(status => {
+      this.isAuthenticatedSubject.next(status);
+      this.userRoleSubject.next(this.getUserRole());
+    });
   }
+  
   private checkToken(): void {
-    const token = this.storageService.getItem('authToken');
-    this.isAuthenticatedSubject.next(!!token);
+    const tokenStatus = this.jwtDebugService.decodeJwt();
+    this.isAuthenticatedSubject.next(tokenStatus.valid && !tokenStatus.expired);
   }
 
   private updateAuthState() {
     this.isAuthenticatedSubject.next(this.isLoggedIn());
     this.userRoleSubject.next(this.getUserRole());
   }
-
   login(credentials: { email: string; password: string }) {
-    return this.http.post<{ success: boolean; token: string; role: string }>(
-      `${this.apiUrl}/login`,
-      credentials
-    ).pipe(      tap(res => {
+    // Déléguer au nouveau service d'authentification
+    return this.authManager.loginUser(credentials).pipe(
+      tap(res => {
         if (res && res.success && res.token) {
-          this.storageService.setItem('authToken', res.token);
-          this.storageService.setItem('userEmail', credentials.email);
-          if (res.role) {
-            this.storageService.setItem('userRole', res.role);
-          }
           this.updateAuthState();
         }
       })
@@ -69,13 +73,10 @@ export class AuthService {
   isLoggedIn(): boolean {
     const token = this.storageService.getItem('authToken');
     return !!token;
-  }
-  logout(): void {
-    this.storageService.removeItem('authToken');
-    this.storageService.removeItem('userEmail');
-    this.storageService.removeItem('userRole');
+  }  logout(): void {
+    // Déléguer au nouveau service d'authentification
+    this.authManager.logout();
     this.updateAuthState();
-    this.router.navigate(['/login']);
   }
   getUserEmail(): string | null {
     return this.storageService.getItem('userEmail');

@@ -13,11 +13,13 @@ const { protect, authorize } = require('../middleware/auth');
 
 const router = express.Router();
 
+// Route publique pour envoyer un contact
+router.post('/', envoyerContact);
+
 // Protection des routes admin
-router.use(getContacts, protect, authorize('admin'));
+router.use(protect, authorize('admin'));
 
 router.route('/')
-  .post(envoyerContact)
   .get(advancedResults(Contact), getContacts);
 
 router.route('/:id')
