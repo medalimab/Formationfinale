@@ -29,8 +29,8 @@
       <div class="form-group" *ngIf="!serviceId">
         <label for="service" class="form-label">Service *</label>
         <select id="service" formControlName="service" class="form-select" [class.is-invalid]="rendezVousForm.get('service')?.invalid && rendezVousForm.get('service')?.touched">
-          <option value="" disabled selected>Sélectionnez un service</option>
-          <!-- Ici, vous pouvez ajouter une logique pour charger dynamiquement les services disponibles -->
+          <option value="" disabled>Sélectionnez un service</option>
+          <option *ngFor="let s of services" [value]="s._id">{{ s.titre }}</option>
         </select>
         <div class="invalid-feedback" *ngIf="rendezVousForm.get('service')?.invalid && rendezVousForm.get('service')?.touched">
           Veuillez sélectionner un service

@@ -23,7 +23,7 @@ exports.getMesRendezVous = asyncHandler(async (req, res, next) => {
 // @desc    Récupérer un rendez-vous
 // @route   GET /api/rendezvous/:id
 exports.getRendezVousById = asyncHandler(async (req, res, next) => {
-  const rendezvous = await RendezVous.findById(req.params.id);
+  const rendezvous = await RendezVous.findById(req.params.id).populate('service', 'titre');
 
   if (!rendezvous) {
     return next(new ErrorResponse(`Rendez-vous non trouvé avec l'id ${req.params.id}`, 404));

@@ -25,7 +25,11 @@ export class RendezVousService {
   }
 
   getRendezVousById(id: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`);
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    return this.http.get<any>(`${this.apiUrl}/${id}`, { headers });
   }
 
   createRendezVous(rendezVousData: any): Observable<any> {

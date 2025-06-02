@@ -30,6 +30,7 @@ export class RendezVousFormComponent implements OnInit {
   minDate: string = '';
   rendezVousId?: string;
   isEditMode: boolean = false;
+  services: Service[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -57,6 +58,15 @@ export class RendezVousFormComponent implements OnInit {
         this.loadServiceDetails();
       }
     });
+    // Charger tous les services pour le select, même en édition
+    this.serviceApiService.getServices().subscribe({
+      next: (res) => {
+        this.services = res.data || res;
+      },
+      error: () => {
+        this.services = [];
+      }
+    });
   }
 
   loadRendezVous(): void {
@@ -72,6 +82,13 @@ export class RendezVousFormComponent implements OnInit {
           duree: rdv.duree,
           notes: rdv.notes || ''
         });
+        // Si on édite, charger le service associé pour l'affichage
+        if (rdv.service && typeof rdv.service === 'object' && rdv.service._id) {
+          this.serviceApiService.getService(rdv.service._id).subscribe({
+            next: (res) => { this.service = res.data; },
+            error: () => { this.service = undefined; }
+          });
+        }
         this.loading = false;
       },
       error: (err) => {
