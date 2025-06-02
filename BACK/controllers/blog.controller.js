@@ -11,7 +11,9 @@ exports.getArticles = asyncHandler(async (req, res, next) => {
 // @desc    Récupérer un article
 // @route   GET /api/blog/:id
 exports.getArticle = asyncHandler(async (req, res, next) => {
-  const article = await Blog.findById(req.params.id).populate('auteur', 'nom');
+  const article = await Blog.findById(req.params.id)
+    .populate('auteur', 'nom')
+    .populate('commentaires.utilisateur', 'nom');
 
   if (!article) {
     return next(new ErrorResponse(`Article non trouvé avec l'id ${req.params.id}`, 404));

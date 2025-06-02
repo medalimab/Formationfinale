@@ -37,6 +37,8 @@ export class BlogService {  private apiUrl = `${environment.apiUrl}/blog`;
   }
 
   addComment(articleId: string, comment: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/${articleId}/commentaires`, { texte: comment });
+    const token = localStorage.getItem('authToken');
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+    return this.http.post<any>(`${this.apiUrl}/${articleId}/commentaires`, { texte: comment }, { headers });
   }
 }
