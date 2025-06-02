@@ -10,6 +10,10 @@
     </a>
   </div>
 
+  <div class="debug-role" style="margin-bottom: 10px; color: #888; font-size: 14px;">
+    Rôle détecté : {{ userRole }}
+  </div>
+
   <div *ngIf="loading" class="loading-spinner">
     <div class="spinner-border text-primary" role="status">
       <span class="visually-hidden">Chargement...</span>
@@ -51,7 +55,7 @@
             <div class="rdv-actions-btn">
               <button 
                 class="cancel-btn" 
-                *ngIf="rdv.statut === 'en_attente' || rdv.statut === 'confirme'"
+                *ngIf="(userRole === 'admin' || userRole === 'formateur' || userRole === 'client' || userRole === 'user') && (rdv.statut === 'en_attente' || rdv.statut === 'confirme')"
                 (click)="annulerRendezVous(rdv._id!)"
               >
                 Annuler
@@ -59,10 +63,17 @@
               <a 
                 class="edit-btn" 
                 [routerLink]="['/rendez-vous/edit', rdv._id]"
-                *ngIf="rdv.statut === 'en_attente' || rdv.statut === 'confirme'"
+                *ngIf="(userRole === 'admin' || userRole === 'formateur' || userRole === 'client' || userRole === 'user') && (rdv.statut === 'en_attente' || rdv.statut === 'confirme')"
               >
                 Modifier
               </a>
+              <button 
+                class="delete-btn" 
+                *ngIf="userRole === 'admin' || userRole === 'formateur'"
+                (click)="deleteRendezVous(rdv._id!)"
+              >
+                Supprimer
+              </button>
             </div>
           </div>
         </div>

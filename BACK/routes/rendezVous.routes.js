@@ -7,7 +7,8 @@ const {
   createRendezVous,
   updateRendezVousStatut,
   deleteRendezVous,
-  updateRendezVous
+  updateRendezVous,
+  getRendezVousByFormateur
 } = require('../controllers/rendezVous.controller');
 
 const RendezVous = require('../models/RendezVous');
@@ -27,10 +28,13 @@ router.route('/')
   .get(authorize('admin'), advancedResults(RendezVous, 'client'), getRendezVous)
   .post(upload.single('image'), createRendezVous);
 
+router.route('/by-formateur')
+  .get(authorize('formateur', 'admin'), getRendezVousByFormateur);
+
 router.route('/:id')
   .get(getRendezVousById)
   .put(protect, updateRendezVous)
-  .delete(authorize('admin'), deleteRendezVous);
+  .delete(protect, deleteRendezVous);
 
 router.route('/:id/statut')
   .put(updateRendezVousStatut);

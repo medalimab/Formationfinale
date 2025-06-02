@@ -13,7 +13,11 @@ export class RendezVousService {
   constructor(private http: HttpClient) { }
 
   getRendezVous(): Observable<any> {
-    return this.http.get<any>(this.apiUrl);
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    return this.http.get<any>(this.apiUrl, { headers });
   }
 
   getMesRendezVous(): Observable<any> {
@@ -69,6 +73,21 @@ export class RendezVousService {
   }
 
   deleteRendezVous(id: string): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/${id}`);
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    return this.http.delete<any>(`${this.apiUrl}/${id}`, { headers });
+  }
+
+  /**
+   * Récupère tous les rendez-vous liés aux services du formateur connecté
+   */
+  getRendezVousByFormateur(): Observable<any> {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    return this.http.get<any>(`${this.apiUrl}/by-formateur`, { headers });
   }
 }
