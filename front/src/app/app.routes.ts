@@ -1,5 +1,6 @@
 import { formationListComponent } from './components/formation-list/formation-list.component';
 import { Formation } from './models/formation.model';
+import { TemoignageComponent } from './components/temoignage/temoignage.component';
 
 import { Routes } from '@angular/router';
 import { FormationFormComponent } from './components/formation-form/formation-form.component';
@@ -33,6 +34,7 @@ export const routes: Routes = [
   { path: 'auth/register', component: RegisterComponent },
   { path: 'debug', component: DebugComponent },
   { path: 'auth-check', component: AuthCheckComponent },
+  { path: 'temoignages', component: TemoignageComponent },
   
   // Routes authentifiées
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },

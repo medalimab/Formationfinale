@@ -9,12 +9,13 @@ import { Formation } from '../../models/formation.model';
 import { Service } from '../../models/service.model';
 import { Temoignage } from '../../models/temoignage.model';
 import { Blog } from '../../models/blog.model';
+import { TemoignageComponent } from '../temoignage/temoignage.component';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
-  imports: [CommonModule, RouterModule, CurrencyPipe, DatePipe, SlicePipe],
+  imports: [CommonModule, RouterModule, CurrencyPipe, DatePipe, SlicePipe, TemoignageComponent],
   standalone: true
 })
 export class HomeComponent implements OnInit {

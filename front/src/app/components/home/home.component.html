@@ -70,7 +70,7 @@
       <p>Des retours d'expérience de clients satisfaits</p>
     </div>
     <div class="testimonials-slider" *ngIf="temoignages.length > 0; else noTemoignages">
-      <div class="testimonial-card" *ngFor="let temoignage of temoignages">
+      <div class="testimonial-card" *ngFor="let temoignage of temoignages.slice(0, 3)">
         <div class="testimonial-rating">
           <span *ngFor="let i of [1,2,3,4,5]">
             <i class="fa" [ngClass]="{'fa-star': i <= temoignage.note, 'fa-star-o': i > temoignage.note}"></i>
@@ -78,13 +78,10 @@
         </div>
         <p class="testimonial-comment">{{ temoignage.commentaire }}</p>
         <div class="testimonial-author">
-          <div class="testimonial-avatar" *ngIf="temoignage.image">
-            <img [src]="temoignage.image" alt="{{ temoignage.nom }}">
-          </div>
           <div class="testimonial-info">
             <h4>{{ temoignage.nom }}</h4>
             <p *ngIf="temoignage.poste || temoignage.entreprise">
-              {{ temoignage.poste }} {{ temoignage.poste && temoignage.entreprise ? '- ' : '' }} {{ temoignage.entreprise }}
+              {{ temoignage.poste }}<span *ngIf="temoignage.poste && temoignage.entreprise"> - </span>{{ temoignage.entreprise }}
             </p>
           </div>
         </div>
@@ -93,6 +90,9 @@
     <ng-template #noTemoignages>
       <p class="no-content">Aucun témoignage disponible pour le moment</p>
     </ng-template>
+    <div class="text-center mt-3">
+      <a class="btn btn-outline" routerLink="/temoignages">Voir tous les témoignages</a>
+    </div>
   </section>
 
   <!-- Blog -->
