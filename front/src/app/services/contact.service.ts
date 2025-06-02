@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Contact } from '../models/contact.model';
 import { environment } from '../../environments/environment';
@@ -17,7 +17,9 @@ export class ContactService {  private apiUrl = `${environment.apiUrl}/contact`;
 
   // Méthodes pour admin
   getContacts(): Observable<any> {
-    return this.http.get<any>(this.apiUrl);
+    const token = localStorage.getItem('authToken');
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+    return this.http.get<any>(this.apiUrl, { headers });
   }
 
   getContact(id: string): Observable<any> {
