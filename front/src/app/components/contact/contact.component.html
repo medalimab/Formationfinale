@@ -5,191 +5,188 @@
   </div>
   
   <div class="contact-content">
-    <div class="contact-info">
-      <div class="info-card">
-        <div class="info-icon">
-          <i class="fas fa-map-marker-alt"></i>
-        </div>
-        <h3>Notre adresse</h3>
-        <p>123 Avenue de l'Innovation<br>75000 Paris, France</p>
-      </div>
-      
-      <div class="info-card">
-        <div class="info-icon">
-          <i class="fas fa-phone"></i>
-        </div>
-        <h3>Téléphone</h3>
-        <p>+33 1 23 45 67 89</p>
-      </div>
-      
-      <div class="info-card">
-        <div class="info-icon">
-          <i class="fas fa-envelope"></i>
-        </div>        <h3>Email</h3>
-        <p>contact&#64;votreentreprise.com</p>
-      </div>
-      
-      <div class="info-card">
-        <div class="info-icon">
-          <i class="fas fa-clock"></i>
-        </div>
-        <h3>Horaires</h3>
-        <p>Lun-Ven: 9h-18h<br>Sam: 9h-12h</p>
-      </div>
-      
-      <div class="social-links">
-        <h3>Suivez-nous</h3>
-        <div class="social-icons">
-          <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-          <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
-          <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-        </div>
-      </div>
-    </div>
-    
-    <div class="contact-form" *ngIf="userRole === 'user' || userRole === 'client'">
-      <h2>Envoyez-nous un message</h2>
-      
-      <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
-        <div class="form-group">
-          <label for="nom">Nom *</label>
-          <input 
-            type="text" 
-            formControlName="nom" 
-            class="form-control" 
-            [ngClass]="{ 'is-invalid': submitted && f['nom'].errors }" 
-            placeholder="Votre nom" 
-          />
-          <div *ngIf="submitted && f['nom'].errors" class="invalid-feedback">
-            <div *ngIf="f['nom'].errors['required']">Le nom est requis</div>
+    <ng-container *ngIf="userRole === 'admin' || userRole === 'formateur'; else clientContactBlock">
+      <div class="admin-contact-messages" style="width:100%">
+        <h2>Messages de contact reçus</h2>
+        <div *ngIf="contactsLoading">Chargement des messages...</div>
+        <div *ngIf="!contactsLoading && contacts.length === 0">Aucun message reçu.</div>
+        <div *ngIf="!contactsLoading && contacts.length > 0">
+          <div class="search-bar mb-3">
+            <input type="text" [(ngModel)]="search" class="form-control" placeholder="Rechercher par nom, email, sujet ou message...">
           </div>
-        </div>
-        
-        <div class="form-group">
-          <label for="email">Email *</label>
-          <input 
-            type="email" 
-            formControlName="email" 
-            class="form-control" 
-            [ngClass]="{ 'is-invalid': submitted && f['email'].errors }" 
-            placeholder="Votre email" 
-          />
-          <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
-            <div *ngIf="f['email'].errors['required']">L'email est requis</div>
-            <div *ngIf="f['email'].errors['email']">Veuillez entrer un email valide</div>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label for="telephone">Téléphone</label>
-          <input 
-            type="tel" 
-            formControlName="telephone" 
-            class="form-control" 
-            placeholder="Votre numéro de téléphone" 
-          />
-        </div>
-        
-        <div class="form-group">
-          <label for="sujet">Sujet *</label>
-          <input 
-            type="text" 
-            formControlName="sujet" 
-            class="form-control" 
-            [ngClass]="{ 'is-invalid': submitted && f['sujet'].errors }" 
-            placeholder="Sujet de votre message" 
-          />
-          <div *ngIf="submitted && f['sujet'].errors" class="invalid-feedback">
-            <div *ngIf="f['sujet'].errors['required']">Le sujet est requis</div>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label for="message">Message *</label>
-          <textarea 
-            formControlName="message" 
-            class="form-control" 
-            [ngClass]="{ 'is-invalid': submitted && f['message'].errors }" 
-            rows="5" 
-            placeholder="Votre message"
-          ></textarea>
-          <div *ngIf="submitted && f['message'].errors" class="invalid-feedback">
-            <div *ngIf="f['message'].errors['required']">Le message est requis</div>
-            <div *ngIf="f['message'].errors['minlength']">Le message doit contenir au moins 10 caractères</div>
-          </div>
-        </div>
-        
-        <div *ngIf="success" class="alert alert-success">
-          {{ success }}
-        </div>
-        
-        <div *ngIf="error" class="alert alert-danger">
-          {{ error }}
-        </div>
-        
-        <div class="form-group">
-          <button type="submit" class="btn btn-primary" [disabled]="loading">
-            <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            Envoyer le message
-          </button>
-        </div>
-      </form>
-    </div>
-
-    <div *ngIf="userRole === 'admin' || userRole === 'formateur'">
-      <h2>Messages de contact reçus</h2>
-      <div *ngIf="contactsLoading">Chargement des messages...</div>
-      <div *ngIf="!contactsLoading && contacts.length === 0">Aucun message reçu.</div>
-      <div *ngIf="!contactsLoading && contacts.length > 0">
-        <div class="search-bar mb-3">
-          <input type="text" [(ngModel)]="search" class="form-control" placeholder="Rechercher par nom, email, sujet ou message...">
-        </div>
-        <div class="contact-cards-grid">
-          <div class="contact-card" *ngFor="let c of filteredContacts" (click)="openContactDetails(c)" [class.selected]="selectedContact && selectedContact._id === c._id">
-            <div class="card-header">
-              <span class="contact-name">{{ c.nom }}</span>
-              <span class="contact-date">{{ c.dateEnvoi | date:'dd/MM/yyyy HH:mm' }}</span>
+          <div class="contact-cards-grid">
+            <div class="contact-card" *ngFor="let c of filteredContacts" (click)="openContactDetails(c)" [class.selected]="selectedContact && selectedContact._id === c._id">
+              <div class="card-header">
+                <span class="contact-name">{{ c.nom }}</span>
+                <span class="contact-date">{{ c.dateEnvoi | date:'dd/MM/yyyy HH:mm' }}</span>
+              </div>
+              <div class="card-body">
+                <div class="contact-sujet"><strong>Sujet :</strong> {{ c.sujet }}</div>
+                <div class="contact-message">{{ c.message | slice:0:60 }}<span *ngIf="c.message.length > 60">...</span></div>
+              </div>
+              <div class="card-footer">
+                <span class="contact-email"><i class="fas fa-envelope"></i> {{ c.email }}</span>
+                <span class="contact-traite" [ngClass]="{'text-success': c.traite, 'text-danger': !c.traite}">{{ c.traite ? 'Traité' : 'Non traité' }}</span>
+              </div>
             </div>
-            <div class="card-body">
-              <div class="contact-sujet"><strong>Sujet :</strong> {{ c.sujet }}</div>
-              <div class="contact-message">{{ c.message | slice:0:60 }}<span *ngIf="c.message.length > 60">...</span></div>
-            </div>
-            <div class="card-footer">
-              <span class="contact-email"><i class="fas fa-envelope"></i> {{ c.email }}</span>
-              <span class="contact-traite" [ngClass]="{'text-success': c.traite, 'text-danger': !c.traite}">{{ c.traite ? 'Traité' : 'Non traité' }}</span>
+          </div>
+          <div *ngIf="selectedContact as sc" class="contact-details-modal">
+            <div class="modal-content">
+              <button class="close-btn" (click)="closeContactDetails()">&times;</button>
+              <h3>Détail du message</h3>
+              <div><strong>Nom :</strong> {{ sc.nom }}</div>
+              <div><strong>Email :</strong> {{ sc.email }}</div>
+              <div *ngIf="sc.telephone"><strong>Téléphone :</strong> {{ sc.telephone }}</div>
+              <div><strong>Sujet :</strong> {{ sc.sujet }}</div>
+              <div><strong>Message :</strong> {{ sc.message }}</div>
+              <div><strong>Date :</strong> {{ sc.dateEnvoi | date:'dd/MM/yyyy HH:mm' }}</div>
+              <div><strong>Traité :</strong> <span [ngClass]="{'text-success': sc.traite, 'text-danger': !sc.traite}">{{ sc.traite ? 'Oui' : 'Non' }}</span></div>
+              <div class="actions mt-3">
+                <button class="btn btn-success me-2" (click)="traiterContact(sc)" [disabled]="sc.traite">Marquer comme traité</button>
+                <button class="btn btn-danger" (click)="supprimerContact(sc)">Supprimer</button>
+              </div>
             </div>
           </div>
         </div>
-        <div *ngIf="selectedContact" class="contact-details-modal">
-          <div class="modal-content">
-            <button class="close-btn" (click)="closeContactDetails()">&times;</button>
-            <h3>Détail du message</h3>
-            <div><strong>Nom :</strong> {{ selectedContact.nom }}</div>
-            <div><strong>Email :</strong> {{ selectedContact.email }}</div>
-            <div *ngIf="selectedContact.telephone"><strong>Téléphone :</strong> {{ selectedContact.telephone }}</div>
-            <div><strong>Sujet :</strong> {{ selectedContact.sujet }}</div>
-            <div><strong>Message :</strong> {{ selectedContact.message }}</div>
-            <div><strong>Date :</strong> {{ selectedContact.dateEnvoi | date:'dd/MM/yyyy HH:mm' }}</div>
-            <div><strong>Traité :</strong> <span [ngClass]="{'text-success': selectedContact.traite, 'text-danger': !selectedContact.traite}">{{ selectedContact.traite ? 'Oui' : 'Non' }}</span></div>
-            <div class="actions mt-3">
-              <button class="btn btn-success me-2" (click)="traiterContact(selectedContact)" [disabled]="selectedContact.traite">Marquer comme traité</button>
-              <button class="btn btn-danger" (click)="supprimerContact(selectedContact)">Supprimer</button>
-            </div>
+        <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+      </div>
+    </ng-container>
+    <ng-template #clientContactBlock>
+      <div class="contact-info">
+        <div class="info-card">
+          <div class="info-icon">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+          <h3>Notre adresse</h3>
+          <p>123 Avenue de l'Innovation<br>75000 Paris, France</p>
+        </div>
+        <div class="info-card">
+          <div class="info-icon">
+            <i class="fas fa-phone"></i>
+          </div>
+          <h3>Téléphone</h3>
+          <p>+33 1 23 45 67 89</p>
+        </div>
+        <div class="info-card">
+          <div class="info-icon">
+            <i class="fas fa-envelope"></i>
+          </div>        <h3>Email</h3>
+          <p>contact&#64;votreentreprise.com</p>
+        </div>
+        <div class="info-card">
+          <div class="info-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <h3>Horaires</h3>
+          <p>Lun-Ven: 9h-18h<br>Sam: 9h-12h</p>
+        </div>
+        <div class="social-links">
+          <h3>Suivez-nous</h3>
+          <div class="social-icons">
+            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
           </div>
         </div>
       </div>
-      <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
-    </div>
-  </div>
-  
-  <div class="map-container">
-    <h2>Nous trouver</h2>
-    <div class="map">
-      <!-- Insérez ici une iframe Google Maps ou une autre solution de carte -->
-      <div class="map-placeholder">
-        Carte Google Maps ici
+      <div class="contact-form" *ngIf="userRole === 'user' || userRole === 'client'">
+        <h2>Envoyez-nous un message</h2>
+        
+        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="nom">Nom *</label>
+            <input 
+              type="text" 
+              formControlName="nom" 
+              class="form-control" 
+              [ngClass]="{ 'is-invalid': submitted && f['nom'].errors }" 
+              placeholder="Votre nom" 
+            />
+            <div *ngIf="submitted && f['nom'].errors" class="invalid-feedback">
+              <div *ngIf="f['nom'].errors['required']">Le nom est requis</div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input 
+              type="email" 
+              formControlName="email" 
+              class="form-control" 
+              [ngClass]="{ 'is-invalid': submitted && f['email'].errors }" 
+              placeholder="Votre email" 
+            />
+            <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+              <div *ngIf="f['email'].errors['required']">L'email est requis</div>
+              <div *ngIf="f['email'].errors['email']">Veuillez entrer un email valide</div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="telephone">Téléphone</label>
+            <input 
+              type="tel" 
+              formControlName="telephone" 
+              class="form-control" 
+              placeholder="Votre numéro de téléphone" 
+            />
+          </div>
+          
+          <div class="form-group">
+            <label for="sujet">Sujet *</label>
+            <input 
+              type="text" 
+              formControlName="sujet" 
+              class="form-control" 
+              [ngClass]="{ 'is-invalid': submitted && f['sujet'].errors }" 
+              placeholder="Sujet de votre message" 
+            />
+            <div *ngIf="submitted && f['sujet'].errors" class="invalid-feedback">
+              <div *ngIf="f['sujet'].errors['required']">Le sujet est requis</div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="message">Message *</label>
+            <textarea 
+              formControlName="message" 
+              class="form-control" 
+              [ngClass]="{ 'is-invalid': submitted && f['message'].errors }" 
+              rows="5" 
+              placeholder="Votre message"
+            ></textarea>
+            <div *ngIf="submitted && f['message'].errors" class="invalid-feedback">
+              <div *ngIf="f['message'].errors['required']">Le message est requis</div>
+              <div *ngIf="f['message'].errors['minlength']">Le message doit contenir au moins 10 caractères</div>
+            </div>
+          </div>
+          
+          <div *ngIf="success" class="alert alert-success">
+            {{ success }}
+          </div>
+          
+          <div *ngIf="error" class="alert alert-danger">
+            {{ error }}
+          </div>
+          
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary" [disabled]="loading">
+              <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              Envoyer le message
+            </button>
+          </div>
+        </form>
       </div>
-    </div>
+      <div class="map-container">
+        <h2>Nous trouver</h2>
+        <div class="map">
+          <!-- Insérez ici une iframe Google Maps ou une autre solution de carte -->
+          <div class="map-placeholder">
+            Carte Google Maps ici
+          </div>
+        </div>
+      </div>
+    </ng-template>
   </div>
 </div>

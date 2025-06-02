@@ -27,10 +27,14 @@ export class ContactService {  private apiUrl = `${environment.apiUrl}/contact`;
   }
 
   traiterContact(id: string): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}/traiter`, {});
+    const token = localStorage.getItem('authToken');
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+    return this.http.put<any>(`${this.apiUrl}/${id}/traiter`, {}, { headers });
   }
 
   deleteContact(id: string): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/${id}`);
+    const token = localStorage.getItem('authToken');
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+    return this.http.delete<any>(`${this.apiUrl}/${id}`, { headers });
   }
 }
