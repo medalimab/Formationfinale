@@ -78,7 +78,30 @@
     </div>
   </form>
 
-  <div class="text-center mt-3" *ngIf="userRole === 'admin' && temoignages.length > 0">
-    <button class="btn btn-success" (click)="approuverDernierTemoignage()">Approuver le dernier témoignage</button>
-  </div>
+  <div class="text-center mt-3" *ngIf="false"></div>
 </div>
+
+<style>
+  .admin-actions .btn-success {
+    background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+    color: #fff;
+    border: none;
+    box-shadow: 0 2px 8px rgba(67, 233, 123, 0.15);
+    transition: background 0.2s, box-shadow 0.2s;
+  }
+  .admin-actions .btn-success:hover {
+    background: linear-gradient(90deg, #38f9d7 0%, #43e97b 100%);
+    box-shadow: 0 4px 16px rgba(67, 233, 123, 0.25);
+  }
+  .admin-actions .btn-danger {
+    background: linear-gradient(90deg, #ff5858 0%, #f09819 100%);
+    color: #fff;
+    border: none;
+    box-shadow: 0 2px 8px rgba(255, 88, 88, 0.15);
+    transition: background 0.2s, box-shadow 0.2s;
+  }
+  .admin-actions .btn-danger:hover {
+    background: linear-gradient(90deg, #f09819 0%, #ff5858 100%);
+    box-shadow: 0 4px 16px rgba(255, 88, 88, 0.25);
+  }
+</style>
