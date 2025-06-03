@@ -34,6 +34,14 @@
       <div class="temoignage-date">{{ t.dateCreation | date:'dd/MM/yyyy' }}</div>
       <span *ngIf="userRole === 'admin' && !t.approuve" class="badge badge-warning">En attente</span>
       <span *ngIf="userRole === 'admin' && t.approuve" class="badge badge-success">Approuvé</span>
+      <div class="admin-actions" *ngIf="userRole === 'admin'">
+        <button *ngIf="!t.approuve && t._id" class="btn btn-success btn-sm me-2" (click)="approuverTemoignage(t._id!)">
+          <i class="fas fa-check"></i> Approuver
+        </button>
+        <button *ngIf="t._id" class="btn btn-danger btn-sm" (click)="supprimerTemoignage(t._id!)">
+          <i class="fas fa-trash"></i> Supprimer
+        </button>
+      </div>
     </div>
   </div>
 

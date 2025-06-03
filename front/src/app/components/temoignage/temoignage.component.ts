@@ -94,4 +94,31 @@ export class TemoignageComponent implements OnInit {
       }
     });
   }
+
+  approuverTemoignage(id: string): void {
+    this.temoignageService.approuverTemoignage(id).subscribe({
+      next: () => {
+        this.success = 'Témoignage approuvé !';
+        this.loadTemoignages();
+      },
+      error: (err) => {
+        this.error = "Erreur lors de l'approbation du témoignage.";
+        console.error('Erreur API approbation :', err);
+      }
+    });
+  }
+
+  supprimerTemoignage(id: string): void {
+    if (!confirm('Voulez-vous vraiment supprimer ce témoignage ?')) return;
+    this.temoignageService.deleteTemoignage(id).subscribe({
+      next: () => {
+        this.success = 'Témoignage supprimé !';
+        this.loadTemoignages();
+      },
+      error: (err) => {
+        this.error = "Erreur lors de la suppression du témoignage.";
+        console.error('Erreur API suppression :', err);
+      }
+    });
+  }
 }
