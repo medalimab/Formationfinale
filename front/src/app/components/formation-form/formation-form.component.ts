@@ -27,6 +27,8 @@ export class FormationFormComponent implements OnInit {
   imagePreview: string | ArrayBuffer | null = null;
   isUploading = false;
   isEditMode = false;
+  isSubmitting = false;
+
   constructor(private formationService: FormationService, private router: Router, private route: ActivatedRoute) {}
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -197,5 +199,10 @@ export class FormationFormComponent implements OnInit {
         }
       });
     }
+  }
+
+  onCancel(): void {
+    // Redirige vers la liste ou réinitialise le formulaire selon le besoin
+    window.history.back();
   }
 }

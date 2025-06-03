@@ -56,17 +56,21 @@ export class FormationService {
   }
 
   /**
-   * Met à jour une formation existante
+   * Met à jour une formation existante (avec header Authorization explicite)
    */
   updateFormation(id: string, formationData: Partial<Formation> | FormData): Observable<{ success: boolean, data: Formation }> {
-    return this.http.put<{ success: boolean, data: Formation }>(`${this.apiUrl}/${id}`, formationData);
+    const token = localStorage.getItem('authToken');
+    const headers = token ? { headers: new HttpHeaders({ Authorization: `Bearer ${token}` }) } : {};
+    return this.http.put<{ success: boolean, data: Formation }>(`${this.apiUrl}/${id}`, formationData, headers);
   }
 
   /**
-   * Supprime une formation
+   * Supprime une formation (avec header Authorization explicite)
    */
   deleteFormation(id: string): Observable<{ success: boolean, data: {} }> {
-    return this.http.delete<{ success: boolean, data: {} }>(`${this.apiUrl}/${id}`);
+    const token = localStorage.getItem('authToken');
+    const headers = token ? { headers: new HttpHeaders({ Authorization: `Bearer ${token}` }) } : {};
+    return this.http.delete<{ success: boolean, data: {} }>(`${this.apiUrl}/${id}`, headers);
   }
   /**
    * Recherche des formations par mot-clé

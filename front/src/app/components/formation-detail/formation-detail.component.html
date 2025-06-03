@@ -1,25 +1,26 @@
-
-<div class="article-detail-container">
-  <div *ngIf="isLoading" class="loading-overlay">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Chargement...</span>
+<div class="form-container">
+  <div class="form-card">
+    <div class="form-header">
+      <div class="form-icon-container">
+        <i class="form-icon fas fa-graduation-cap"></i>
+      </div>
+      <h2 class="form-title">{{ article?.titre }}</h2>
+      <p class="form-subtitle">Détail de la formation</p>
     </div>
-  </div>
-
-  <div *ngIf="error" class="error-alert">
-    <i class="fas fa-exclamation-triangle"></i>
-    <p>{{ error }}</p>
-  </div>
-
-  <div *ngIf="article" class="article-card">
-    <!-- En-tête avec image -->
-    <div class="article-header">
-      <div class="sport-badge">{{ article.categorie | titlecase }}</div>
-      <img [src]="article.image" [alt]="article.titre" class="article-image">
+    <div *ngIf="isLoading" class="loading-overlay">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Chargement...</span>
+      </div>
     </div>
-
-    <!-- Contenu principal -->
-    <div class="article-content">
+    <div *ngIf="error" class="error-alert">
+      <i class="fas fa-exclamation-triangle"></i>
+      <p>{{ error }}</p>
+    </div>
+    <div *ngIf="article" class="article-detail-content">
+      <div class="article-header">
+        <div class="sport-badge">{{ article.categorie | titlecase }}</div>
+        <img [src]="article.image" [alt]="article.titre" class="article-image">
+      </div>
       <div class="article-meta">
         <span class="date">
           <i class="far fa-calendar-alt"></i>
@@ -34,41 +35,30 @@
           {{ article.duree }}
         </span>
       </div>
-
-      <h1 class="article-title">{{ article.titre }}</h1>
-      
       <div class="article-description">
         <h3 class="description-title">
           <i class="fas fa-align-left"></i> Description
         </h3>
         <p>{{ article.description }}</p>
       </div>
-      
       <div class="formateur-info" *ngIf="article.formateur">
         <h3 class="formateur-title">
           <i class="fas fa-user-tie"></i> Formateur
         </h3>
         <p>{{ article.formateur.nom || 'Information non disponible' }}</p>
-      </div>      <!-- Actions -->
-      <div class="article-actions">
-        <a routerLink="/articles" class="back-btn">
-          <i class="fas fa-arrow-left"></i> Retour à la liste
-        </a>
-        <a *ngIf="isAdmin()" [routerLink]="['/articles', article._id, 'edit']" class="edit-btn">
-          <i class="fas fa-edit"></i> Modifier
-        </a>
-        <button *ngIf="!isAdmin()" (click)="addToCart()" class="cart-btn">
-          <i class="fas fa-graduation-cap"></i> S'inscrire à cette formation
+      </div>
+      <div class="form-actions">
+        <a routerLink="/formations" class="btn btn-secondary">Retour à la liste</a>
+        <a *ngIf="userRole === 'admin' || userRole === 'formateur'" [routerLink]="['/formations', article._id, 'edit']" class="btn btn-primary">Modifier</a>
+        <button *ngIf="userRole === 'user'" (click)="addToCart()" class="btn btn-primary">
+          <i class="fas fa-shopping-cart"></i> S'inscrire à cette formation
         </button>
       </div>
     </div>
-  </div>
-
-  <div *ngIf="!article && !isLoading" class="empty-state">
-    <i class="fas fa-inbox"></i>
-    <h3>Aucun article trouvé</h3>
-    <a routerLink="/articles" class="back-btn">
-      <i class="fas fa-arrow-left"></i> Retour à la liste
-    </a>
+    <div *ngIf="!article && !isLoading" class="empty-state">
+      <i class="fas fa-inbox"></i>
+      <h3>Aucune formation trouvée</h3>
+      <a routerLink="/formations" class="btn btn-secondary">Retour à la liste</a>
+    </div>
   </div>
 </div>

@@ -218,6 +218,142 @@
     margin-bottom: 1.5rem;
   }
   
+  /* Centrage et couleurs pour la page de détail formation, identique à la page d'édition */
+  .form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem;
+    background-color: #f5f7fa;
+    max-width: 900px;
+    margin: 40px auto;
+  }
+  .form-card {
+    width: 100%;
+    max-width: 800px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .form-header {
+    padding: 2.5rem 2.5rem 1.5rem;
+    text-align: center;
+    background: linear-gradient(135deg, #2980b9, #3498db);
+    color: white;
+    position: relative;
+  }
+  .form-icon-container {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border-radius: 50%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+  .form-icon {
+    font-size: 2.5rem;
+    color: #3498db;
+  }
+  .form-title {
+    font-size: 1.8rem;
+    margin: 0 0 10px;
+    font-weight: 600;
+  }
+  .form-subtitle {
+    margin: 0;
+    font-size: 1rem;
+    opacity: 0.8;
+  }
+  .article-detail-content {
+    padding: 2.5rem;
+  }
+  .article-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .sport-badge {
+    background: #e3f2fd;
+    color: #1976d2;
+    font-weight: 600;
+    border-radius: 20px;
+    padding: 0.3em 1em;
+    font-size: 0.95em;
+  }
+  .article-image {
+    width: 180px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .article-meta {
+    display: flex;
+    gap: 2rem;
+    color: #888;
+    font-size: 1.05rem;
+    margin-bottom: 1.2rem;
+  }
+  .article-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1976d2;
+    margin-bottom: 0.5rem;
+  }
+  .description-title, .formateur-title {
+    color: #3498db;
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    margin-top: 1.2rem;
+  }
+  .article-description {
+    color: #333;
+    font-size: 1.05rem;
+    margin-bottom: 0.5rem;
+  }
+  .formateur-info {
+    margin-bottom: 1.5rem;
+  }
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  .btn-primary {
+    background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.7rem 1.7rem;
+    font-size: 1em;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(67, 233, 123, 0.15);
+    transition: background 0.2s, box-shadow 0.2s;
+  }
+  .btn-primary:hover {
+    background: linear-gradient(90deg, #38f9d7 0%, #43e97b 100%);
+    box-shadow: 0 4px 16px rgba(67, 233, 123, 0.25);
+  }
+  .btn-secondary {
+    background: #e0e0e0;
+    color: #333;
+    border: none;
+    border-radius: 6px;
+    padding: 0.7rem 1.7rem;
+    font-size: 1em;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .btn-secondary:hover {
+    background: #bdbdbd;
+  }
   /* Responsive */
   @media (max-width: 768px) {
     .article-header {
