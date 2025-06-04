@@ -13,15 +13,28 @@ export class UserService {
 
   // Méthodes pour utilisateur connecté
   getProfile(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/me`);
+    const token = localStorage.getItem('authToken');
+    const headers = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+    return this.http.get<any>(`${this.apiUrl}/me`, headers);
   }
 
   updateProfile(profileData: { nom: string, email: string }): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/me`, profileData);
+    const token = localStorage.getItem('authToken');
+    const headers = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+    return this.http.put<any>(`${this.apiUrl}/me`, profileData, headers);
   }
 
   updatePassword(passwordData: { currentPassword: string, newPassword: string }): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/updatepassword`, passwordData);
+    const token = localStorage.getItem('authToken');
+    const headers = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+    return this.http.put<any>(`${this.apiUrl}/updatepassword`, passwordData, headers);
+  }
+
+  // Historique d'activité utilisateur
+  getUserActivity(): Observable<any> {
+    const token = localStorage.getItem('authToken');
+    const headers = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+    return this.http.get<any>(`${this.apiUrl}/me/activity`, headers);
   }
 
   // Méthodes pour admin

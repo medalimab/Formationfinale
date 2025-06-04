@@ -7,7 +7,8 @@ const {
   getUser,
   createUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  getUserActivity
 } = require('../controllers/user.controller');
 
 const User = require('../models/User');
@@ -23,6 +24,7 @@ router.use(protect);
 router.get('/me', getMe);
 router.put('/me', updateDetails);
 router.put('/updatepassword', updatePassword);
+router.get('/me/activity', getUserActivity);
 
 // Routes admin
 router.use(authorize('admin'));

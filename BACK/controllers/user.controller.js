@@ -26,6 +26,9 @@ exports.updateDetails = asyncHandler(async (req, res, next) => {
     runValidators: true
   });
 
+  // Ajout d'une activité : modification du profil
+  await addUserActivity(req.user.id, 'Modification', 'Mise à jour du profil.');
+
   res.status(200).json({
     success: true,
     data: user
@@ -115,6 +118,23 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
     data: {}
   });
 });
+
+// @desc    Récupérer l'historique d'activité de l'utilisateur connecté
+// @route   GET /api/users/me/activity
+exports.getUserActivity = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user.id).select('activity');
+  res.status(200).json({
+    success: true,
+    data: user.activity || []
+  });
+});
+
+// Ajout d'une activité utilisateur
+async function addUserActivity(userId, type, description) {
+  await User.findByIdAndUpdate(userId, {
+    $push: { activity: { date: new Date(), type, description } }
+  });
+}
 
 // Fonction pour générer et envoyer le token de réponse
 const sendTokenResponse = (user, statusCode, res) => {

@@ -8,7 +8,12 @@ const UserSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true, select: false },
   role: { type: String, enum: ['user', 'formateur', 'admin'], default: 'user' },
-  formationsCrees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Formation' }]
+  formationsCrees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Formation' }],
+  activity: [{
+    date: { type: Date, default: Date.now },
+    type: String,
+    description: String
+  }]
 });
 
 UserSchema.pre('save', async function(next) {

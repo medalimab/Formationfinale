@@ -31,15 +31,9 @@ export class ProfileComponent implements OnInit {
   updatingPassword = false;
   passwordError: string | null = null;
   
-  activeTab: 'profile' | 'password' | 'history' | 'formations' | 'services' = 'profile';
+  activeTab: 'profile' | 'password' = 'profile';
   
-  userFormations: any[] = [];
-  loadingFormations = false;
-  formationsError: string | null = null;
-  
-  userServices: any[] = [];
-  loadingServices = false;
-  servicesError: string | null = null;  constructor(
+  constructor(
     private userService: UserService,
     private authService: AuthService,
     private authFixService: AuthFixService, // Ajout du nouveau service d'authentification
@@ -52,44 +46,6 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     this.initForms();
     this.loadUserProfile();
-  }
-  
-  loadUserFormations(): void {
-    this.loadingFormations = true;
-    this.formationsError = null;
-    
-    this.formationService.getUserFormations().subscribe({
-      next: (response) => {
-        this.userFormations = response.data || [];
-        this.loadingFormations = false;
-      },
-      error: (err) => {
-        this.formationsError = err.status === 404 ? 
-          "Vous n'avez pas encore créé de formations" : 
-          "Erreur lors du chargement des formations";
-        this.loadingFormations = false;
-        console.error('Erreur formations:', err);
-      }
-    });
-  }
-  
-  loadUserServices(): void {
-    this.loadingServices = true;
-    this.servicesError = null;
-    
-    this.serviceApiService.getUserServices().subscribe({
-      next: (response) => {
-        this.userServices = response.data || [];
-        this.loadingServices = false;
-      },
-      error: (err) => {
-        this.servicesError = err.status === 404 ? 
-          "Vous n'avez pas encore créé de services" : 
-          "Erreur lors du chargement des services";
-        this.loadingServices = false;
-        console.error('Erreur services:', err);
-      }
-    });
   }
   
   initForms(): void {
@@ -207,16 +163,8 @@ export class ProfileComponent implements OnInit {
       }
     });
   }
-    switchTab(tab: 'profile' | 'password' | 'history' | 'formations' | 'services'): void {
+    switchTab(tab: 'profile' | 'password'): void {
     this.activeTab = tab;
-    
-    if (tab === 'formations' && this.userFormations.length === 0 && !this.loadingFormations) {
-      this.loadUserFormations();
-    }
-    
-    if (tab === 'services' && this.userServices.length === 0 && !this.loadingServices) {
-      this.loadUserServices();
-    }
   }
     logout(): void {
     this.authFixService.logout();
