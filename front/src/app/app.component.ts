@@ -3,16 +3,18 @@ import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterOutlet, Router } from '@angular/router';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { FooterComponent } from './components/shared/footer.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, NavbarComponent],
+  imports: [CommonModule, RouterOutlet, NavbarComponent, FooterComponent],
   template: `
     <app-navbar *ngIf="showNavbar"></app-navbar>
     <div class="container">
       <router-outlet></router-outlet>
     </div>
+    <app-footer></app-footer>
   `,
   styles: []
 })
