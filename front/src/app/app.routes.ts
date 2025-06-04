@@ -1,6 +1,9 @@
 import { formationListComponent } from './components/formation-list/formation-list.component';
 import { Formation } from './models/formation.model';
 import { TemoignageComponent } from './components/temoignage/temoignage.component';
+import { DevisListAdminComponent } from './components/devis/devis-list-admin.component';
+import { DevisListClientComponent } from './components/devis/devis-list-client.component';
+import { DevisFormComponent } from './components/devis/devis-form/devis-form.component';
 
 import { Routes } from '@angular/router';
 import { FormationFormComponent } from './components/formation-form/formation-form.component';
@@ -51,6 +54,8 @@ export const routes: Routes = [
   { path: 'service/new', component: ServiceFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['formateur', 'admin'] } },
   { path: 'services/:id/edit', component: ServiceFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['formateur', 'admin'] } },
     // Routes pour les devis - désactivées pour le moment
+  { path: 'devis/new', component: DevisFormComponent, canActivate: [AuthGuard] },
+  { path: 'devis/mes-devis', component: DevisListClientComponent, canActivate: [AuthGuard] },
   /* 
   { path: 'devis/new', component: DevisFormComponent, canActivate: [AuthGuard] },
   { path: 'devis/mes-devis', component: DevisListComponent, canActivate: [AuthGuard] },
@@ -67,6 +72,8 @@ export const routes: Routes = [
   { path: 'blog/:id', component: BlogDetailComponent },
     // Routes admin
   { path: 'admin', component: AdminDashboardComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
+  // Route admin pour la gestion des devis
+  { path: 'admin/devis', component: DevisListAdminComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
   /* Routes admin modules - à implémenter plus tard
   { path: 'admin/users', loadChildren: () => import('./components/admin/user-management/user-management.module').then(m => m.UserManagementModule), canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
   { path: 'admin/services', loadChildren: () => import('./components/admin/service-management/service-management.module').then(m => m.ServiceManagementModule), canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },

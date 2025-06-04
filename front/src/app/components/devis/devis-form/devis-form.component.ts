@@ -5,6 +5,8 @@ import { DevisService } from '../../../services/devis.service';
 import { ServiceApiService } from '../../../services/service-api.service';
 import { AuthService } from '../../../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Devis } from '../../../models/devis.model';
 
 @Component({
   selector: 'app-devis-form',
@@ -123,15 +125,15 @@ export class DevisFormComponent implements OnInit {
     
     // Dans un cas réel, vous auriez besoin d'un service pour télécharger les fichiers
     // et obtenir leurs URLs avant de soumettre le devis
-    // Pour simplifier, on suppose que les fichiers sont déjà téléchargés    const devisData = {
+    // Pour simplifier, on suppose que les fichiers sont déjà téléchargés
+    const devisData: Omit<Devis, 'client' | 'dateDemande'> = {
       service: this.devisForm.value.service,
       description: this.devisForm.value.description,
-      fichiers: this.selectedFiles.map(file => file.name), // Dans un cas réel, ce seraient les URLs
+      fichiers: this.selectedFiles.map(file => file.name),
       statut: 'en_attente'
     };
-
-    this.devisService.createDevis(devisData).subscribe(
-      data => {
+    this.devisService.createDevis(devisData).subscribe({
+      next: (data: any) => {
         this.success = 'Votre demande de devis a été envoyée avec succès. Nous vous répondrons dans les plus brefs délais.';
         this.snackBar.open('Demande de devis envoyée avec succès!', 'Voir mes devis', {
           duration: 5000
@@ -143,10 +145,10 @@ export class DevisFormComponent implements OnInit {
         this.submitted = false;
         this.loading = false;
       },
-      error => {
-        this.error = error.error.message || 'Une erreur est survenue. Veuillez réessayer.';
+      error: (error: any) => {
+        this.error = error?.error?.message || 'Une erreur est survenue. Veuillez réessayer.';
         this.loading = false;
       }
-    );
+    });
   }
 }

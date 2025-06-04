@@ -1,0 +1,52 @@
+<div class="devis-admin-container">
+  <div class="devis-admin-header">
+    <h1>Gestion des devis</h1>
+    <p>Liste des demandes de devis reçues</p>
+  </div>
+
+  <div *ngIf="loading" class="loading-spinner">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && devisList.length === 0" class="alert alert-info">
+    Aucun devis à afficher.
+  </div>
+
+  <div *ngIf="!loading && devisList.length > 0">
+    <table class="devis-table">
+      <thead>
+        <tr>
+          <th>Client</th>
+          <th>Service</th>
+          <th>Description</th>
+          <th>Date</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let devis of devisList">
+          <td>{{ devis.client?.nom || devis.client?.email || devis.client }}</td>
+          <td>{{ getServiceTitle(devis.service) }}</td>
+          <td>{{ devis.description | slice:0:40 }}...</td>
+          <td>{{ devis.dateDemande | date:'short' }}</td>
+          <td>
+            <span class="badge" [ngClass]="'badge-' + devis.statut">{{ devis.statut }}</span>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-success" *ngIf="devis.statut === 'en_attente'" (click)="accepterDevis(devis)">Accepter</button>
+            <button class="btn btn-sm btn-warning" *ngIf="devis.statut === 'en_attente'" (click)="refuserDevis(devis)">Refuser</button>
+            <button class="btn btn-sm btn-danger" (click)="supprimerDevis(devis)">Supprimer</button>
+            <button class="btn btn-sm btn-outline-primary" (click)="voirDevis(devis)">Voir</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

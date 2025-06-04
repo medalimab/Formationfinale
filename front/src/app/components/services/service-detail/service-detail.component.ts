@@ -60,7 +60,7 @@ export class ServiceDetailComponent implements OnInit {
   demanderDevis(): void {
     if (this.isAuthenticated) {
       this.router.navigate(['/devis/new'], { 
-        queryParams: { serviceId: this.serviceId } 
+        queryParams: { service: this.serviceId } 
       });
     } else {
       this.router.navigate(['/auth/login'], { 

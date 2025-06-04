@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Devis } from '../models/devis.model';
 import { environment } from '../../environments/environment';
@@ -13,11 +13,15 @@ export class DevisService {
   constructor(private http: HttpClient) { }
 
   getDevis(): Observable<any> {
-    return this.http.get<any>(this.apiUrl);
+    const token = localStorage.getItem('authToken');
+    const headers = token ? { headers: new HttpHeaders({ Authorization: `Bearer ${token}` }) } : {};
+    return this.http.get<any>(this.apiUrl, headers);
   }
 
   getMesDevis(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/client`);
+    const token = localStorage.getItem('authToken');
+    const headers = token ? { headers: new HttpHeaders({ Authorization: `Bearer ${token}` }) } : {};
+    return this.http.get<any>(`${this.apiUrl}/client`, headers);
   }
 
   getDevisById(id: string): Observable<any> {
@@ -25,11 +29,15 @@ export class DevisService {
   }
 
   createDevis(devisData: Omit<Devis, 'client' | 'dateDemande'>): Observable<any> {
-    return this.http.post<any>(this.apiUrl, devisData);
+    const token = localStorage.getItem('authToken');
+    const headers = token ? { headers: new HttpHeaders({ Authorization: `Bearer ${token}` }) } : {};
+    return this.http.post<any>(this.apiUrl, devisData, headers);
   }
 
   updateDevisStatut(id: string, statutData: { statut: string, montantEstime?: number, delaiEstime?: string }): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}/statut`, statutData);
+    const token = localStorage.getItem('authToken');
+    const headers = token ? { headers: new HttpHeaders({ Authorization: `Bearer ${token}` }) } : {};
+    return this.http.put<any>(`${this.apiUrl}/${id}/statut`, statutData, headers);
   }
 
   deleteDevis(id: string): Observable<any> {

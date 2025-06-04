@@ -5,13 +5,24 @@ const asyncHandler = require('../middleware/async');
 // @desc    Récupérer tous les devis
 // @route   GET /api/devis
 exports.getDevis = asyncHandler(async (req, res, next) => {
-  res.status(200).json(res.advancedResults);
+  const devis = await Devis.find().populate('client').populate({
+    path: 'service',
+    select: 'titre'
+  });
+  res.status(200).json({
+    success: true,
+    count: devis.length,
+    data: devis
+  });
 });
 
 // @desc    Récupérer les devis d'un client
 // @route   GET /api/devis/client
 exports.getMesDevis = asyncHandler(async (req, res, next) => {
-  const devis = await Devis.find({ client: req.user.id });
+  const devis = await Devis.find({ client: req.user.id }).populate('client').populate({
+    path: 'service',
+    select: 'titre'
+  });
 
   res.status(200).json({
     success: true,

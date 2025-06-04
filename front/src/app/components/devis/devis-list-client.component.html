@@ -1,0 +1,51 @@
+<div class="devis-container">
+  <div class="devis-header">
+    <h1 class="devis-title">Mes devis</h1>
+    <p class="devis-subtitle">Consultez vos demandes de devis et leur statut</p>
+    <a routerLink="/devis/new" class="btn btn-primary">
+      <i class="bi bi-plus-circle"></i> Ajouter un devis
+    </a>
+  </div>
+
+  <div *ngIf="loading" class="loading-spinner">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    <p>{{ error }}</p>
+  </div>
+
+  <div *ngIf="!loading && !error">
+    <ul class="devis-list" *ngIf="devisList.length > 0">
+      <li *ngFor="let devis of devisList" class="devis-item">
+        <div class="devis-card">
+          <div class="devis-info">
+            <h3 class="devis-service">{{ getServiceTitle(devis.service) }}</h3>
+            <div class="devis-date">
+              <i class="bi bi-calendar-date"></i>
+              <span>Demande du {{ formatDate(devis.dateDemande) }}</span>
+            </div>
+            <div class="devis-description">
+              <strong>Besoin :</strong> {{ devis.description }}
+            </div>
+            <div class="devis-status">
+              <span [ngClass]="'status-' + (devis.statut || 'en_attente')">
+                {{ devis.statut === 'accepte' ? 'Accepté' : devis.statut === 'refuse' ? 'Refusé' : 'En attente' }}
+              </span>
+            </div>
+            <div *ngIf="devis.montantEstime && devis.statut === 'accepte'" class="devis-reponse">
+              <strong>Montant estimé :</strong> {{ devis.montantEstime | currency:'EUR' }}<br>
+              <strong>Délai estimé :</strong> {{ devis.delaiEstime }}
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+    <div *ngIf="devisList.length === 0" class="empty-state">
+      <i class="bi bi-file-earmark-text"></i>
+      <p>Vous n'avez pas encore de devis. Cliquez sur "Ajouter un devis" pour faire une demande.</p>
+    </div>
+  </div>
+</div>

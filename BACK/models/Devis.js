@@ -6,7 +6,7 @@ const DevisSchema = new mongoose.Schema({
     ref: 'User', 
     required: true 
   },
-  service: { type: String, required: true },
+  service: { type: mongoose.Schema.Types.ObjectId, ref: 'Service', required: true },
   description: { type: String, required: true },
   montantEstime: { type: Number },
   delaiEstime: { type: String },

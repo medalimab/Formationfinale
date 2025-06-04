@@ -125,6 +125,10 @@
             <a routerLink="/admin/temoignages" class="dropdown-item">
               <i class="icon fas fa-comment-dots"></i> Témoignages
             </a>
+            
+            <a *ngIf="userRole === 'admin'" routerLink="/admin/devis" class="dropdown-item">
+              <i class="icon fas fa-file-invoice-dollar"></i> Devis
+            </a>
           </div>
         </div>
       </ng-container>
