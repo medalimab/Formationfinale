@@ -90,7 +90,7 @@
           </div>
         </div>
       </div>
-      <div class="contact-form" *ngIf="userRole === 'user' || userRole === 'client'">
+      <div class="contact-form" >
         <h2>Envoyez-nous un message</h2>
         
         <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
@@ -178,15 +178,7 @@
           </div>
         </form>
       </div>
-      <div class="map-container">
-        <h2>Nous trouver</h2>
-        <div class="map">
-          <!-- Insérez ici une iframe Google Maps ou une autre solution de carte -->
-          <div class="map-placeholder">
-            Carte Google Maps ici
-          </div>
-        </div>
-      </div>
+      
     </ng-template>
   </div>
 </div>

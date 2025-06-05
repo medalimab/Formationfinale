@@ -66,31 +66,30 @@ export class ContactComponent implements OnInit {
     this.submitted = true;
     this.error = '';
     this.success = '';
-    
-    // Si le formulaire est invalide, arrêtez-vous ici
+    if (!this.authService.isAuthenticated()) {
+      this.error = 'Veuillez vous connecter pour envoyer un message.';
+      setTimeout(() => {
+        window.location.href = '/auth/login';
+      }, 1200);
+      return;
+    }
     if (this.contactForm.invalid) {
       return;
     }
-
     this.loading = true;
     this.contactService.envoyerContact(this.contactForm.value)
       .subscribe({
         next: (data) => {
           this.success = 'Votre message a été envoyé avec succès. Nous vous répondrons dans les plus brefs délais.';
-          // Notification simple sans snackbar
-          console.log('Message envoyé avec succès!');
           this.contactForm.reset();
           this.submitted = false;
           this.loading = false;
         },
         error: (error) => {
           this.error = error.error?.message || 'Une erreur est survenue. Veuillez réessayer.';
-          // Notification simple sans snackbar
-          console.error(this.error);
           this.loading = false;
         }
-      }
-      );
+      });
   }
 
   get filteredContacts(): Contact[] {

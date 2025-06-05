@@ -1,4 +1,3 @@
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
@@ -108,5 +107,9 @@ export class AuthService {
       
       this.currentUserSubject.next(userData);
     }
+  }
+  isAuthenticated(): boolean {
+    const token = localStorage.getItem('authToken');
+    return !!token;
   }
 }
