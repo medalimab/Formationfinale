@@ -43,6 +43,10 @@ export class TemoignageService {
   }
 
   deleteTemoignage(id: string): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/${id}`);
+    const token = this.storageService.getItem('authToken');
+    return this.http.delete<any>(
+      `${this.apiUrl}/${id}`,
+      token ? { headers: { Authorization: `Bearer ${token}` } } : {}
+    );
   }
 }
