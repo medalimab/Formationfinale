@@ -384,13 +384,12 @@
 
 /* Section Contact */
 .contact-section {
-  background: linear-gradient(135deg, #2980b9, #3498db);
-  color: #fff;
-  padding: 40px 0 30px 0;
-  margin-top: 40px;
-  border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(41,128,185,0.08);
+  background-color: #2c3e50;
+  color: white;
+  padding: 60px 20px;
   text-align: center;
+  border-radius: 10px;
+  margin-top: 50px;
 }
 
 .contact-content h2 {
@@ -406,8 +405,8 @@
 }
 
 .btn-contact {
-  background: #fff;
-  color: #2980b9;
+  background: #2980b9;
+  color: white;
   border: none;
   border-radius: 30px;
   padding: 0.7rem 1.7rem;
