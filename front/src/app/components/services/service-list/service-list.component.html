@@ -22,7 +22,7 @@
             {{ category }}
           </button>
         </div>
-      </div>      <a *ngIf="userRole === 'admin' || userRole === 'formateur'" routerLink="service/new" class="btn btn-primary">
+      </div>      <a *ngIf="userRole === 'admin' || userRole === 'formateur'" routerLink="/admin/services/new" class="btn btn-primary">
         <i class="fas fa-plus"></i> Nouveau service
       </a>
     </div>
@@ -40,14 +40,16 @@
 
   <div class="services-grid" *ngIf="!loading && !error && filteredServices.length > 0">
     <div class="service-card" *ngFor="let service of filteredServices">
-      <div class="service-image" *ngIf="service.image; else defaultImage">
-        <img [src]="service.image" [alt]="service.titre">
+      <div class="service-image">
+        <ng-container *ngIf="service.image && service.image !== 'undefined' && service.image !== '/uploads/undefined' && service.image.trim() !== '' && service.image.startsWith('/uploads/'); else defaultImage">
+          <img [src]="'http://localhost:5000' + service.image" [alt]="service.titre">
+        </ng-container>
+        <ng-template #defaultImage>
+          <div class="service-image default-image">
+            <i class="fas fa-cogs"></i>
+          </div>
+        </ng-template>
       </div>
-      <ng-template #defaultImage>
-        <div class="service-image default-image">
-          <i class="fas fa-cogs"></i>
-        </div>
-      </ng-template>
 
       <div class="service-content">
         <h3>{{ service.titre }}</h3>
@@ -71,8 +73,14 @@
         </div>
 
         <div class="service-actions">
-          <a [routerLink]="['/services', service._id]" class="btn btn-primary">Détails</a>
-          <a [routerLink]="['/contact']" [queryParams]="{service: service._id}" class="btn btn-outline">Demander un devis</a>
+          <a *ngIf="userRole === 'admin' || userRole === 'formateur'" [routerLink]="['/admin/services', service._id]" class="btn btn-primary">Détails</a>
+          <a *ngIf="!(userRole === 'admin' || userRole === 'formateur')" [routerLink]="['/services', service._id]" class="btn btn-primary">Détails</a>
+          <a *ngIf="userRole === 'admin' || userRole === 'formateur'" [routerLink]="['/admin/services', service._id, 'edit']" class="btn btn-outline">Modifier</a>
+          <button *ngIf="userRole === 'admin' || userRole === 'formateur'" (click)="deleteService(service._id)" class="btn btn-danger" style="margin-left: 0.5rem;">
+            <i class="fas fa-trash"></i> Supprimer
+          </button>
+          <!-- Le bouton Modifier n'est pas affiché pour les autres rôles -->
+          <a *ngIf="!(userRole === 'admin' || userRole === 'formateur')" [routerLink]="['/contact']" [queryParams]="{service: service._id}" class="btn btn-outline">Demander un devis</a>
         </div>
       </div>
     </div>

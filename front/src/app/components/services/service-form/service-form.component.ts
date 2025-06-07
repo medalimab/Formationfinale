@@ -111,18 +111,16 @@ export class ServiceFormComponent implements OnInit {
     formData.append('description', description);
     formData.append('prix', prix.toString());
     formData.append('categorie', categorie);
-    
     // Ajout des caractéristiques comme un tableau correct
     if (this.service.caracteristiques && this.service.caracteristiques.length > 0) {
-      // Utiliser append pour chaque caractéristique séparément
       for (let i = 0; i < this.service.caracteristiques.length; i++) {
         formData.append('caracteristiques[]', this.service.caracteristiques[i]);
       }
     }
-    
     if (this.selectedFile) {
       formData.append('image', this.selectedFile);
-    } else if (this.service.image) {
+    } // Ne jamais envoyer imageUrl si un nouveau fichier est sélectionné
+    else if (this.service.image && !this.selectedFile) {
       formData.append('imageUrl', this.service.image);
     }
     
@@ -137,7 +135,7 @@ export class ServiceFormComponent implements OnInit {
           icon: 'success',
           confirmButtonColor: '#4361ee'
         });
-        this.router.navigate(['/services']);
+        this.router.navigate(['/admin/services']);
       },      error: (error: any) => {
         console.error('Erreur:', error);
         this.isUploading = false;
@@ -171,6 +169,37 @@ export class ServiceFormComponent implements OnInit {
       },
       complete: () => {
         this.isUploading = false;
+      }
+    });
+  }
+
+  onCancel(): void {
+    this.router.navigate(['/admin/services']);
+  }
+
+  onDelete(): void {
+    if (!this.service._id) return;
+    Swal.fire({
+      title: 'Supprimer ce service ?',
+      text: 'Cette action est irréversible. Voulez-vous vraiment supprimer ce service ?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Oui, supprimer',
+      cancelButtonText: 'Annuler'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.serviceApiService.deleteService(this.service._id!).subscribe({
+          next: () => {
+            Swal.fire('Supprimé !', 'Le service a été supprimé.', 'success');
+            this.router.navigate(['/admin/services']);
+          },
+          error: (err) => {
+            console.error('Erreur lors de la suppression du service :', err);
+            Swal.fire('Erreur', 'La suppression a échoué.', 'error');
+          }
+        });
       }
     });
   }

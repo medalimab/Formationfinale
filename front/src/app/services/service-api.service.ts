@@ -40,10 +40,18 @@ export class ServiceApiService {  private apiUrl = `${environment.apiUrl}/servic
   }
 
   updateService(id: string, serviceData: FormData | Partial<Service>): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}`, serviceData);
+    const token = localStorage.getItem('authToken');
+    let headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    // Si c'est du JSON, ajouter le content-type
+    if (!(serviceData instanceof FormData)) {
+      headers = headers.set('Content-Type', 'application/json');
+    }
+    return this.http.put<any>(`${this.apiUrl}/${id}`, serviceData, { headers });
   }
   deleteService(id: string): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/${id}`);
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.delete<any>(`${this.apiUrl}/${id}`, { headers });
   }
 
   getUserServices(): Observable<any> {

@@ -141,7 +141,7 @@
 
       <!-- Actions -->
       <div class="form-actions">
-        <button type="button" [routerLink]="['/services']" class="cancel-btn">
+        <button type="button" [routerLink]="['/admin/services']" class="cancel-btn">
           <i class="fas fa-arrow-left"></i> Annuler
         </button>
         <button type="submit" class="submit-btn" [disabled]="serviceForm.invalid || isUploading">
@@ -152,6 +152,9 @@
           <span *ngIf="isUploading" class="loading-text">
             <i class="fas fa-circle-notch fa-spin"></i> Envoi en cours...
           </span>
+        </button>
+        <button *ngIf="isEditMode" type="button" class="btn btn-danger" (click)="onDelete()" style="margin-left: 1rem;">
+          <i class="fas fa-trash"></i> Supprimer
         </button>
       </div>
     </form>

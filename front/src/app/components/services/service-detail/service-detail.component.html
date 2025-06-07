@@ -1,5 +1,8 @@
 <div class="service-container">
-  <a routerLink="/services" class="back-link">
+  <a *ngIf="userRole === 'admin' || userRole === 'formateur'" routerLink="/admin/services" class="back-link">
+    <i class="bi bi-arrow-left"></i> Retour à la liste
+  </a>
+  <a *ngIf="!(userRole === 'admin' || userRole === 'formateur')" routerLink="/services" class="back-link">
     <i class="bi bi-arrow-left"></i> Retour aux services
   </a>
 
@@ -16,7 +19,7 @@
   <div *ngIf="!loading && !error && service">
     <div class="service-header">
       <div class="service-image-container">
-        <img *ngIf="service.image" [src]="service.image" [alt]="service.titre" class="service-image">
+        <img *ngIf="service.image" [src]="'http://localhost:5000' + service.image" [alt]="service.titre" class="service-image">
         <div *ngIf="!service.image" class="service-image-placeholder">
           <i class="bi bi-image" style="font-size: 4rem;"></i>
         </div>
@@ -33,16 +36,20 @@
         <div class="service-description" [innerHTML]="service.description"></div>
         
         <div class="service-actions">
-          <button *ngIf="service.disponible" class="action-button primary-button" (click)="demanderDevis()">
+          <button *ngIf="service.disponible && !(userRole === 'admin' || userRole === 'formateur')" class="action-button primary-button" (click)="demanderDevis()">
             <i class="bi bi-file-earmark-text"></i> Demander un devis
           </button>
           
-          <button *ngIf="service.disponible" class="action-button secondary-button" (click)="prendreRendezVous()">
+          <button *ngIf="service.disponible && !(userRole === 'admin' || userRole === 'formateur')" class="action-button secondary-button" (click)="prendreRendezVous()">
             <i class="bi bi-calendar-check"></i> Prendre rendez-vous
           </button>
           
-          <a href="tel:+33123456789" class="action-button secondary-button" *ngIf="service.disponible">
+          <a href="tel:+33123456789" class="action-button secondary-button" *ngIf="service.disponible && !(userRole === 'admin' || userRole === 'formateur')">
             <i class="bi bi-telephone"></i> Nous contacter
+          </a>
+          
+          <a *ngIf="userRole === 'admin' || userRole === 'formateur'" [routerLink]="['/admin/services', service._id, 'edit']" class="action-button secondary-button">
+            <i class="bi bi-pencil"></i> Modifier
           </a>
         </div>
         

@@ -19,6 +19,7 @@ export class ServiceDetailComponent implements OnInit {
   loading: boolean = true;
   error: string | null = null;
   isAuthenticated: boolean = false;
+  userRole: string = 'user';
 
   constructor(
     private route: ActivatedRoute,
@@ -30,6 +31,8 @@ export class ServiceDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.isAuthenticated = this.authService.isLoggedIn();
+    const role = this.authService.getUserRole ? this.authService.getUserRole() : null;
+    this.userRole = role || 'user';
     
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
