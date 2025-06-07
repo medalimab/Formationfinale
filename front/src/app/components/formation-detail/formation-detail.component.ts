@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Formation } from '../../models/formation.model';
 import { FormationService } from '../../services/formation.service';
 import { AuthService } from '../../services/auth.service';
-import { CartService } from '../../services/cart.service';
+import { PanierService } from '../../services/panier.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -24,7 +24,7 @@ export class FormationDetailComponent implements OnInit {
     private route: ActivatedRoute, 
     private formationService: FormationService,
     private authService: AuthService,
-    private cartService: CartService
+    private panierService: PanierService
   ) {
     this.userRole = this.authService.getUserRole();
   }
@@ -54,16 +54,22 @@ export class FormationDetailComponent implements OnInit {
 
   addToCart(): void {
     if (this.article) {
-      this.cartService.addToCart(this.article);
-      Swal.fire({
-        title: 'Ajouté au panier !',
-        text: `${this.article.titre} a été ajouté au panier.`,
-        icon: 'success',
-        timer: 1500,
-        showConfirmButton: false,
-        position: 'top-end',
-        toast: true,
-        timerProgressBar: true
+      this.panierService.addToPanier(this.article).subscribe({
+        next: () => {
+          Swal.fire({
+            title: 'Ajouté au panier !',
+            text: `${this.article!.titre} a été ajouté au panier.`,
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false,
+            position: 'top-end',
+            toast: true,
+            timerProgressBar: true
+          });
+        },
+        error: () => {
+          Swal.fire('Erreur', 'Impossible d\'ajouter au panier', 'error');
+        }
       });
     }
   }

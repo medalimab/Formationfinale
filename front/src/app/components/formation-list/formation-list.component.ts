@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 import { FormationService } from '../../services/formation.service';
 import { Formation } from '../../models/formation.model';
 import { FormsModule } from '@angular/forms';
-import { CartService } from '../../services/cart.service';
+import { PanierService } from '../../services/panier.service';
 import { StorageService } from '../../services/storage.service';
 import Swal from 'sweetalert2';
 
@@ -32,7 +32,7 @@ export class formationListComponent implements OnInit {
 
   constructor(
     private formationService: FormationService,
-    private cartService: CartService,
+    private panierService: PanierService,
     private storageService: StorageService
   ) {}
 
@@ -145,16 +145,22 @@ export class formationListComponent implements OnInit {
   }
 
   addToCart(article: Formation): void {
-    this.cartService.addToCart(article);
-    Swal.fire({
-      title: 'Ajouté au panier !',
-      text: `${article.titre} a été ajouté au panier.`,
-      icon: 'success',
-      timer: 1500,
-      showConfirmButton: false,
-      position: 'top-end',
-      toast: true,
-      timerProgressBar: true
+    this.panierService.addToPanier(article).subscribe({
+      next: () => {
+        Swal.fire({
+          title: 'Ajouté au panier !',
+          text: `${article.titre} a été ajouté au panier.`,
+          icon: 'success',
+          timer: 1500,
+          showConfirmButton: false,
+          position: 'top-end',
+          toast: true,
+          timerProgressBar: true
+        });
+      },
+      error: () => {
+        Swal.fire('Erreur', 'Impossible d\'ajouter au panier', 'error');
+      }
     });
   }
 }
