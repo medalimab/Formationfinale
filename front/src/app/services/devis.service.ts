@@ -41,6 +41,8 @@ export class DevisService {
   }
 
   deleteDevis(id: string): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/${id}`);
+    const token = localStorage.getItem('authToken');
+    const headers = token ? { headers: new HttpHeaders({ Authorization: `Bearer ${token}` }) } : {};
+    return this.http.delete<any>(`${this.apiUrl}/${id}`, headers);
   }
 }
