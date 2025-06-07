@@ -27,7 +27,14 @@
       </div>
 
       <div *ngIf="article.image" class="article-image-container">
-        <img [src]="article.image" [alt]="article.titre" class="article-image">
+        <ng-container *ngIf="article.image && article.image !== 'undefined' && article.image !== '/uploads/undefined' && article.image.trim() !== '' && article.image.startsWith('/uploads/'); else placeholderImage">
+          <img [src]="'http://localhost:5000' + article.image" [alt]="article.titre" class="blog-image-detail">
+        </ng-container>
+        <ng-template #placeholderImage>
+          <div class="blog-placeholder-detail">
+            <i class="bi bi-file-earmark-text" style="font-size: 4rem; opacity: 0.7;"></i>
+          </div>
+        </ng-template>
       </div>
       
       <div *ngIf="article.categories && article.categories.length > 0" class="article-categories">

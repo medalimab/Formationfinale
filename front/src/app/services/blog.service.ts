@@ -29,11 +29,15 @@ export class BlogService {  private apiUrl = `${environment.apiUrl}/blog`;
   }
 
   updateArticle(id: string, articleData: Partial<Blog>): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}`, articleData);
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.put<any>(`${this.apiUrl}/${id}`, articleData, { headers });
   }
 
   deleteArticle(id: string): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/${id}`);
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.delete<any>(`${this.apiUrl}/${id}`, { headers });
   }
 
   addComment(articleId: string, comment: string): Observable<any> {

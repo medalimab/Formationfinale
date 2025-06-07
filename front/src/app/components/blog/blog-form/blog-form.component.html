@@ -31,11 +31,12 @@
 
     <!-- Image -->
     <div class="form-group">
-      <label for="image">Image (URL)</label>
-      <input type="text" id="image" formControlName="image" class="form-control">
-      <div class="help-text">Entrez l'URL d'une image pour illustrer votre article</div>
-      <div *ngIf="f['image'].value" class="image-preview">
-        <img [src]="f['image'].value" alt="Prévisualisation">
+      <label for="image">Image</label>
+      <input type="file" id="image" (change)="onFileChange($event)" accept="image/*" class="form-control">
+      <div class="help-text">Téléversez une image pour illustrer votre article</div>
+      <div *ngIf="imagePreview" class="image-preview">
+        <img [src]="imagePreview" alt="Prévisualisation">
+        <button type="button" class="btn btn-sm btn-danger" (click)="removeImage()">Supprimer</button>
       </div>
     </div>
 

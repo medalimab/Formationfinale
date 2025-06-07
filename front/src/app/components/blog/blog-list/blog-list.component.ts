@@ -5,18 +5,24 @@ import { BlogService } from '../../../services/blog.service';
 import { Blog } from '../../../models/blog.model';
 import { AuthFixService } from '../../../services/auth-fix.service';
 import { StorageService } from '../../../services/storage.service';
+import Swal from 'sweetalert2';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-blog-list',
   templateUrl: './blog-list.component.html',
   styleUrls: ['./blog-list.component.css'],
   standalone: true,
-  imports: [CommonModule, RouterModule]
+  imports: [CommonModule, RouterModule, FormsModule]
 })
-export class BlogListComponent implements OnInit {  articles: Blog[] = [];
+export class BlogListComponent implements OnInit {
+  articles: Blog[] = [];
+  filteredArticles: Blog[] = [];
+  searchTerm: string = '';
   loading: boolean = true;
   error: string | null = null;
   canCreateBlog: boolean = false;
+  userRole: string = 'user';
   
   constructor(
     private blogService: BlogService,
@@ -26,6 +32,8 @@ export class BlogListComponent implements OnInit {  articles: Blog[] = [];
   ngOnInit(): void {
     this.fetchArticles();
     this.checkUserPermissions();
+    const role = this.storageService.getItem('userRole');
+    this.userRole = role || 'user';
   }
   
   checkUserPermissions(): void {
@@ -39,6 +47,7 @@ export class BlogListComponent implements OnInit {  articles: Blog[] = [];
     this.blogService.getArticles().subscribe({
       next: (response) => {
         this.articles = response.data;
+        this.filteredArticles = this.articles;
         this.loading = false;
       },
       error: (err) => {
@@ -47,6 +56,19 @@ export class BlogListComponent implements OnInit {  articles: Blog[] = [];
         console.error(err);
       }
     });
+  }
+
+  onSearch(): void {
+    const term = this.searchTerm.trim().toLowerCase();
+    if (!term) {
+      this.filteredArticles = this.articles;
+      return;
+    }
+    this.filteredArticles = this.articles.filter(article =>
+      article.titre.toLowerCase().includes(term) ||
+      (article.contenu && article.contenu.toLowerCase().includes(term)) ||
+      (article.categories && article.categories.some((cat: string) => cat.toLowerCase().includes(term)))
+    );
   }
 
   formatDate(date: Date): string {
@@ -62,5 +84,38 @@ export class BlogListComponent implements OnInit {  articles: Blog[] = [];
       return content;
     }
     return content.substring(0, maxLength) + '...';
+  }
+
+  deleteArticle(id: string | undefined): void {
+    if (!id) return;
+    if (this.userRole !== 'admin') return;
+    Swal.fire({
+      title: 'Supprimer cet article ?',
+      text: 'Cette action est irréversible. Voulez-vous vraiment supprimer cet article ?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Oui, supprimer',
+      cancelButtonText: 'Annuler'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.blogService.deleteArticle(id).subscribe({
+          next: () => {
+            this.articles = this.articles.filter(a => a._id !== id);
+            this.filteredArticles = this.filteredArticles.filter(a => a._id !== id);
+            Swal.fire('Supprimé !', 'L\'article a été supprimé.', 'success');
+          },
+          error: (err) => {
+            console.error('Erreur lors de la suppression de l\'article :', err);
+            if (err.status === 404) {
+              Swal.fire('Erreur', 'Article introuvable ou déjà supprimé.', 'error');
+            } else {
+              Swal.fire('Erreur', 'La suppression a échoué.', 'error');
+            }
+          }
+        });
+      }
+    });
   }
 }

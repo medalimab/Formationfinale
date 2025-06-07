@@ -21,6 +21,9 @@ export class BlogFormComponent implements OnInit {
   error = '';
   isEditMode = false;
   blogId?: string;
+  imagePreview: string | ArrayBuffer | null = null;
+  selectedFile: File | null = null;
+
   constructor(
     private formBuilder: FormBuilder,
     private http: HttpClient,
@@ -81,27 +84,49 @@ export class BlogFormComponent implements OnInit {
       });
   }
 
+  onFileChange(event: Event): void {
+    const element = event.target as HTMLInputElement;
+    const file = element.files?.[0];
+    if (file) {
+      this.selectedFile = file;
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result;
+      };
+      reader.readAsDataURL(file);
+      this.blogForm.patchValue({ image: '' }); // On efface l'URL si upload
+    }
+  }
+
+  removeImage(): void {
+    this.selectedFile = null;
+    this.imagePreview = null;
+    this.blogForm.patchValue({ image: '' });
+  }
+
   onSubmit(): void {
     this.submitted = true;
-
-    // Arrête ici si le formulaire est invalide
     if (this.blogForm.invalid) {
       return;
     }
-
     this.loading = true;
-
-    // Préparer les données à envoyer
-    const formData = { ...this.blogForm.value };
-    
-    // Convertir les chaînes en tableaux
-    if (formData.categories) {
+    let formData: FormData | any;
+    if (this.selectedFile) {
+      formData = new FormData();
+      formData.append('titre', this.blogForm.value.titre);
+      formData.append('contenu', this.blogForm.value.contenu);
+      formData.append('image', this.selectedFile);
+      formData.append('categories', this.blogForm.value.categories);
+      formData.append('tags', this.blogForm.value.tags);
+    } else {
+      formData = { ...this.blogForm.value };
+    }
+    if (formData.categories && typeof formData.categories === 'string') {
       formData.categories = formData.categories.split(',').map((cat: string) => cat.trim());
     }
-    
-    if (formData.tags) {
+    if (formData.tags && typeof formData.tags === 'string') {
       formData.tags = formData.tags.split(',').map((tag: string) => tag.trim());
-    }    // Envoyer la requête en fonction du mode (création ou édition) en utilisant le service BlogService
+    }
     if (this.isEditMode) {
       this.blogService.updateArticle(this.blogId!, formData)
         .subscribe({
@@ -128,7 +153,11 @@ export class BlogFormComponent implements OnInit {
   handleResponse(response: any): void {
     if (response && response.success) {
       console.log('Blog enregistré avec succès!');
-      this.router.navigate(['/blog']);
+      if (this.storageService.getItem('userRole') === 'admin') {
+        this.router.navigate(['/admin/blog']);
+      } else {
+        this.router.navigate(['/blog']);
+      }
     } else {
       this.error = 'Une erreur est survenue lors de l\'enregistrement';
       this.loading = false;

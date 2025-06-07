@@ -11,16 +11,17 @@ const {
 const Blog = require('../models/Blog');
 const advancedResults = require('../middleware/advancedResults');
 const { protect, authorize } = require('../middleware/auth');
+const upload = require('../middleware/upload');
 
 const router = express.Router();
 
 router.route('/')
   .get(advancedResults(Blog, 'auteur'), getArticles)
-  .post(protect, authorize('admin', 'formateur'), createArticle);
+  .post(protect, authorize('admin', 'formateur'), upload.single('image'), createArticle);
 
 router.route('/:id')
   .get(getArticle)
-  .put(protect, authorize('admin', 'formateur'), updateArticle)
+  .put(protect, authorize('admin', 'formateur'), upload.single('image'), updateArticle)
   .delete(protect, authorize('admin'), deleteArticle);
 
 router.route('/:id/commentaires')
