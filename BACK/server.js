@@ -3,6 +3,7 @@ const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
 const cors = require('cors');
 const config = require('./config/config');
+const path = require('path');
 
 connectDB();
 
@@ -15,6 +16,9 @@ app.use(cors({
   allowedHeaders: ['authorization', 'content-type', 'origin', 'accept']
 }));
 app.use(express.json());
+
+// Sert les images uploadées (public/uploads) en statique
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 // Routes
 app.use('/api/auth', require('./routes/auth.routes'));
