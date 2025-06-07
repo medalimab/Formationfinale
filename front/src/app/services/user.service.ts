@@ -39,22 +39,39 @@ export class UserService {
 
   // Méthodes pour admin
   getUsers(): Observable<any> {
-    return this.http.get<any>(this.apiUrl);
+    const token = localStorage.getItem('authToken');
+    const headers = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+    return this.http.get<any>(this.apiUrl, headers);
   }
 
   getUser(id: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`);
+    const token = localStorage.getItem('authToken');
+    const headers = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+    return this.http.get<any>(`${this.apiUrl}/${id}`, headers);
   }
 
   createUser(userData: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, userData);
+    const token = localStorage.getItem('authToken');
+    const headers = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+    return this.http.post<any>(this.apiUrl, userData, headers);
   }
 
   updateUser(id: string, userData: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}`, userData);
+    const token = localStorage.getItem('authToken');
+    const headers = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+    return this.http.put<any>(`${this.apiUrl}/${id}`, userData, headers);
   }
 
   deleteUser(id: string): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/${id}`);
+    const token = localStorage.getItem('authToken');
+    const headers = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+    return this.http.delete<any>(`${this.apiUrl}/${id}`, headers);
+  }
+
+  // Méthode admin pour nettoyer les données d'activité corrompues
+  cleanActivityData(): Observable<any> {
+    const token = localStorage.getItem('authToken');
+    const headers = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+    return this.http.post<any>(`${this.apiUrl}/clean-activity`, {}, headers);
   }
 }

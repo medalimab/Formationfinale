@@ -8,7 +8,8 @@ const {
   createUser,
   updateUser,
   deleteUser,
-  getUserActivity
+  getUserActivity,
+  cleanActivityData
 } = require('../controllers/user.controller');
 
 const User = require('../models/User');
@@ -28,6 +29,9 @@ router.get('/me/activity', getUserActivity);
 
 // Routes admin
 router.use(authorize('admin'));
+
+// Route de nettoyage des données (admin uniquement)
+router.post('/clean-activity', cleanActivityData);
 
 router.route('/')
   .get(advancedResults(User), getUsers)
