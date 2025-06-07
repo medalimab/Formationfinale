@@ -19,9 +19,9 @@ exports.getFormation = asyncHandler(async (req, res, next) => {
 
 exports.createFormation = asyncHandler(async (req, res, next) => {
   req.body.formateur = req.user.id;
-  // Si un fichier image est uploadé, stocker son nom dans req.body.image
+  // Si un fichier image est uploadé, stocker le chemin complet dans req.body.image
   if (req.file) {
-    req.body.image = req.file.originalname;
+    req.body.image = '/uploads/' + req.file.filename;
   }
   const formation = await Formation.create(req.body);
   
@@ -45,6 +45,10 @@ exports.updateFormation = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`Non autorisé à modifier cette formation`, 401));
   }
 
+  // Si un fichier image est uploadé, stocker le chemin complet dans req.body.image
+  if (req.file) {
+    req.body.image = '/uploads/' + req.file.filename;
+  }
   formation = await Formation.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true

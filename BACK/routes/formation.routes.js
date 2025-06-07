@@ -1,5 +1,5 @@
 const express = require('express');
-const multer = require('multer');
+const upload = require('../middleware/upload');
 const {
   getFormations,
   getFormation,
@@ -13,7 +13,6 @@ const advancedResults = require('../middleware/advancedResults');
 const Formation = require('../models/Formation');
 
 const router = express.Router();
-const upload = multer(); // stockage en mémoire, à adapter si besoin
 
 router.route('/mes-formations')
   .get(protect, getUserFormations);
@@ -29,7 +28,12 @@ router.route('/')
 
 router.route('/:id')
   .get(getFormation)
-  .put(protect, authorize('formateur', 'admin'), updateFormation)
+  .put(
+    protect,
+    authorize('formateur', 'admin'),
+    upload.single('image'), // Ajout du middleware multer pour gérer FormData aussi en update
+    updateFormation
+  )
   .delete(protect, authorize('formateur', 'admin'), deleteFormation);
 
 module.exports = router;

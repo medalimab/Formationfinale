@@ -32,7 +32,7 @@ export class FormationFormComponent implements OnInit {
   constructor(private formationService: FormationService, private router: Router, private route: ActivatedRoute) {}
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
+    if (id && id !== 'new') {
       this.isEditMode = true;
       this.formationService.getFormation(id).subscribe({
         next: (response) => {
@@ -48,6 +48,9 @@ export class FormationFormComponent implements OnInit {
           });
         }
       });
+    } else {
+      this.isEditMode = false;
+      // Pas de chargement, mode création
     }
   }
 
@@ -133,7 +136,7 @@ export class FormationFormComponent implements OnInit {
             timer: 1500,
             showConfirmButton: false
           }).then(() => {
-            this.router.navigate(['/formations']);
+            this.router.navigate(['/admin/formations', this.article._id]);
           });
         },        error: (err: any) => {
           console.error('Erreur lors de la mise à jour de la formation :', err);
@@ -171,7 +174,7 @@ export class FormationFormComponent implements OnInit {
             timer: 1500,
             showConfirmButton: false
           }).then(() => {
-            this.router.navigate(['/formations']);
+            this.router.navigate(['/admin/formations']);
           });
         },        error: (err: any) => {
           console.error('Erreur lors de la création de la formation:', err);

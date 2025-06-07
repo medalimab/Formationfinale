@@ -19,7 +19,7 @@
     <div *ngIf="article" class="article-detail-content">
       <div class="article-header">
         <div class="sport-badge">{{ article.categorie | titlecase }}</div>
-        <img [src]="article.image" [alt]="article.titre" class="article-image">
+        <img [src]="'http://localhost:5000' + article.image" [alt]="article.titre" class="article-image">
       </div>
       <div class="article-meta">
         <span class="date">
@@ -48,8 +48,9 @@
         <p>{{ article.formateur.nom || 'Information non disponible' }}</p>
       </div>
       <div class="form-actions">
-        <a routerLink="/formations" class="btn btn-secondary">Retour à la liste</a>
-        <a *ngIf="userRole === 'admin' || userRole === 'formateur'" [routerLink]="['/formations', article._id, 'edit']" class="btn btn-primary">Modifier</a>
+        <a *ngIf="userRole === 'admin' || userRole === 'formateur'" routerLink="/admin/formations" class="btn btn-secondary">Retour à la liste</a>
+        <a *ngIf="!(userRole === 'admin' || userRole === 'formateur')" routerLink="/formations" class="btn btn-secondary">Retour à la liste</a>
+        <a *ngIf="userRole === 'admin' || userRole === 'formateur'" [routerLink]="['/admin/formations', article._id, 'edit']" class="btn btn-primary">Modifier</a>
         <button *ngIf="userRole === 'user'" (click)="addToCart()" class="btn btn-primary">
           <i class="fas fa-shopping-cart"></i> S'inscrire à cette formation
         </button>
