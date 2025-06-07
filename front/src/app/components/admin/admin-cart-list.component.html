@@ -1,0 +1,56 @@
+<div class="cart-admin-container">
+  <div class="cart-admin-header">
+    <h1>Commandes / Paniers clients</h1>
+    <p>Liste des commandes groupées par client</p>
+  </div>
+
+  <div *ngIf="loading" class="loading-spinner">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <div class="search-container">
+    <input type="text" [(ngModel)]="searchTerm" (input)="onSearchChange()" placeholder="Rechercher par nom ou email client..." class="search-input" />
+  </div>
+
+  <div *ngIf="!loading && filteredPaniers.length === 0" class="alert alert-info">
+    Aucun panier à afficher.
+  </div>
+
+  <div *ngIf="!loading && filteredPaniers.length > 0">
+    <div class="cart-list-grid">
+      <div class="cart-client-card" *ngFor="let panier of filteredPaniers">
+        <div class="client-header">
+          <i class="bi bi-person-circle"></i>
+          <span class="client-name">{{ getClientName(panier) }}</span>
+          <span class="client-email" *ngIf="getClientEmail(panier)">({{ getClientEmail(panier) }})</span>
+        </div>
+        <div class="formations-list">
+          <h4>Formations commandées :</h4>
+          <ul>
+            <li *ngFor="let item of panier.formations">
+              <ng-container *ngIf="item.formation; else noFormation">
+                <span class="formation-title">{{ item.formation.titre }}</span>
+                <span class="formation-prix">{{ item.formation.prix | currency:'EUR' }}</span>
+              </ng-container>
+              <ng-template #noFormation>
+                <span class="formation-title text-danger">Formation supprimée ou non trouvée</span>
+              </ng-template>
+            </li>
+          </ul>
+        </div>
+        <div class="total-section">
+          <strong>Total :</strong> {{ panier.total | currency:'EUR' }}
+        </div>
+        <div class="admin-actions">
+          <button class="btn btn-danger btn-sm" (click)="deletePanier(panier._id!)">Supprimer le panier</button>
+          <!-- Exemple d'édition rapide du total (à adapter selon besoins réels) -->
+          <button class="btn btn-secondary btn-sm" (click)="updatePanier(panier._id!, { total: 0 })">Vider le total</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

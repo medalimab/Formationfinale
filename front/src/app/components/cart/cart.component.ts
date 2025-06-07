@@ -4,7 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 
-import { CartService, CartItem } from '../../services/cart.service';
+import { PanierService } from '../../services/panier.service';
+import { Panier, PanierItem } from '../../models/panier.model';
 
 @Component({
   selector: 'app-cart',
@@ -14,85 +15,49 @@ import { CartService, CartItem } from '../../services/cart.service';
   styleUrls: ['./cart.component.css']
 })
 export class CartComponent implements OnInit {
-  cartItems: CartItem[] = [];
+  cartItems: PanierItem[] = [];
   totalAmount: number = 0;
 
-  constructor(private cartService: CartService) { }
+  constructor(private panierService: PanierService) { }
 
   ngOnInit(): void {
     this.loadCart();
-    
-    this.cartService.cartItems$.subscribe(items => {
-      this.cartItems = items;
-      this.calculateTotal();
-    });
   }
 
   loadCart(): void {
-    this.cartItems = this.cartService.getCartItems();
-    this.calculateTotal();
+    this.panierService.getPanierFromServer().subscribe({
+      next: (panier) => {
+        this.cartItems = panier?.formations?.map(item => ({
+          formation: item.formation,
+          quantity: 1
+        })) || [];
+        this.calculateTotal();
+      },
+      error: () => {
+        this.cartItems = [];
+        this.totalAmount = 0;
+      }
+    });
   }
 
   calculateTotal(): void {
-    this.totalAmount = this.cartService.getCartTotal();
+    this.totalAmount = this.cartItems.reduce((total, item) => total + (item.formation.prix * item.quantity), 0);
   }
 
-  updateQuantity(articleId: string, quantity: number): void {
-    this.cartService.updateQuantity(articleId, quantity);
+  updateQuantity(formationId: string, quantity: number): void {
+    // Optionnel : à implémenter côté backend si gestion de quantité
   }
 
-  removeFromCart(articleId: string): void {
-    const item = this.cartItems.find(item => item.article._id === articleId);
-    if (item) {
-      Swal.fire({
-        title: 'Êtes-vous sûr ?',
-        text: `Voulez-vous supprimer "${item.article.titre}" du panier ?`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Oui, supprimer',
-        cancelButtonText: 'Annuler'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.cartService.removeFromCart(articleId);
-          Swal.fire({
-            title: 'Supprimé !',
-            text: 'La formation a été retirée de votre liste.',
-            icon: 'success',
-            timer: 1500,
-            showConfirmButton: false
-          });
-        }
-      });
-    } else {
-      this.cartService.removeFromCart(articleId);
-    }
+  removeFromCart(formationId: string): void {
+    this.panierService.removeFromPanier(formationId).subscribe({
+      next: () => this.loadCart()
+    });
   }
 
   clearCart(): void {
-    if (this.cartItems.length === 0) return;
-    
-    Swal.fire({
-      title: 'Êtes-vous sûr ?',
-      text: 'Voulez-vous vous désinscrire de toutes vos formations ?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Oui, tout supprimer',
-      cancelButtonText: 'Annuler'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.cartService.clearCart();
-        Swal.fire({
-          title: 'Liste vidée !',
-          text: 'Vous avez été désinscrit de toutes les formations.',
-          icon: 'success',
-          timer: 1500,
-          showConfirmButton: false
-        });
-      }
+    // Optionnel : à implémenter côté backend si besoin
+    this.cartItems.forEach(item => {
+      this.removeFromCart(item.formation._id!);
     });
   }
 

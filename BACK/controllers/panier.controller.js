@@ -109,3 +109,57 @@ exports.supprimerFormation = asyncHandler(async (req, res, next) => {
     data: panier
   });
 });
+
+// @desc    Obtenir tous les paniers (admin)
+// @route   GET /api/panier/all
+// @access  Private/Admin
+exports.getAllPaniers = asyncHandler(async (req, res, next) => {
+  // Vérification du rôle admin
+  if (!req.user || req.user.role !== 'admin') {
+    return next(new ErrorResponse('Non autorisé', 401));
+  }
+  const paniers = await Panier.find()
+    .populate({ path: 'user', select: 'nom prenom email' })
+    .populate({ path: 'formations.formation', select: 'titre prix description image' });
+  res.status(200).json({
+    success: true,
+    count: paniers.length,
+    data: paniers
+  });
+});
+
+// @desc    Supprimer un panier (admin)
+// @route   DELETE /api/panier/admin/:panierId
+// @access  Private/Admin
+exports.deletePanierAdmin = asyncHandler(async (req, res, next) => {
+  if (!req.user || req.user.role !== 'admin') {
+    return next(new ErrorResponse('Non autorisé', 401));
+  }
+  const panier = await Panier.findById(req.params.panierId);
+  if (!panier) {
+    return next(new ErrorResponse('Panier non trouvé', 404));
+  }
+  await panier.deleteOne();
+  res.status(200).json({ success: true, data: {} });
+});
+
+// @desc    Mettre à jour un panier (admin)
+// @route   PUT /api/panier/admin/:panierId
+// @access  Private/Admin
+exports.updatePanierAdmin = asyncHandler(async (req, res, next) => {
+  if (!req.user || req.user.role !== 'admin') {
+    return next(new ErrorResponse('Non autorisé', 401));
+  }
+  let panier = await Panier.findById(req.params.panierId);
+  if (!panier) {
+    return next(new ErrorResponse('Panier non trouvé', 404));
+  }
+  // On autorise la mise à jour des formations et du total
+  if (req.body.formations) panier.formations = req.body.formations;
+  if (typeof req.body.total === 'number') panier.total = req.body.total;
+  await panier.save();
+  panier = await Panier.findById(panier._id)
+    .populate({ path: 'user', select: 'nom prenom email' })
+    .populate({ path: 'formations.formation', select: 'titre prix description image' });
+  res.status(200).json({ success: true, data: panier });
+});

@@ -1,0 +1,110 @@
+:host-context(.admin-dashboard) .cart-admin-container {
+  margin-left: 220px;
+  width: calc(100% - 220px);
+  transition: margin 0.3s, width 0.3s;
+}
+@media (max-width: 991px) {
+  :host-context(.admin-dashboard) .cart-admin-container {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+.cart-admin-container {
+  box-sizing: border-box;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+.cart-admin-header {
+  margin-bottom: 2rem;
+}
+.cart-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 2rem;
+}
+.cart-client-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  padding: 1.5rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.client-header {
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: #2d3748;
+}
+.client-email {
+  font-size: 0.95rem;
+  color: #888;
+  margin-left: 0.5rem;
+}
+.formations-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.formations-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 1rem;
+}
+.formation-title {
+  font-weight: 500;
+}
+.formation-prix {
+  color: #2563eb;
+  font-weight: 600;
+}
+.total-section {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  color: #111;
+  font-weight: 600;
+}
+@media (max-width: 700px) {
+  .cart-list-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .cart-client-card {
+    padding: 1rem 0.5rem;
+  }
+  .client-header {
+    font-size: 1rem;
+  }
+  .formation-title, .formation-prix {
+    font-size: 0.98rem;
+  }
+  .total-section {
+    font-size: 1rem;
+  }
+}
+
+.cart-admin-header h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+.cart-admin-header p {
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 120px;
+}
+
+.alert {
+  margin: 1.5rem 0;
+}
