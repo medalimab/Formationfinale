@@ -36,8 +36,10 @@ exports.createService = asyncHandler(async (req, res, next) => {
   req.body.user = req.user.id;
 
   // Si un fichier image est uploadé, stocker son nom dans req.body.image
-  if (req.file) {
-    req.body.image = req.file.originalname;
+  if (req.file && req.file.filename) {
+    req.body.image = '/uploads/' + req.file.filename;
+  } else {
+    delete req.body.image; // On ne met pas d'image si aucun fichier
   }
 
   console.log('Création de service avec utilisateur:', req.user.id);

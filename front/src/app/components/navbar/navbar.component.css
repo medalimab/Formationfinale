@@ -1,4 +1,3 @@
-
 :root {
   --primary: #4361ee;
   --primary-dark: #3730a3;
@@ -112,6 +111,204 @@
   font-weight: bold;
 }
 
+/* NAVBAR VERTICALE ADMIN DASHBOARD
+  Ce style s'applique uniquement à la navbar quand l'utilisateur est admin et sur une page d'administration
+*/
+:host-context(.admin-dashboard) .navbar {
+  flex-direction: column;
+  align-items: flex-start;
+  width: 220px;
+  min-height: 100vh;
+  background: #222;
+  color: #fff;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.08);
+  padding: 0;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+}
+
+:host-context(.admin-dashboard) .navbar-menu {
+  flex-direction: column;
+  width: 100%;
+}
+
+:host-context(.admin-dashboard) .navbar-item,
+:host-context(.admin-dashboard) .navbar-link {
+  width: 100%;
+  color: #eee;
+  padding: 18px 24px;
+  border-radius: 0;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 1.08rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+:host-context(.admin-dashboard) .navbar-item:hover,
+:host-context(.admin-dashboard) .navbar-link:hover,
+:host-context(.admin-dashboard) .navbar-item.active {
+  background: #b3005f;
+  color: #fff;
+}
+
+:host-context(.admin-dashboard) .navbar-brand {
+  width: 100%;
+  padding: 24px 24px 12px 24px;
+  border-bottom: 1px solid #333;
+  margin-bottom: 12px;
+}
+
+:host-context(.admin-dashboard) .navbar-end {
+  margin-top: auto;
+  width: 100%;
+  padding: 18px 24px;
+  border-top: 1px solid #333;
+}
+
+:host-context(.admin-dashboard) .navbar-dropdown {
+  background: #191919;
+  border-radius: 0 0 8px 8px;
+  box-shadow: none;
+}
+
+:host-context(.admin-dashboard) .navbar .icon {
+  margin-right: 12px;
+  color: #b3005f;
+}
+
+@media (max-width: 991px) {
+  :host-context(.admin-dashboard) .navbar {
+    position: static;
+    width: 100%;
+    min-height: unset;
+    flex-direction: row;
+    padding: 0;
+  }
+}
+
+/*
+  Sidebar admin inspirée du design Tulixora
+  Correction responsive : le contenu principal ne passe plus sous la sidebar
+*/
+.sidebar-admin {
+  width: 250px;
+  min-height: 100vh;
+  background: #222;
+  color: #fff;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.08);
+}
+
+.sidebar-admin .sidebar-header {
+  padding: 24px 20px 20px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.sidebar-admin .sidebar-header h2 {
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 1.3rem;
+}
+
+.sidebar-admin .sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+}
+
+.sidebar-admin .sidebar-menu li {
+  margin-bottom: 5px;
+}
+
+.sidebar-admin .sidebar-menu a {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  color: #ccc;
+  text-decoration: none;
+  transition: all 0.3s;
+  border-radius: 0 20px 20px 0;
+  font-size: 1.08rem;
+}
+
+.sidebar-admin .sidebar-menu a i {
+  margin-right: 10px;
+  width: 20px;
+  text-align: center;
+}
+
+.sidebar-admin .sidebar-menu a:hover,
+.sidebar-admin .sidebar-menu a.active {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  padding-left: 30px;
+}
+
+/* Décale le contenu principal à droite de la sidebar admin */
+body.admin-dashboard .container {
+  margin-left: 250px !important;
+  width: calc(100% - 250px);
+  transition: margin 0.3s, width 0.3s;
+}
+
+@media (max-width: 991px) {
+  .sidebar-admin {
+    position: static;
+    width: 100%;
+    min-height: unset;
+    flex-direction: row;
+    padding: 0;
+    box-shadow: none;
+  }
+  .sidebar-admin .sidebar-header {
+    padding: 15px 20px;
+    margin-bottom: 10px;
+  }
+  .sidebar-admin .sidebar-menu {
+    flex-direction: row;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .sidebar-admin .sidebar-menu li {
+    margin: 0 5px;
+  }
+  .sidebar-admin .sidebar-menu a {
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+  body.admin-dashboard .container {
+    margin-left: 0 !important;
+    width: 100%;
+  }
+}
+
+/* Pour que le contenu principal ne passe pas sous la sidebar sur desktop */
+body.admin-dashboard .container {
+  margin-left: 250px;
+  transition: margin 0.3s;
+}
+@media (max-width: 991px) {
+  body.admin-dashboard .container {
+    margin-left: 0;
+  }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .navbar {
@@ -125,7 +322,8 @@
     margin-top: 1rem;
   }
 
-  .navbar-start, .navbar-end {
+  .navbar-start,
+  .navbar-end {
     gap: 0.5rem;
   }
 }

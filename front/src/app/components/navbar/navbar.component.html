@@ -1,4 +1,78 @@
-<nav class="navbar">
+<nav class="navbar sidebar-admin" *ngIf="userRole === 'admin' && router.url.startsWith('/admin')">
+  <div class="sidebar-header">
+    <h2><i class="fas fa-cogs"></i> Admin</h2>
+  </div>
+  <ul class="sidebar-menu">
+    <li>
+      <a routerLink="/admin" routerLinkActive="active">
+        <i class="fas fa-tachometer-alt"></i> Tableau de bord
+      </a>
+    </li>
+    <li>
+      <a routerLink="/admin/users" routerLinkActive="active">
+        <i class="fas fa-users"></i> Utilisateurs
+      </a>
+    </li>
+    <li>
+      <a routerLink="/admin/profile" routerLinkActive="active">
+        <i class="fas fa-users"></i> Profile
+      </a>
+    </li>
+    <li>
+      <a routerLink="/admin/formations" routerLinkActive="active">
+        <i class="fas fa-graduation-cap"></i> Formations
+      </a>
+    </li>
+    <li>
+      <a routerLink="/admin/services" routerLinkActive="active">
+        <i class="fas fa-tools"></i> Services
+      </a>
+    </li>
+    <li>
+      <a routerLink="/admin/blog" routerLinkActive="active">
+        <i class="fas fa-newspaper"></i> Articles
+      </a>
+    </li>
+    <li>
+      <a routerLink="/admin/temoignages" routerLinkActive="active">
+        <i class="fas fa-comment-dots"></i> Témoignages
+      </a>
+    </li>
+    <li>
+      <a routerLink="/admin/devis" routerLinkActive="active">
+        <i class="fas fa-file-invoice-dollar"></i> Devis
+      </a>
+    </li>
+      <li>
+      <a routerLink="/admin/rendez-vous" routerLinkActive="active">
+        <i class="fas fa-calendar-alt"></i> Rendez-vous
+      </a>
+    </li>
+    <li>
+      <a routerLink="/admin/contacts" routerLinkActive="active">
+        <i class="fas fa-envelope"></i> Contact
+      </a>
+    </li>
+    <li>
+      <a routerLink="/admin/panier" routerLinkActive="active">
+        <i class="fas fa-shopping-cart"></i> Panier 
+      </a>
+    </li>
+    <li>
+      <a routerLink="/" routerLinkActive="active">
+        <i class="fas fa-home"></i> Retour au site
+      </a>
+    </li>
+    <li>
+      <a (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i> Déconnexion
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<!-- Navbar classique pour les autres utilisateurs/pages -->
+<nav class="navbar" *ngIf="!(userRole === 'admin' && router.url.startsWith('/admin'))">
   <div class="navbar-brand">
     <a routerLink="/" class="logo" style="display: flex; align-items: center; gap: 10px;">
       <img src="assets/images/logo-carthaginian-lighthouse.png" alt="Logo Carthaginian Lighthouse" style="height: 38px; width: 38px; object-fit: contain; border-radius: 8px; background: #fff; box-shadow: 0 1px 4px 0 rgba(0,0,0,0.07);">
@@ -107,10 +181,6 @@
           <div class="navbar-dropdown">
             <a routerLink="/admin" class="dropdown-item">
               <i class="icon fas fa-tachometer-alt"></i> Tableau de bord
-            </a>
-            
-            <a routerLink="/admin/users" class="dropdown-item">
-              <i class="icon fas fa-users"></i> Utilisateurs
             </a>
             
             <a routerLink="/admin/formations" class="dropdown-item">

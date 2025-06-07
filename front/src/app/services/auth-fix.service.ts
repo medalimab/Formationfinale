@@ -95,6 +95,7 @@ export class AuthFixService {
     this.storageService.removeItem('authToken');
     this.storageService.removeItem('userRole');
     this.storageService.removeItem('userEmail');
+    this.storageService.removeItem('userId');
     this.authTokenSubject.next(null);
   }
 
@@ -109,11 +110,14 @@ export class AuthFixService {
         if (response && response.success && response.token) {
           console.log('AuthFixService: Connexion réussie, token obtenu');
           this.setToken(response.token);
-          
-          // Stocker également l'email et le rôle
+          // Stocker également l'email, le rôle et l'ID utilisateur
           this.storageService.setItem('userEmail', credentials.email);
           if (response.role) {
             this.storageService.setItem('userRole', response.role);
+          }
+          if (response.userId || response.user_id || response.user?._id) {
+            // Selon la structure de la réponse backend
+            this.storageService.setItem('userId', response.userId || response.user_id || response.user._id);
           }
         } else {
           console.warn('AuthFixService: Réponse de connexion invalide');

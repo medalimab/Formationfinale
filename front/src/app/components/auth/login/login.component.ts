@@ -66,7 +66,7 @@ export class LoginComponent implements OnInit {
         if (res && res.success && res.token) {
           // Stocker le token dans le localStorage via AuthFixService
           this.authFixService.setToken(res.token);
-          this.router.navigateByUrl(this.returnUrl || '/formations');
+          this.onLoginSuccess(res.user); // Redirection après connexion
         }
         this.isLoading = false;
       },
@@ -83,5 +83,13 @@ export class LoginComponent implements OnInit {
         }
       }
     });
+  }
+  
+  onLoginSuccess(user: any) {
+    if (user && user.role === 'admin') {
+      this.router.navigate(['/admin']);
+    } else {
+      this.router.navigate(['/']);
+    }
   }
 }

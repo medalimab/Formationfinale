@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RendezVousService } from '../../../services/rendez-vous.service';
 import { ServiceApiService } from '../../../services/service-api.service';
 import { Service } from '../../../models/service.model';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-rendez-vous-form',
@@ -31,13 +32,15 @@ export class RendezVousFormComponent implements OnInit {
   rendezVousId?: string;
   isEditMode: boolean = false;
   services: Service[] = [];
+  userRole: string | null = null;
 
   constructor(
     private fb: FormBuilder,
     private rendezVousService: RendezVousService,
     private serviceApiService: ServiceApiService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -67,6 +70,7 @@ export class RendezVousFormComponent implements OnInit {
         this.services = [];
       }
     });
+    this.userRole = this.authService.getUserRole();
   }
 
   loadRendezVous(): void {
@@ -130,12 +134,9 @@ export class RendezVousFormComponent implements OnInit {
     if (this.rendezVousForm.invalid || this.submitting) {
       return;
     }
-    
     this.submitting = true;
     this.error = null;
-    
     const formData = this.rendezVousForm.value;
-    
     if (this.isEditMode && this.rendezVousId) {
       // Appel update
       this.rendezVousService.updateRendezVous(this.rendezVousId, {
@@ -148,9 +149,12 @@ export class RendezVousFormComponent implements OnInit {
         next: () => {
           this.submitting = false;
           this.success = true;
-          
           setTimeout(() => {
-            this.router.navigate(['/rendez-vous/mes-rendez-vous']);
+            if (this.userRole === 'admin') {
+              this.router.navigate(['/admin/rendez-vous']);
+            } else {
+              this.router.navigate(['/rendez-vous/mes-rendez-vous']);
+            }
           }, 2000);
         },
         error: (err) => {
@@ -171,9 +175,12 @@ export class RendezVousFormComponent implements OnInit {
         next: (response) => {
           this.submitting = false;
           this.success = true;
-          
           setTimeout(() => {
-            this.router.navigate(['/rendez-vous/mes-rendez-vous']);
+            if (this.userRole === 'admin') {
+              this.router.navigate(['/admin/rendez-vous']);
+            } else {
+              this.router.navigate(['/rendez-vous/mes-rendez-vous']);
+            }
           }, 2000);
         },
         error: (err) => {

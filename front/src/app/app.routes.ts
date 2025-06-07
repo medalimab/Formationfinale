@@ -28,12 +28,28 @@ import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
 import { DebugComponent } from './components/debug/debug.component';
 import { AuthCheckComponent } from './components/auth-check/auth-check.component';
+import { Injectable } from '@angular/core';
+import { CanActivate, Router } from '@angular/router';
+import { AdminSectionPlaceholderComponent } from './components/admin/admin-section-placeholder.component';
+import { AdminCartListComponent } from './components/admin/admin-cart-list.component';
+import { AdminUsersComponent } from './components/admin/admin-users.component';
+
+@Injectable({ providedIn: 'root' })
+export class AdminRedirectGuard implements CanActivate {
+  constructor(private router: Router) {}
+  canActivate(): boolean {
+    // Redirige vers /admin si admin connecté
+    this.router.navigate(['/admin']);
+    return false;
+  }
+}
 
 export const routes: Routes = [
   // Routes publiques
   { path: '', component: HomeComponent },
   { path: 'contact', component: ContactComponent },
   { path: 'auth/login', component: LoginComponent },
+  { path: 'auth/login-success', canActivate: [AdminRedirectGuard], component: LoginComponent },
   { path: 'auth/register', component: RegisterComponent },
   { path: 'debug', component: DebugComponent },
   { path: 'auth-check', component: AuthCheckComponent },
@@ -74,8 +90,41 @@ export const routes: Routes = [
   { path: 'admin', component: AdminDashboardComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
   // Route admin pour la gestion des devis
   { path: 'admin/devis', component: DevisListAdminComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
-  /* Routes admin modules - à implémenter plus tard
-  { path: 'admin/users', loadChildren: () => import('./components/admin/user-management/user-management.module').then(m => m.UserManagementModule), canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
+  // Routes admin modules - à implémenter plus tard
+  { path: 'admin/services', component: ServiceListComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
+  { path: 'admin/blog', component: BlogListComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
+  { path: 'admin/blog/new', component: BlogFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
+  { path: 'admin/blog/:id/edit', component: BlogFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
+  { path: 'admin/blog/:id', component: BlogDetailComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
+  { path: 'admin/formations', component: formationListComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
+  { path: 'admin/formations/new', component: FormationFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
+  { path: 'admin/formations/:id', component: FormationDetailComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
+  { path: 'admin/formations/:id/edit', component: FormationFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
+  { path: 'admin/temoignages', component: TemoignageComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
+  { path: 'admin/contacts', component: ContactComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
+  { path: 'admin/rendez-vous', component: RendezVousListComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
+  { path: 'admin/rendez-vous/new', component: RendezVousFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
+  { path: 'admin/rendez-vous/edit/:id', component: RendezVousFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
+  { path: 'admin/services/new', component: ServiceFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
+  { path: 'admin/services/:id', component: ServiceDetailComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
+  { path: 'admin/services/:id/edit', component: ServiceFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
+  // Route pour la liste des paniers/commandes admin
+  { path: 'admin/panier', component: AdminCartListComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
+  { path: 'admin/users', component: AdminUsersComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
+  // Utilisation de l'import dynamique pour le composant standalone
+  {
+    path: 'admin/users/edit/:id',
+    loadComponent: () => import('./components/admin/admin-user-edit.component').then(m => m.AdminUserEditComponent),
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['admin'] }
+  },
+  {
+    path: 'admin/profile',
+    loadComponent: () => import('./components/profile/profile.component').then(m => m.ProfileComponent),
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['admin'] }
+  },
+  /* 
   { path: 'admin/services', loadChildren: () => import('./components/admin/service-management/service-management.module').then(m => m.ServiceManagementModule), canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
   { path: 'admin/blog', loadChildren: () => import('./components/admin/blog-management/blog-management.module').then(m => m.BlogManagementModule), canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
   { path: 'admin/formations', loadChildren: () => import('./components/admin/formation-management/formation-management.module').then(m => m.FormationManagementModule), canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },

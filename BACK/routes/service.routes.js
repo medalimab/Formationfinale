@@ -12,8 +12,7 @@ const {
 const Service = require('../models/Service');
 const advancedResults = require('../middleware/advancedResults');
 const { protect, authorize } = require('../middleware/auth');
-const multer = require('multer');
-const upload = multer(); // stockage en mémoire, à adapter si besoin
+const upload = require('../middleware/upload');
 
 const router = express.Router();
 
@@ -34,7 +33,12 @@ router.route('/')
 
 router.route('/:id')
   .get(getService)
-  .put(protect, authorize('admin', 'formateur'), updateService)
+  .put(
+    protect,
+    authorize('admin', 'formateur'),
+    upload.single('image'), // Ajouté pour permettre l'upload lors de la modification
+    updateService
+  )
   .delete(protect, authorize('admin', 'formateur'), deleteService);
 
 module.exports = router;

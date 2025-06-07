@@ -1,0 +1,99 @@
+/* Nettoyage du CSS : suppression des commentaires mal fermés et des doublons */
+.admin-users-container {
+  max-width: 100%;
+  margin: 2rem 0 2rem 220px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  padding: 2rem;
+  overflow-x: auto;
+  min-height: 100vh;
+  position: relative;
+  z-index: 2;
+}
+
+.sidebar-admin {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 220px;
+  height: 100vh;
+  z-index: 10;
+}
+
+@media (max-width: 900px) {
+  .admin-users-container {
+    margin-left: 0;
+    padding: 1rem;
+    min-height: auto;
+  }
+  .sidebar-admin {
+    position: static;
+    width: 100%;
+    height: auto;
+  }
+}
+
+body, html {
+  overflow-x: hidden;
+}
+
+.sidebar-admin ~ .admin-users-container {
+  padding-top: 60px;
+}
+
+.admin-users-container h1 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+.table {
+  min-width: 400px;
+  width: 100%;
+  margin-bottom: 1rem;
+  border-collapse: collapse;
+}
+.table th, .table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #eaeaea;
+}
+.table th {
+  background: #f5f7fa;
+  font-weight: 600;
+}
+.btn-danger {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-danger:hover {
+  background: #c0392b;
+}
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+}
+.alert {
+  margin-top: 1rem;
+}
+
+@media (max-width: 700px) {
+  .admin-users-container {
+    padding: 1rem;
+  }
+  .table {
+    font-size: 0.95rem;
+    min-width: 320px;
+  }
+  .table th, .table td {
+    padding: 0.4rem 0.5rem;
+  }
+  h1 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+}

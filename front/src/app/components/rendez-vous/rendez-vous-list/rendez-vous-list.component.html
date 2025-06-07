@@ -5,9 +5,14 @@
   </div>
 
   <div class="rdv-actions">
-    <a routerLink="/rendez-vous/new" class="new-rdv-btn">
+    <a *ngIf="userRole === 'admin'; else userRdv" routerLink="/admin/rendez-vous/new" class="new-rdv-btn">
       <i class="bi bi-plus-circle"></i> Nouveau rendez-vous
     </a>
+    <ng-template #userRdv>
+      <a routerLink="/rendez-vous/new" class="new-rdv-btn">
+        <i class="bi bi-plus-circle"></i> Nouveau rendez-vous
+      </a>
+    </ng-template>
   </div>
 
   <div class="debug-role" style="margin-bottom: 10px; color: #888; font-size: 14px;">
@@ -62,8 +67,8 @@
               </button>
               <a 
                 class="edit-btn" 
-                [routerLink]="['/rendez-vous/edit', rdv._id]"
                 *ngIf="(userRole === 'admin' || userRole === 'formateur' || userRole === 'client' || userRole === 'user') && (rdv.statut === 'en_attente' || rdv.statut === 'confirme')"
+                [routerLink]="userRole === 'admin' ? ['/admin/rendez-vous/edit', rdv._id] : ['/rendez-vous/edit', rdv._id]"
               >
                 Modifier
               </a>

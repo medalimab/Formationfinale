@@ -1,9 +1,8 @@
-
 import { Component, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { CartService } from '../../services/cart.service';
+import { PanierService } from '../../services/panier.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faSignOutAlt, faList, faPlus, faUser, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
@@ -33,11 +32,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isAdminDropdownOpen: boolean = false;
   
   private authSubscription: Subscription | null = null;
-  private cartSubscription: Subscription | null = null;
 
   constructor(
     public authService: AuthService, 
-    private cartService: CartService
+    private panierService: PanierService,
+    public router: Router // Ajout du Router en public pour le template
   ) {}
   
   ngOnInit(): void {
@@ -52,9 +51,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.userRole = this.authService.getUserRole();
     });
     
-    // S'abonner aux changements du panier
-    this.cartSubscription = this.cartService.cartItems$.subscribe(() => {
-      this.updateCartCount();
+    // Ajout dynamique de la classe admin-dashboard au body pour le décalage du contenu
+    this.router.events.subscribe(() => {
+      if (this.userRole === 'admin' && this.router.url.startsWith('/admin')) {
+        document.body.classList.add('admin-dashboard');
+      } else {
+        document.body.classList.remove('admin-dashboard');
+      }
     });
   }
   
@@ -63,14 +66,17 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
     }
-    
-    if (this.cartSubscription) {
-      this.cartSubscription.unsubscribe();
-    }
   }
 
-  private updateCartCount(): void {
-    this.cartCount = this.cartService.getCartCount();
+  updateCartCount(): void {
+    this.panierService.getPanierFromServer().subscribe({
+      next: (panier) => {
+        this.cartCount = panier?.formations?.length || 0;
+      },
+      error: () => {
+        this.cartCount = 0;
+      }
+    });
   }
   logout(): void {
     this.authService.logout();
