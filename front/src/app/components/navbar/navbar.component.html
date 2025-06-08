@@ -106,103 +106,46 @@
         <i class="icon fas fa-newspaper"></i>
         <span>Blog</span>
       </a>
-      
-      <a routerLink="/contact" class="navbar-item">
+        <a routerLink="/contact" class="navbar-item">
         <i class="icon fas fa-envelope"></i>
         <span>Contact</span>
       </a>
-      
-      <!-- Menu utilisateur connecté -->
+        <!-- Liens utilisateur connecté intégrés dans la navbar principale -->
       <ng-container *ngIf="authService.isAuthenticated$ | async">
-        <div class="navbar-item has-dropdown" (click)="toggleUserDropdown()" [class.is-active]="isUserDropdownOpen">
-          <a class="navbar-link">
-            <i class="icon fas fa-user-circle"></i>
-            <span>Mon espace</span>
-          </a>
-          
-          <div class="navbar-dropdown">
-            <a routerLink="/profile" class="dropdown-item">
-              <i class="icon fas fa-id-card"></i> Mon profil
-            </a>
-            
-            <a routerLink="/cart" class="dropdown-item cart-item">
-              <i class="icon fas fa-shopping-cart"></i> 
-              <span>Mon panier</span>
-              <span *ngIf="cartCount > 0" class="cart-badge">{{ cartCount }}</span>
-            </a>
-            
-            <a routerLink="/devis/mes-devis" class="dropdown-item">
-              <i class="icon fas fa-file-invoice-dollar"></i> Mes devis
-            </a>
-            
-            <a routerLink="/rendez-vous/mes-rendez-vous" class="dropdown-item">
-              <i class="icon fas fa-calendar-alt"></i> Mes rendez-vous
-            </a>
-            
-            <a *ngIf="userRole === 'client'" routerLink="/rendez-vous/mes-rendez-vous" class="dropdown-item">
-              <i class="icon fas fa-calendar-check"></i> Gérer mes rendez-vous
-            </a>
-          </div>
-        </div>
+        <a routerLink="/profile" class="navbar-item">
+          <i class="icon fas fa-id-card"></i>
+          <span>Profil</span>
+        </a>
+        
+        <a routerLink="/cart" class="navbar-item cart-item">
+          <i class="icon fas fa-shopping-cart"></i>
+          <span>Panier</span>
+          <span *ngIf="cartCount > 0" class="cart-badge">{{ cartCount }}</span>
+        </a>
+        
+        <a routerLink="/devis/mes-devis" class="navbar-item">
+          <i class="icon fas fa-file-invoice-dollar"></i>
+          <span>Devis</span>
+        </a>
+        
+        <a routerLink="/rendez-vous/mes-rendez-vous" class="navbar-item">
+          <i class="icon fas fa-calendar-alt"></i>
+          <span>RDV</span>
+        </a>
       </ng-container>
-      
-      <!-- Menu formateur -->
+        <!-- Menu formateur simplifié -->
       <ng-container *ngIf="userRole === 'formateur' || userRole === 'admin'">
-        <div class="navbar-item has-dropdown" (click)="toggleFormationDropdown()" [class.is-active]="isFormationDropdownOpen">
-          <a class="navbar-link">
-            <i class="icon fas fa-chalkboard-teacher"></i>
-            <span>Espace formateur</span>
-          </a>
-            <div class="navbar-dropdown">
-            <a routerLink="formation/new" class="dropdown-item">
-              <i class="icon fas fa-plus"></i> Nouvelle formation
-            </a>
-            
-            <a routerLink="service/new" class="dropdown-item">
-              <i class="icon fas fa-plus-circle"></i> Nouveau service
-            </a>
-            
-            <a routerLink="/formations/mes-formations" class="dropdown-item">
-              <i class="icon fas fa-list"></i> Mes formations
-            </a>
-          </div>
-        </div>
+        <a routerLink="/formation/new" class="navbar-item">
+          <i class="icon fas fa-plus"></i>
+          <span>+ Formation</span>
+        </a>
       </ng-container>
-      
-      <!-- Menu admin -->
+        <!-- Menu admin simplifié -->
       <ng-container *ngIf="userRole === 'admin'">
-        <div class="navbar-item has-dropdown" (click)="toggleAdminDropdown()" [class.is-active]="isAdminDropdownOpen">
-          <a class="navbar-link">
-            <i class="icon fas fa-cogs"></i>
-            <span>Administration</span>
-          </a>
-          
-          <div class="navbar-dropdown">
-            <a routerLink="/admin" class="dropdown-item">
-              <i class="icon fas fa-tachometer-alt"></i> Tableau de bord
-            </a>
-            
-            <a routerLink="/admin/formations" class="dropdown-item">
-              <i class="icon fas fa-graduation-cap"></i> Formations
-            </a>
-            
-            <a routerLink="/admin/services" class="dropdown-item">
-              <i class="icon fas fa-tools"></i> Services
-            </a>
-            
-            <a routerLink="/admin/blog" class="dropdown-item">
-              <i class="icon fas fa-newspaper"></i> Articles
-            </a>
-            
-            <a routerLink="/admin/temoignages" class="dropdown-item">
-              <i class="icon fas fa-comment-dots"></i> Témoignages
-            </a>
-            
-            <a *ngIf="userRole === 'admin'" routerLink="/admin/devis" class="dropdown-item">
-              <i class="icon fas fa-file-invoice-dollar"></i> Devis
-            </a>
-          </div>
-        </div>
+        <a routerLink="/admin" class="navbar-item">
+          <i class="icon fas fa-cogs"></i>
+          <span>Admin</span>
+        </a>
       </ng-container>
     </div>
 
@@ -218,11 +161,6 @@
         <span>Inscription</span>
       </a>
     </div>    <div class="navbar-end" *ngIf="authService.isAuthenticated$ | async">
-      <div class="navbar-item user-info">
-        <i class="icon fas fa-user"></i>
-        <span>{{ userEmail }}</span>
-        <span class="role-badge" [ngClass]="userRole">{{ userRole }}</span>
-      </div>
       <div class="navbar-item">
         <button class="logout-btn" (click)="logout()">
           <i class="icon fas fa-sign-out-alt"></i>
