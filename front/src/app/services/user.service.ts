@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -11,67 +11,54 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
+  private getHttpOptions(): { headers: HttpHeaders } {
+    const token = localStorage.getItem('authToken');
+    return {
+      headers: token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders()
+    };
+  }
+
   // Méthodes pour utilisateur connecté
   getProfile(): Observable<any> {
-    const token = localStorage.getItem('authToken');
-    const headers = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-    return this.http.get<any>(`${this.apiUrl}/me`, headers);
+    return this.http.get<any>(`${this.apiUrl}/me`, this.getHttpOptions());
   }
 
   updateProfile(profileData: { nom: string, email: string }): Observable<any> {
-    const token = localStorage.getItem('authToken');
-    const headers = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-    return this.http.put<any>(`${this.apiUrl}/me`, profileData, headers);
+    return this.http.put<any>(`${this.apiUrl}/me`, profileData, this.getHttpOptions());
   }
 
   updatePassword(passwordData: { currentPassword: string, newPassword: string }): Observable<any> {
-    const token = localStorage.getItem('authToken');
-    const headers = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-    return this.http.put<any>(`${this.apiUrl}/updatepassword`, passwordData, headers);
+    return this.http.put<any>(`${this.apiUrl}/updatepassword`, passwordData, this.getHttpOptions());
   }
 
   // Historique d'activité utilisateur
   getUserActivity(): Observable<any> {
-    const token = localStorage.getItem('authToken');
-    const headers = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-    return this.http.get<any>(`${this.apiUrl}/me/activity`, headers);
+    return this.http.get<any>(`${this.apiUrl}/me/activity`, this.getHttpOptions());
   }
 
   // Méthodes pour admin
   getUsers(): Observable<any> {
-    const token = localStorage.getItem('authToken');
-    const headers = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-    return this.http.get<any>(this.apiUrl, headers);
+    return this.http.get<any>(this.apiUrl, this.getHttpOptions());
   }
 
   getUser(id: string): Observable<any> {
-    const token = localStorage.getItem('authToken');
-    const headers = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-    return this.http.get<any>(`${this.apiUrl}/${id}`, headers);
+    return this.http.get<any>(`${this.apiUrl}/${id}`, this.getHttpOptions());
   }
 
   createUser(userData: any): Observable<any> {
-    const token = localStorage.getItem('authToken');
-    const headers = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-    return this.http.post<any>(this.apiUrl, userData, headers);
+    return this.http.post<any>(this.apiUrl, userData, this.getHttpOptions());
   }
 
   updateUser(id: string, userData: any): Observable<any> {
-    const token = localStorage.getItem('authToken');
-    const headers = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-    return this.http.put<any>(`${this.apiUrl}/${id}`, userData, headers);
+    return this.http.put<any>(`${this.apiUrl}/${id}`, userData, this.getHttpOptions());
   }
 
   deleteUser(id: string): Observable<any> {
-    const token = localStorage.getItem('authToken');
-    const headers = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-    return this.http.delete<any>(`${this.apiUrl}/${id}`, headers);
+    return this.http.delete<any>(`${this.apiUrl}/${id}`, this.getHttpOptions());
   }
 
   // Méthode admin pour nettoyer les données d'activité corrompues
   cleanActivityData(): Observable<any> {
-    const token = localStorage.getItem('authToken');
-    const headers = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-    return this.http.post<any>(`${this.apiUrl}/clean-activity`, {}, headers);
+    return this.http.post<any>(`${this.apiUrl}/clean-activity`, {}, this.getHttpOptions());
   }
 }

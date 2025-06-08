@@ -4,6 +4,7 @@ import { TemoignageComponent } from './components/temoignage/temoignage.componen
 import { DevisListAdminComponent } from './components/devis/devis-list-admin.component';
 import { DevisListClientComponent } from './components/devis/devis-list-client.component';
 import { DevisFormComponent } from './components/devis/devis-form/devis-form.component';
+import { AdminUserEditComponent } from './components/admin/admin-user-edit.component';
 
 import { Routes } from '@angular/router';
 import { FormationFormComponent } from './components/formation-form/formation-form.component';
@@ -114,7 +115,7 @@ export const routes: Routes = [
   // Utilisation de l'import dynamique pour le composant standalone
   {
     path: 'admin/users/edit/:id',
-    loadComponent: () => import('./components/admin/admin-user-edit.component').then(m => m.AdminUserEditComponent),
+    component: AdminUserEditComponent,
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['admin'] }
   },
