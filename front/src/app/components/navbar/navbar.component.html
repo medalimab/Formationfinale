@@ -57,9 +57,8 @@
       <a routerLink="/admin/panier" routerLinkActive="active">
         <i class="fas fa-shopping-cart"></i> Panier 
       </a>
-    </li>
-    <li>
-      <a routerLink="/" routerLinkActive="active">
+    </li>    <li>
+      <a (click)="returnToClientSite()" style="cursor: pointer;">
         <i class="fas fa-home"></i> Retour au site
       </a>
     </li>

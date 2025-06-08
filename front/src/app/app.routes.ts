@@ -39,7 +39,8 @@ import { AdminUsersComponent } from './components/admin/admin-users.component';
 export class AdminRedirectGuard implements CanActivate {
   constructor(private router: Router) {}
   canActivate(): boolean {
-    // Redirige vers /admin si admin connecté
+    // Toujours rediriger vers /admin
+    console.log('AdminRedirectGuard: redirection vers /admin');
     this.router.navigate(['/admin']);
     return false;
   }

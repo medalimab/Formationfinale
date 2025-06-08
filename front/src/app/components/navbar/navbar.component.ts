@@ -105,5 +105,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.isUserDropdownOpen = false;
     this.isFormationDropdownOpen = false;
     this.isAdminDropdownOpen = false;
+  }  /**
+   * Méthode pour retourner à l'interface client depuis l'admin
+   * en déconnectant l'utilisateur
+   */
+  returnToClientSite(): void {
+    // Déconnexion de l'utilisateur
+    this.authService.logout();
+    
+    // Délai court pour s'assurer que la déconnexion est traitée
+    setTimeout(() => {
+      // Redirection vers la page d'accueil
+      window.location.href = '/';
+    }, 100);
   }
 }

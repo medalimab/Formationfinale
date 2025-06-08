@@ -89,14 +89,20 @@ export class AuthFixService {
 
   /**
    * Supprime le token et notifie les observateurs
-   */
-  clearToken(): void {
+   */  clearToken(): void {
     console.log('AuthFixService: Suppression du token');
     this.storageService.removeItem('authToken');
     this.storageService.removeItem('userRole');
     this.storageService.removeItem('userEmail');
     this.storageService.removeItem('userId');
     this.authTokenSubject.next(null);
+  }
+  
+  /**
+   * Récupère le rôle stocké de l'utilisateur
+   */
+  getStoredRole(): string | null {
+    return this.storageService.getItem('userRole');
   }
 
   /**

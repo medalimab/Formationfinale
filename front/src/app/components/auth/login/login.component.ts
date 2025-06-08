@@ -61,12 +61,11 @@ export class LoginComponent implements OnInit {
     this.errorMessage = null;
     
     // Utiliser le nouveau service authManager pour la connexion
-    this.authManager.loginUser(this.loginForm.value).subscribe({
-      next: (res) => {
+    this.authManager.loginUser(this.loginForm.value).subscribe({      next: (res) => {
         if (res && res.success && res.token) {
           // Stocker le token dans le localStorage via AuthFixService
           this.authFixService.setToken(res.token);
-          this.onLoginSuccess(res.user); // Redirection après connexion
+          this.onLoginSuccess(res); // Redirection après connexion
         }
         this.isLoading = false;
       },
@@ -84,11 +83,21 @@ export class LoginComponent implements OnInit {
       }
     });
   }
-  
-  onLoginSuccess(user: any) {
-    if (user && user.role === 'admin') {
+  onLoginSuccess(response: any) {
+    console.log('Login réussi, données de réponse:', response);
+    
+    // Récupérer le rôle directement de la réponse ou du stockage
+    const userRole = response.role || this.authFixService.getStoredRole();
+    
+    console.log('Rôle détecté:', userRole);
+    
+    // Si l'utilisateur est un admin, rediriger vers /admin
+    if (userRole === 'admin') {
+      console.log('Utilisateur admin détecté, redirection vers /admin');
       this.router.navigate(['/admin']);
     } else {
+      // Sinon rediriger vers la page d'accueil
+      console.log('Utilisateur non-admin, redirection vers /');
       this.router.navigate(['/']);
     }
   }
