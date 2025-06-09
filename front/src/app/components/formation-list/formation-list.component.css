@@ -389,6 +389,43 @@
   margin-top: 50px;
 }
 
+/* Section Contact Formation */
+.formation-contact-section {
+  background-color: #2c3e50;
+  color: white;
+  padding: 60px 20px;
+  text-align: center;
+  border-radius: 10px;
+  margin-top: 50px;
+  margin-bottom: 30px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.formation-contact-section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.formation-contact-content {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.formation-contact-content h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.formation-contact-content p {
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+  color: #e3e3e3;
+  line-height: 1.6;
+}
+
 .contact-content h2 {
   font-size: 2rem;
   margin-bottom: 10px;
@@ -418,6 +455,27 @@
 .btn-contact:hover {
   background: #e3e3e3;
   color: #1976d2;
+}
+
+.formation-contact-section .btn-contact {
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 0.8rem 2rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.25);
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+.formation-contact-section .btn-contact:hover {
+  background: #2980b9;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(52, 152, 219, 0.35);
 }
 
 @media (max-width: 992px) {
