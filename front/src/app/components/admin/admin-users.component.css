@@ -12,6 +12,59 @@
   z-index: 2;
 }
 
+/* Styles pour la barre de recherche */
+.action-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.search-container {
+  flex: 1;
+  min-width: 250px;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  border-radius: 30px;
+  padding: 0.5rem 1rem;
+  margin-bottom: 10px;
+}
+
+.search-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 1rem;
+  width: 100%;
+}
+
+/* Titre et en-tête */
+.header-section {
+  margin-bottom: 20px;
+}
+
+.title-container {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.main-title {
+  font-size: 1.8rem;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #7f8c8d;
+}
+
 .sidebar-admin {
   position: fixed;
   top: 0;

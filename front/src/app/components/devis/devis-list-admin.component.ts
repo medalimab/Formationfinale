@@ -3,16 +3,19 @@ import { DevisService } from '../../services/devis.service';
 import { Devis } from '../../models/devis.model';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-devis-list-admin',
   templateUrl: './devis-list-admin.component.html',
-  styleUrls: ['./devis-list-admin.component.css'],
+  styleUrls: ['./devis-list-admin.component.css', '../shared/loading-styles.css'],
   standalone: true,
-  imports: [CommonModule, RouterModule]
+  imports: [CommonModule, RouterModule, FormsModule]
 })
 export class DevisListAdminComponent implements OnInit {
   devisList: Devis[] = [];
+  filteredDevisList: Devis[] = [];
+  searchTerm: string = '';
   loading = true;
   error = '';
 
@@ -20,6 +23,33 @@ export class DevisListAdminComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchDevis();
+  }  filterDevis(): void {
+    if (!this.searchTerm.trim()) {
+      this.filteredDevisList = this.devisList;
+      return;
+    }
+    
+    const term = this.searchTerm.toLowerCase();
+    this.filteredDevisList = this.devisList.filter(devis => {
+      // Gérer le cas où service est un objet ou une chaîne
+      const serviceTitle = typeof devis.service === 'object' && devis.service ? 
+                          (devis.service as any).titre : 
+                          (typeof devis.service === 'string' ? devis.service : '');
+      
+      // Gérer le cas où client est un objet ou une chaîne
+      const clientName = typeof devis.client === 'object' && devis.client ? 
+                      ((devis.client as any).nom || (devis.client as any).name || '') : 
+                      (typeof devis.client === 'string' ? devis.client : '');
+                      
+      const clientEmail = typeof devis.client === 'object' && devis.client ? 
+                      ((devis.client as any).email || '') : '';
+      
+      return serviceTitle.toLowerCase().includes(term) ||
+             (devis.description || '').toLowerCase().includes(term) ||
+             (devis.statut || '').toLowerCase().includes(term) ||
+             clientName.toLowerCase().includes(term) ||
+             clientEmail.toLowerCase().includes(term);
+    });
   }
 
   fetchDevis() {
@@ -27,6 +57,7 @@ export class DevisListAdminComponent implements OnInit {
     this.devisService.getDevis().subscribe({
       next: res => {
         this.devisList = res.data || [];
+        this.filteredDevisList = this.devisList;
         this.loading = false;
       },
       error: err => {

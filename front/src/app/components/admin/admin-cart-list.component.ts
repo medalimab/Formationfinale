@@ -14,7 +14,7 @@ export type PanierWithUser = Omit<Panier, 'user'> & { user: User | string };
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './admin-cart-list.component.html',
-  styleUrls: ['./admin-cart-list.component.css']
+  styleUrls: ['./admin-cart-list.component.css', '../shared/loading-styles.css']
 })
 export class AdminCartListComponent implements OnInit {
   paniers: PanierWithUser[] = [];
@@ -49,7 +49,6 @@ export class AdminCartListComponent implements OnInit {
       }
     });
   }
-
   applySearch(): void {
     const term = this.searchTerm.trim().toLowerCase();
     if (!term) {
@@ -59,11 +58,30 @@ export class AdminCartListComponent implements OnInit {
     this.filteredPaniers = this.paniers.filter(panier => {
       if (panier.user && typeof panier.user === 'object') {
         const user = panier.user as User;
-        return (
-          (user.nom && user.nom.toLowerCase().includes(term)) ||
-          (user.email && user.email.toLowerCase().includes(term))
-        );
+        // Vérifier le nom et l'email du client
+        if ((user.nom && user.nom.toLowerCase().includes(term)) ||
+            (user.email && user.email.toLowerCase().includes(term))) {
+          return true;
+        }
       }
+      
+      // Vérifier si le terme est dans le total du panier
+      if (panier.total && panier.total.toString().includes(term)) {
+        return true;
+      }
+      
+      // Vérifier si le terme est dans les formations du panier
+      if (panier.formations && panier.formations.length > 0) {
+        for (const item of panier.formations) {
+          if (item.formation && typeof item.formation === 'object') {
+            if ((item.formation.titre && item.formation.titre.toLowerCase().includes(term)) ||
+                (item.formation.description && item.formation.description.toLowerCase().includes(term))) {
+              return true;
+            }
+          }
+        }
+      }
+      
       return false;
     });
   }

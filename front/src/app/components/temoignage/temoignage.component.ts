@@ -8,12 +8,14 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-temoignage',
   templateUrl: './temoignage.component.html',
-  styleUrls: ['./temoignage.component.css'],
+  styleUrls: ['./temoignage.component.css', '../shared/loading-styles.css'],
   standalone: true,
   imports: [CommonModule, FormsModule]
 })
 export class TemoignageComponent implements OnInit {
   temoignages: Temoignage[] = [];
+  filteredTemoignages: Temoignage[] = [];
+  searchTerm: string = '';
   loading = false;
   error = '';
   newTemoignage: Partial<Temoignage> = { note: 5 };
@@ -29,16 +31,32 @@ export class TemoignageComponent implements OnInit {
     this.loadTemoignages();
   }
 
+  // Méthode pour filtrer les témoignages en fonction du terme de recherche
+  filterTemoignages(): void {
+    if (!this.searchTerm.trim()) {
+      this.filteredTemoignages = this.temoignages;
+      return;
+    }
+    
+    const term = this.searchTerm.toLowerCase();
+    this.filteredTemoignages = this.temoignages.filter(temoignage => 
+      (temoignage.nom?.toLowerCase().includes(term) || 
+       temoignage.commentaire?.toLowerCase().includes(term) ||
+       temoignage.poste?.toLowerCase().includes(term) ||
+       temoignage.entreprise?.toLowerCase().includes(term))
+    );
+  }
+
   loadTemoignages(): void {
     this.loading = true;
     // Afficher tous les témoignages pour l'admin, seulement les approuvés pour les autres
     const obs = this.userRole === 'admin'
       ? this.temoignageService.getTemoignages()
       : this.temoignageService.getTemoignagesApprouves();
-    obs.subscribe({
-      next: res => {
+    obs.subscribe({      next: res => {
         // Pour getTemoignages (admin), les données sont dans res.data.data (advancedResults)
         this.temoignages = Array.isArray(res.data) ? res.data : (res.data?.data || []);
+        this.filteredTemoignages = [...this.temoignages];
         this.loading = false;
       },
       error: () => {

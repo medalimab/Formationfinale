@@ -6,20 +6,28 @@
       <i class="bi bi-plus-circle"></i> Ajouter un devis
     </a>
   </div>
+  <div class="alert-container">
+    <div *ngIf="loading" class="alert alert-loading">
+      <i class="fas fa-spinner fa-spin"></i> Chargement en cours...
+    </div>
+    <div *ngIf="error" class="alert alert-error">
+      <i class="fas fa-exclamation-circle"></i> {{ error }}
+    </div>  </div>
 
-  <div *ngIf="loading" class="loading-spinner">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Chargement...</span>
+  <div class="action-bar">
+    <div class="search-container">
+      <div class="search-box">
+        <input type="text" [(ngModel)]="searchTerm" 
+               (input)="filterDevis()"
+               placeholder="Rechercher par service, description ou statut..." 
+               class="search-input">
+      </div>
     </div>
   </div>
 
-  <div *ngIf="error" class="error-message">
-    <p>{{ error }}</p>
-  </div>
-
   <div *ngIf="!loading && !error">
-    <ul class="devis-list" *ngIf="devisList.length > 0">
-      <li *ngFor="let devis of devisList" class="devis-item">
+    <ul class="devis-list" *ngIf="filteredDevisList.length > 0">
+      <li *ngFor="let devis of filteredDevisList" class="devis-item">
         <div class="devis-card">
           <div class="devis-info">
             <h3 class="devis-service">{{ getServiceTitle(devis.service) }}</h3>
@@ -42,10 +50,15 @@
           </div>
         </div>
       </li>
-    </ul>
-    <div *ngIf="devisList.length === 0" class="empty-state">
+    </ul>    <div *ngIf="devisList.length === 0" class="empty-state">
       <i class="bi bi-file-earmark-text"></i>
       <p>Vous n'avez pas encore de devis. Cliquez sur "Ajouter un devis" pour faire une demande.</p>
+    </div>
+    
+    <div *ngIf="devisList.length > 0 && filteredDevisList.length === 0" class="empty-state">
+      <i class="bi bi-search"></i>
+      <p>Aucun devis ne correspond à votre recherche.</p>
+      <button (click)="searchTerm = ''; filterDevis()" class="btn btn-outline-secondary">Effacer la recherche</button>
     </div>
   </div>
 </div>

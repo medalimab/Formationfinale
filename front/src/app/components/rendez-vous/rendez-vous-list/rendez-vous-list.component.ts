@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { RendezVousService } from '../../../services/rendez-vous.service';
 import { RendezVous } from '../../../models/rendez-vous.model';
 import { AuthService } from '../../../services/auth.service';
@@ -8,23 +9,55 @@ import { AuthService } from '../../../services/auth.service';
 @Component({
   selector: 'app-rendez-vous-list',
   templateUrl: './rendez-vous-list.component.html',
-  styleUrls: ['./rendez-vous-list.component.css'],
+  styleUrls: ['./rendez-vous-list.component.css', '../../shared/loading-styles.css'],
   standalone: true,
-  imports: [CommonModule, RouterModule]
+  imports: [CommonModule, RouterModule, FormsModule]
 })
 export class RendezVousListComponent implements OnInit {
   rendezVousList: RendezVous[] = [];
+  filteredRendezVousList: RendezVous[] = [];
+  searchTerm: string = '';
   loading: boolean = true;
   error: string | null = null;
   userRole: string | null = null;
 
   constructor(private rendezVousService: RendezVousService, private authService: AuthService) { }
-
   ngOnInit(): void {
     // Correction : accepter aussi 'user' comme rôle client
     const role = this.authService.getUserRole();
     this.userRole = (role === 'user') ? 'client' : (role || 'client');
     this.fetchRendezVous();
+  }
+  
+  filterRendezVous(): void {
+    if (!this.searchTerm.trim()) {
+      this.filteredRendezVousList = this.rendezVousList;
+      return;
+    }
+    
+    const term = this.searchTerm.toLowerCase();
+    this.filteredRendezVousList = this.rendezVousList.filter(rdv => {
+      // Gérer le cas où service est un objet ou une chaîne
+      const serviceTitle = typeof rdv.service === 'object' ? 
+                           (rdv.service as any).titre : 
+                           (typeof rdv.service === 'string' ? rdv.service : '');
+      
+      // Gérer le cas où client est un objet ou une chaîne
+      const clientName = typeof rdv.client === 'object' && rdv.client ? 
+                        ((rdv.client as any).nom || (rdv.client as any).name || '') : 
+                        (typeof rdv.client === 'string' ? rdv.client : '');
+      
+      const clientEmail = typeof rdv.client === 'object' && rdv.client ? 
+                         ((rdv.client as any).email || '') : '';
+      
+      return serviceTitle.toLowerCase().includes(term) ||
+             (rdv.notes || '').toLowerCase().includes(term) ||
+             rdv.statut.toLowerCase().includes(term) ||
+             clientName.toLowerCase().includes(term) ||
+             clientEmail.toLowerCase().includes(term) ||
+             (rdv.date ? new Date(rdv.date).toLocaleDateString('fr-FR').includes(term) : false) ||
+             (rdv.heure || '').toLowerCase().includes(term);
+    });
   }
   
   fetchRendezVous(): void {
@@ -33,6 +66,7 @@ export class RendezVousListComponent implements OnInit {
       this.rendezVousService.getRendezVous().subscribe({
         next: (response) => {
           this.rendezVousList = response.data;
+          this.filteredRendezVousList = this.rendezVousList;
           this.loading = false;
         },
         error: (err) => {
@@ -40,11 +74,11 @@ export class RendezVousListComponent implements OnInit {
           this.loading = false;
           console.error(err);
         }
-      });
-    } else if (this.userRole === 'formateur') {
+      });    } else if (this.userRole === 'formateur') {
       this.rendezVousService.getRendezVousByFormateur().subscribe({
         next: (response) => {
           this.rendezVousList = response.data;
+          this.filteredRendezVousList = this.rendezVousList;
           this.loading = false;
         },
         error: (err) => {
@@ -52,11 +86,11 @@ export class RendezVousListComponent implements OnInit {
           this.loading = false;
           console.error(err);
         }
-      });
-    } else {
+      });    } else {
       this.rendezVousService.getMesRendezVous().subscribe({
         next: (response) => {
           this.rendezVousList = response.data;
+          this.filteredRendezVousList = this.rendezVousList;
           this.loading = false;
         },
         error: (err) => {

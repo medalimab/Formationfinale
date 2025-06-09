@@ -1,0 +1,43 @@
+/* Styles communs pour les barres de chargement */
+.alert-container {
+  margin: 1.5rem 0;
+}
+
+.alert {
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  margin: 0 auto;
+  max-width: 600px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1rem;
+}
+
+.alert-loading {
+  background-color: rgba(67, 97, 238, 0.1);
+  border-left: 4px solid #4361ee;
+  color: #212529;
+}
+
+.alert-error {
+  background-color: rgba(247, 37, 133, 0.1);
+  border-left: 4px solid #f72585;
+  color: #f72585;
+}
+
+.alert-success {
+  background-color: rgba(25, 135, 84, 0.1);
+  border-left: 4px solid #198754;
+  color: #198754;
+}
+
+/* Animation de chargement */
+.fa-spinner {
+  animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

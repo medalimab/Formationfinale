@@ -4,12 +4,27 @@
     <p>Découvrez les retours d'expérience de nos clients satisfaits</p>
   </div>
 
-  <div *ngIf="success" class="alert alert-success">{{ success }}</div>
-  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  <div class="alert-container">
+    <div *ngIf="loading" class="alert alert-loading">
+      <i class="fas fa-spinner fa-spin"></i> Chargement des témoignages...
+    </div>
+    <div *ngIf="error" class="alert alert-error">
+      <i class="fas fa-exclamation-circle"></i> {{ error }}
+    </div>
+    <div *ngIf="success" class="alert alert-success">
+      <i class="fas fa-check-circle"></i> {{ success }}
+    </div>
+  </div>
 
-  <div class="loading-spinner" *ngIf="loading">
-    <div class="spinner"></div>
-    <p>Chargement des témoignages...</p>
+  <div class="action-bar" *ngIf="!loading && temoignages.length > 0">
+    <div class="search-container">
+      <div class="search-box">
+        <input type="text" [(ngModel)]="searchTerm" 
+               (input)="filterTemoignages()"
+               placeholder="Rechercher par nom, poste, entreprise ou commentaire..." 
+               class="search-input">
+      </div>
+    </div>
   </div>
 
   <div class="empty-state" *ngIf="!loading && temoignages.length === 0">
@@ -19,8 +34,14 @@
     <button *ngIf="userRole !== 'admin' && !showForm" class="btn btn-primary" (click)="afficherFormulaire()">Ajouter un témoignage</button>
   </div>
 
-  <div class="temoignages-grid" *ngIf="!loading && temoignages.length > 0">
-    <div class="temoignage-card" *ngFor="let t of temoignages">
+  <div class="empty-state" *ngIf="!loading && temoignages.length > 0 && filteredTemoignages.length === 0">
+    <i class="fas fa-search"></i>
+    <h3>Aucun témoignage ne correspond à votre recherche.</h3>
+    <p>Essayez avec d'autres termes.</p>
+  </div>
+
+  <div class="temoignages-grid" *ngIf="!loading && filteredTemoignages.length > 0">
+    <div class="temoignage-card" *ngFor="let t of filteredTemoignages">
       <div class="temoignage-header">
         <span class="temoignage-nom">{{ t.nom }}</span>
         <span class="temoignage-note">

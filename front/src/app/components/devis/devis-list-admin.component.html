@@ -3,22 +3,35 @@
     <h1>Gestion des devis</h1>
     <p>Liste des demandes de devis reçues</p>
   </div>
-
-  <div *ngIf="loading" class="loading-spinner">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Chargement...</span>
+  <div class="alert-container">
+    <div *ngIf="loading" class="alert alert-loading">
+      <i class="fas fa-spinner fa-spin"></i> Chargement en cours...
     </div>
-  </div>
-
-  <div *ngIf="error" class="alert alert-danger">
-    {{ error }}
+    <div *ngIf="error" class="alert alert-error">
+      <i class="fas fa-exclamation-circle"></i> {{ error }}
+    </div>  </div>
+  
+  <div class="action-bar">
+    <div class="search-container">
+      <div class="search-box">
+        <input type="text" [(ngModel)]="searchTerm" 
+               (input)="filterDevis()"
+               placeholder="Rechercher par client, service, description ou statut..." 
+               class="search-input">
+      </div>
+    </div>
   </div>
 
   <div *ngIf="!loading && devisList.length === 0" class="alert alert-info">
     Aucun devis à afficher.
   </div>
 
-  <div *ngIf="!loading && devisList.length > 0">
+  <div *ngIf="!loading && filteredDevisList.length === 0 && devisList.length > 0" class="alert alert-info">
+    Aucun devis ne correspond à votre recherche.
+    <button (click)="searchTerm = ''; filterDevis()" class="btn-reset-search">Effacer la recherche</button>
+  </div>
+
+  <div *ngIf="!loading && filteredDevisList.length > 0">
     <table class="devis-table">
       <thead>
         <tr>
@@ -29,9 +42,8 @@
           <th>Statut</th>
           <th>Actions</th>
         </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let devis of devisList">
+      </thead>      <tbody>
+        <tr *ngFor="let devis of filteredDevisList">
           <td>{{ devis.client?.nom || devis.client?.email || devis.client }}</td>
           <td>{{ getServiceTitle(devis.service) }}</td>
           <td>{{ devis.description | slice:0:40 }}...</td>

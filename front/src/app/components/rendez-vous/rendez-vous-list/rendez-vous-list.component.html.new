@@ -3,6 +3,7 @@
     <h1 class="rdv-title">Mes rendez-vous</h1>
     <p class="rdv-subtitle">Consultez et gérez vos rendez-vous planifiés</p>
   </div>
+
   <div class="rdv-actions">
     <a *ngIf="userRole === 'admin'; else userRdv" routerLink="/admin/rendez-vous/new" class="new-rdv-btn">
       <i class="bi bi-plus-circle"></i> Nouveau rendez-vous
@@ -12,7 +13,9 @@
         <i class="bi bi-plus-circle"></i> Nouveau rendez-vous
       </a>
     </ng-template>
-  </div>  <div class="debug-role" style="margin-bottom: 10px; color: #888; font-size: 14px;">
+  </div>  
+  
+  <div class="debug-role" style="margin-bottom: 10px; color: #888; font-size: 14px;">
     Rôle détecté : {{ userRole }}
   </div>
 
@@ -30,11 +33,12 @@
       <div class="search-box">
         <input type="text" [(ngModel)]="searchTerm" 
                (input)="filterRendezVous()"
-               placeholder="Rechercher par service, client, date, statut ou heure..." 
+               placeholder="Rechercher par service, statut, date ou heure..." 
                class="search-input">
       </div>
     </div>
   </div>
+  
   <div *ngIf="!loading && !error">
     <ul class="rdv-list" *ngIf="filteredRendezVousList.length > 0">
       <li *ngFor="let rdv of filteredRendezVousList" class="rdv-item">
@@ -95,6 +99,12 @@
       <i class="bi bi-calendar-x"></i>
       <p>Vous n'avez pas encore de rendez-vous planifiés.</p>
       <p>Cliquez sur "Nouveau rendez-vous" pour en créer un.</p>
+    </div>
+    
+    <div *ngIf="rendezVousList.length > 0 && filteredRendezVousList.length === 0" class="empty-state">
+      <i class="bi bi-search"></i>
+      <p>Aucun rendez-vous ne correspond à votre recherche.</p>
+      <button (click)="searchTerm = ''; filterRendezVous()" class="btn-reset-search">Effacer la recherche</button>
     </div>
   </div>
 </div>

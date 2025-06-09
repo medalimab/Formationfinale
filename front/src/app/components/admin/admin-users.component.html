@@ -1,12 +1,29 @@
-<div class="admin-users-container">
-  <h1>Gestion des utilisateurs</h1>
-  <div *ngIf="loading" class="loading-spinner">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Chargement...</span>
+<div class="admin-users-container">  <div class="header-section">
+    <div class="title-container">
+      <h1 class="main-title">Gestion des utilisateurs</h1>
+      <p class="subtitle">Consultez et gérez les comptes utilisateurs</p>
+    </div>
+    
+    <div class="alert-container">
+      <div *ngIf="loading" class="alert alert-loading">
+        <i class="fas fa-spinner fa-spin"></i> Chargement en cours...
+      </div>
+      <div *ngIf="error" class="alert alert-error">
+        <i class="fas fa-exclamation-circle"></i> {{ error }}
+      </div>
     </div>
   </div>
-  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
-  <table *ngIf="!loading && users.length > 0" class="table table-striped">
+  
+  <div class="action-bar">
+    <div class="search-container">
+      <div class="search-box">
+        <input type="text" [(ngModel)]="searchTerm" 
+               (input)="filterUsers()"
+               placeholder="Rechercher par nom, email ou rôle..." 
+               class="search-input">
+      </div>
+    </div>
+  </div>  <table *ngIf="!loading && filteredUsers.length > 0" class="table table-striped">
     <thead>
       <tr>
         <th>Nom</th>
@@ -16,7 +33,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let user of users">
+      <tr *ngFor="let user of filteredUsers">
         <td>{{ user.nom || user.name }}</td>
         <td>{{ user.email }}</td>
         <td>{{ user.role }}</td>

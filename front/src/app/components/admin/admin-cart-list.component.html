@@ -3,20 +3,29 @@
     <h1>Commandes / Paniers clients</h1>
     <p>Liste des commandes groupées par client</p>
   </div>
-
-  <div *ngIf="loading" class="loading-spinner">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Chargement...</span>
+  <div class="alert-container">
+    <div *ngIf="loading" class="alert alert-loading">
+      <i class="fas fa-spinner fa-spin"></i> Chargement en cours...
+    </div>
+    <div *ngIf="error" class="alert alert-error">
+      <i class="fas fa-exclamation-circle"></i> {{ error }}
     </div>
   </div>
-
-  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
-
-  <div class="search-container">
-    <input type="text" [(ngModel)]="searchTerm" (input)="onSearchChange()" placeholder="Rechercher par nom ou email client..." class="search-input" />
+  <div class="action-bar">
+    <div class="search-container">
+      <div class="search-box">
+        <input type="text" [(ngModel)]="searchTerm" 
+               (input)="onSearchChange()" 
+               placeholder="Rechercher par nom ou email client..." 
+               class="search-input">
+      </div>
+    </div>
   </div>
-
-  <div *ngIf="!loading && filteredPaniers.length === 0" class="alert alert-info">
+  <div *ngIf="!loading && paniers.length > 0 && filteredPaniers.length === 0" class="alert alert-info">
+    Aucun panier ne correspond à votre recherche.
+  </div>
+  
+  <div *ngIf="!loading && paniers.length === 0" class="alert alert-info">
     Aucun panier à afficher.
   </div>
 
