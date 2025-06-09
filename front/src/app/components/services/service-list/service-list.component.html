@@ -2,10 +2,18 @@
   <div class="services-header">
     <h1>Nos Services</h1>
     <p>Découvrez notre gamme complète de solutions technologiques</p>
-  </div>
-  <div class="services-filters">
+  </div>  <div class="services-filters">
     <div class="filters-header">
       <div>
+        <div class="search-container">
+          <input 
+            type="text" 
+            [(ngModel)]="searchTerm" 
+            (input)="applyFilters()" 
+            placeholder="Rechercher un service..." 
+            class="search-input">
+        </div>
+        
         <h3>Filtrer par catégorie</h3>
         <div class="category-buttons">
           <button 
@@ -22,7 +30,8 @@
             {{ category }}
           </button>
         </div>
-      </div>      <a *ngIf="userRole === 'admin' || userRole === 'formateur'" routerLink="/admin/services/new" class="btn btn-primary">
+      </div>      
+      <a *ngIf="userRole === 'admin' || userRole === 'formateur'" routerLink="/admin/services/new" class="btn btn-primary">
         <i class="fas fa-plus"></i> Nouveau service
       </a>
     </div>
@@ -93,13 +102,11 @@
       <p>Aucun service ne correspond à vos critères de recherche.</p>
       <button class="btn btn-primary" (click)="resetFilters()">Réinitialiser les filtres</button>
     </div>
-  </div>
-
-  <div class="contact-section">
-    <div class="contact-content">
+  </div>  <div class="formation-contact-section">
+    <div class="formation-contact-content">
       <h2>Besoin d'un service personnalisé?</h2>
       <p>Contactez-nous pour discuter de vos besoins spécifiques et obtenir une solution sur mesure.</p>
-      <a routerLink="/contact" class="btn btn-primary">Nous contacter</a>
+      <a routerLink="/contact" class="btn btn-contact">Nous contacter</a>
     </div>
   </div>
 </div>

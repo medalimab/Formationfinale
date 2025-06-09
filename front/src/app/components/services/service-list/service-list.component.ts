@@ -4,22 +4,24 @@ import { RouterModule } from '@angular/router';
 import { ServiceApiService } from '../../../services/service-api.service';
 import { Service } from '../../../models/service.model';
 import { StorageService } from '../../../services/storage.service';
+import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 
-@Component({
-  selector: 'app-service-list',
+@Component({  selector: 'app-service-list',
   templateUrl: './service-list.component.html',
   styleUrls: ['./service-list.component.css'],
-  imports: [CommonModule, RouterModule, CurrencyPipe, SlicePipe],
+  imports: [CommonModule, RouterModule, CurrencyPipe, SlicePipe, FormsModule],
   standalone: true
 })
 export class ServiceListComponent implements OnInit {
   services: Service[] = [];
-  filteredServices: Service[] = [];  categories: string[] = [];
+  filteredServices: Service[] = [];  
+  categories: string[] = [];
   selectedCategory: string = '';
   loading: boolean = false;
   error: string = '';
   userRole: string = 'user';
+  searchTerm: string = '';
 
   constructor(
     private serviceApi: ServiceApiService,
@@ -30,14 +32,13 @@ export class ServiceListComponent implements OnInit {
     const role = this.storageService.getItem('userRole');
     this.userRole = role || 'user';
   }
-
   loadServices(): void {
     this.loading = true;
     this.serviceApi.getServices().subscribe(
       response => {
         this.services = response.data;
-        this.filteredServices = this.services;
         this.extractCategories();
+        this.applyFilters(); // Utilise applyFilters au lieu d'assigner directement
         this.loading = false;
       },
       error => {
@@ -58,19 +59,36 @@ export class ServiceListComponent implements OnInit {
     });
     this.categories = Array.from(categoriesSet);
   }
-
   filterByCategory(category: string): void {
     this.selectedCategory = category;
-    if (!category) {
-      this.filteredServices = this.services;
-      return;
-    }
-    this.filteredServices = this.services.filter(service => service.categorie === category);
+    this.applyFilters();
   }
 
   resetFilters(): void {
     this.selectedCategory = '';
-    this.filteredServices = this.services;
+    this.searchTerm = '';
+    this.applyFilters();
+  }
+  
+  applyFilters(): void {
+    let filtered = this.services;
+    
+    // Filtre par catégorie
+    if (this.selectedCategory) {
+      filtered = filtered.filter(service => service.categorie === this.selectedCategory);
+    }
+    
+    // Filtre par recherche
+    if (this.searchTerm) {
+      const term = this.searchTerm.toLowerCase();
+      filtered = filtered.filter(service => 
+        service.titre.toLowerCase().includes(term) || 
+        (service.description && service.description.toLowerCase().includes(term)) ||
+        (service.categorie && service.categorie.toLowerCase().includes(term))
+      );
+    }
+    
+    this.filteredServices = filtered;
   }
 
   deleteService(id: string | undefined): void {
