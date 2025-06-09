@@ -65,7 +65,10 @@
           <div class="input-bar"></div>
         </div>
         <div class="form-group">
-          <input type="text" id="categorie" name="categorie" [(ngModel)]="article.categorie" required class="modern-input" placeholder=" ">
+          <select id="categorie" name="categorie" [(ngModel)]="article.categorie" required class="modern-input">
+            <option value="" disabled selected>Sélectionner une catégorie</option>
+            <option *ngFor="let categorie of categories" [value]="categorie">{{ categorie }}</option>
+          </select>
           <label for="categorie" class="input-label">
             <i class="fas fa-layer-group"></i> Catégorie
           </label>

@@ -20,7 +20,6 @@ export class formationListComponent implements OnInit {
   isLoading = true;
   error: string | null = null;
   searchTerm = '';
-  activeFilter: string | null = null;
   userRole: string = 'user'; 
   
   // Variables de pagination
@@ -28,7 +27,8 @@ export class formationListComponent implements OnInit {
   itemsPerPage: number = 8; 
   totalPages: number = 0;
   
-  categories = ['développement web', 'design', 'marketing digital', 'data science', 'cybersécurité', 'gestion de projet'];
+  // Liste des catégories disponibles (pour référence uniquement, le filtrage a été supprimé)
+  categories = ['Développement Web', 'Design', 'Marketing Digital', 'Data Science', 'Cybersécurité', 'Gestion De Projet'];
 
   constructor(
     private formationService: FormationService,
@@ -57,13 +57,6 @@ export class formationListComponent implements OnInit {
     });
   }
 
-  filterBySport(categorie: string): void {
-    this.activeFilter = this.activeFilter === categorie ? null : categorie;
-    this.currentPage = 1; 
-    this.calculerPages();
-  }
-
-  
   calculerPages(): void {
     const articlesFiltrés = this.getFilteredArticles();
     this.totalPages = Math.ceil(articlesFiltrés.length / this.itemsPerPage);
@@ -73,12 +66,7 @@ export class formationListComponent implements OnInit {
   getFilteredArticles(): Formation[] {
     let filtered = this.articles;
 
-    // Filtre par catégorie
-    if (this.activeFilter) {
-      filtered = filtered.filter((a: Formation) => a.categorie === this.activeFilter);
-    }
-
-    // Filtre par recherche
+    // Filtre par recherche uniquement (le filtrage par catégorie a été supprimé)
     if (this.searchTerm) {
       const term = this.searchTerm.toLowerCase();
       filtered = filtered.filter((a: Formation) =>

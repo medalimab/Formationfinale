@@ -19,18 +19,13 @@
   <div class="action-bar">
     <div class="search-container">
       <div class="search-box">
-        
         <input type="text" [(ngModel)]="searchTerm" 
                (input)="currentPage = 1; calculerPages()"
                placeholder="Rechercher par nom,ou description..." 
                class="search-input">
-      </div>      <div class="filter-buttons">
-        <button *ngFor="let categorie of categories" 
-                (click)="filterBySport(categorie)"
-                [class.active]="activeFilter === categorie"
-                class="filter-btn">
-          {{ categorie | titlecase }}
-        </button>      </div>    </div>    <a *ngIf="userRole === 'admin' || userRole === 'formateur'" [routerLink]="['/admin/formations/new']" class="add-button">
+      </div>
+    </div>
+    <a *ngIf="userRole === 'admin' || userRole === 'formateur'" [routerLink]="['/admin/formations/new']" class="add-button">
       <i class="fas fa-plus"></i> Nouvelle formation
     </a>
   </div>
@@ -110,7 +105,7 @@
       <div class="empty-content">
         <i class="fas fa-inbox"></i>
         <h3>Aucune formation trouvée</h3>
-        <p *ngIf="searchTerm || activeFilter">Essayez de modifier vos critères de recherche</p>
+        <p *ngIf="searchTerm">Essayez de modifier votre recherche</p>
         <a *ngIf="userRole === 'admin' || userRole === 'formateur'" [routerLink]="['/admin/formations/new']" class="add-button">
           <i class="fas fa-plus-circle"></i> Créer une nouvelle formation
         </a>

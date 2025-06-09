@@ -13,8 +13,7 @@ import Swal from 'sweetalert2';
   imports: [FormsModule, CommonModule, RouterModule],  templateUrl: './formation-form.component.html',
   styleUrls: ['./formation-form.component.css']
 })
-export class FormationFormComponent implements OnInit {
-  article: Formation = {
+export class FormationFormComponent implements OnInit {  article: Formation = {
     titre: '',
     description: '',
     prix: 0,
@@ -22,6 +21,9 @@ export class FormationFormComponent implements OnInit {
     categorie: '',
     image: ''
   };
+
+  // Liste des catégories prédéfinies
+  categories: string[] = ['Développement Web', 'Design', 'Marketing Digital', 'Data Science', 'Cybersécurité', 'Gestion De Projet'];
 
   selectedFile: File | null = null;
   imagePreview: string | ArrayBuffer | null = null;
