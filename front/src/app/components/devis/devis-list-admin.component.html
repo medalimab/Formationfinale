@@ -42,8 +42,9 @@
           <th>Statut</th>
           <th>Actions</th>
         </tr>
-      </thead>      <tbody>
-        <tr *ngFor="let devis of filteredDevisList">
+      </thead>      
+      <tbody>
+        <tr *ngFor="let devis of paginatedDevisList()">
           <td>{{ devis.client?.nom || devis.client?.email || devis.client }}</td>
           <td>{{ getServiceTitle(devis.service) }}</td>
           <td>{{ devis.description | slice:0:40 }}...</td>
@@ -60,5 +61,27 @@
         </tr>
       </tbody>
     </table>
+    
+    <!-- Pagination -->
+    <div class="pagination-container" *ngIf="filteredDevisList.length > itemsPerPage">
+      <div class="pagination">
+        <button [disabled]="currentPage === 1" 
+                (click)="changerPage(currentPage - 1)" 
+                class="pagination-btn">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+        <button *ngFor="let page of getPages()" 
+                (click)="changerPage(page)" 
+                class="pagination-btn" 
+                [class.active]="currentPage === page">
+          {{ page }}
+        </button>
+        <button [disabled]="currentPage === totalPages" 
+                (click)="changerPage(currentPage + 1)" 
+                class="pagination-btn">
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+    </div>
   </div>
 </div>

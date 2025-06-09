@@ -20,6 +20,11 @@ export class RendezVousListComponent implements OnInit {
   loading: boolean = true;
   error: string | null = null;
   userRole: string | null = null;
+  
+  // Variables de pagination
+  currentPage: number = 1;
+  itemsPerPage: number = 5; 
+  totalPages: number = 0;
 
   constructor(private rendezVousService: RendezVousService, private authService: AuthService) { }
   ngOnInit(): void {
@@ -32,41 +37,71 @@ export class RendezVousListComponent implements OnInit {
   filterRendezVous(): void {
     if (!this.searchTerm.trim()) {
       this.filteredRendezVousList = this.rendezVousList;
-      return;
+    } else {
+      const term = this.searchTerm.toLowerCase();
+      this.filteredRendezVousList = this.rendezVousList.filter(rdv => {
+        // Gérer le cas où service est un objet ou une chaîne
+        const serviceTitle = typeof rdv.service === 'object' ? 
+                             (rdv.service as any).titre : 
+                             (typeof rdv.service === 'string' ? rdv.service : '');
+        
+        // Gérer le cas où client est un objet ou une chaîne
+        const clientName = typeof rdv.client === 'object' && rdv.client ? 
+                          ((rdv.client as any).nom || (rdv.client as any).name || '') : 
+                          (typeof rdv.client === 'string' ? rdv.client : '');
+        
+        const clientEmail = typeof rdv.client === 'object' && rdv.client ? 
+                           ((rdv.client as any).email || '') : '';
+        
+        return serviceTitle.toLowerCase().includes(term) ||
+               (rdv.notes || '').toLowerCase().includes(term) ||
+               rdv.statut.toLowerCase().includes(term) ||
+               clientName.toLowerCase().includes(term) ||
+               clientEmail.toLowerCase().includes(term) ||
+               (rdv.date ? new Date(rdv.date).toLocaleDateString('fr-FR').includes(term) : false) ||
+               (rdv.heure || '').toLowerCase().includes(term);
+      });
     }
-    
-    const term = this.searchTerm.toLowerCase();
-    this.filteredRendezVousList = this.rendezVousList.filter(rdv => {
-      // Gérer le cas où service est un objet ou une chaîne
-      const serviceTitle = typeof rdv.service === 'object' ? 
-                           (rdv.service as any).titre : 
-                           (typeof rdv.service === 'string' ? rdv.service : '');
-      
-      // Gérer le cas où client est un objet ou une chaîne
-      const clientName = typeof rdv.client === 'object' && rdv.client ? 
-                        ((rdv.client as any).nom || (rdv.client as any).name || '') : 
-                        (typeof rdv.client === 'string' ? rdv.client : '');
-      
-      const clientEmail = typeof rdv.client === 'object' && rdv.client ? 
-                         ((rdv.client as any).email || '') : '';
-      
-      return serviceTitle.toLowerCase().includes(term) ||
-             (rdv.notes || '').toLowerCase().includes(term) ||
-             rdv.statut.toLowerCase().includes(term) ||
-             clientName.toLowerCase().includes(term) ||
-             clientEmail.toLowerCase().includes(term) ||
-             (rdv.date ? new Date(rdv.date).toLocaleDateString('fr-FR').includes(term) : false) ||
-             (rdv.heure || '').toLowerCase().includes(term);
-    });
+    // Réinitialiser la pagination lorsqu'un filtre est appliqué
+    this.currentPage = 1;
+    this.calculerPages();
   }
   
-  fetchRendezVous(): void {
+  // Méthode pour calculer le nombre total de pages
+  calculerPages(): void {
+    this.totalPages = Math.ceil(this.filteredRendezVousList.length / this.itemsPerPage);
+  }
+
+  // Retourne les rendez-vous à afficher sur la page courante
+  paginatedRendezVous(): RendezVous[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = Math.min(startIndex + this.itemsPerPage, this.filteredRendezVousList.length);
+    return this.filteredRendezVousList.slice(startIndex, endIndex);
+  }
+
+  // Méthode pour changer de page
+  changerPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+
+  // Obtenir un tableau des numéros de page à afficher
+  getPages(): number[] {
+    const pages = [];
+    for (let i = 1; i <= this.totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+    fetchRendezVous(): void {
     this.loading = true;
     if (this.userRole === 'admin') {
       this.rendezVousService.getRendezVous().subscribe({
         next: (response) => {
           this.rendezVousList = response.data;
           this.filteredRendezVousList = this.rendezVousList;
+          this.calculerPages();
           this.loading = false;
         },
         error: (err) => {
@@ -74,11 +109,11 @@ export class RendezVousListComponent implements OnInit {
           this.loading = false;
           console.error(err);
         }
-      });    } else if (this.userRole === 'formateur') {
-      this.rendezVousService.getRendezVousByFormateur().subscribe({
+      });    } else if (this.userRole === 'formateur') {      this.rendezVousService.getRendezVousByFormateur().subscribe({
         next: (response) => {
           this.rendezVousList = response.data;
           this.filteredRendezVousList = this.rendezVousList;
+          this.calculerPages();
           this.loading = false;
         },
         error: (err) => {
@@ -86,11 +121,11 @@ export class RendezVousListComponent implements OnInit {
           this.loading = false;
           console.error(err);
         }
-      });    } else {
-      this.rendezVousService.getMesRendezVous().subscribe({
+      });    } else {      this.rendezVousService.getMesRendezVous().subscribe({
         next: (response) => {
           this.rendezVousList = response.data;
           this.filteredRendezVousList = this.rendezVousList;
+          this.calculerPages();
           this.loading = false;
         },
         error: (err) => {

@@ -23,6 +23,11 @@ export class TemoignageComponent implements OnInit {
   success = '';
   userRole: string | null = null;
   showForm = false; // Ajout de la variable pour gérer l'affichage du formulaire
+  
+  // Variables de pagination
+  currentPage: number = 1;
+  itemsPerPage: number = 6; // 6 témoignages par page (2 rangées de 3)
+  totalPages: number = 0;
 
   constructor(private temoignageService: TemoignageService, private authService: AuthService) {}
 
@@ -30,21 +35,50 @@ export class TemoignageComponent implements OnInit {
     this.userRole = this.authService.getUserRole();
     this.loadTemoignages();
   }
-
   // Méthode pour filtrer les témoignages en fonction du terme de recherche
   filterTemoignages(): void {
     if (!this.searchTerm.trim()) {
       this.filteredTemoignages = this.temoignages;
-      return;
+    } else {
+      const term = this.searchTerm.toLowerCase();
+      this.filteredTemoignages = this.temoignages.filter(temoignage => 
+        (temoignage.nom?.toLowerCase().includes(term) || 
+         temoignage.commentaire?.toLowerCase().includes(term) ||
+         temoignage.poste?.toLowerCase().includes(term) ||
+         temoignage.entreprise?.toLowerCase().includes(term))
+      );
     }
-    
-    const term = this.searchTerm.toLowerCase();
-    this.filteredTemoignages = this.temoignages.filter(temoignage => 
-      (temoignage.nom?.toLowerCase().includes(term) || 
-       temoignage.commentaire?.toLowerCase().includes(term) ||
-       temoignage.poste?.toLowerCase().includes(term) ||
-       temoignage.entreprise?.toLowerCase().includes(term))
-    );
+    // Réinitialiser la pagination lorsqu'un filtre est appliqué
+    this.currentPage = 1;
+    this.calculerPages();
+  }
+  
+  // Méthode pour calculer le nombre total de pages
+  calculerPages(): void {
+    this.totalPages = Math.ceil(this.filteredTemoignages.length / this.itemsPerPage);
+  }
+
+  // Retourne les témoignages à afficher sur la page courante
+  paginatedTemoignages(): Temoignage[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = Math.min(startIndex + this.itemsPerPage, this.filteredTemoignages.length);
+    return this.filteredTemoignages.slice(startIndex, endIndex);
+  }
+
+  // Méthode pour changer de page
+  changerPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+
+  // Obtenir un tableau des numéros de page à afficher
+  getPages(): number[] {
+    const pages = [];
+    for (let i = 1; i <= this.totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
   }
 
   loadTemoignages(): void {
@@ -53,10 +87,12 @@ export class TemoignageComponent implements OnInit {
     const obs = this.userRole === 'admin'
       ? this.temoignageService.getTemoignages()
       : this.temoignageService.getTemoignagesApprouves();
-    obs.subscribe({      next: res => {
+    obs.subscribe({
+      next: res => {
         // Pour getTemoignages (admin), les données sont dans res.data.data (advancedResults)
         this.temoignages = Array.isArray(res.data) ? res.data : (res.data?.data || []);
         this.filteredTemoignages = [...this.temoignages];
+        this.calculerPages(); // Calcul du nombre de pages après chargement des données
         this.loading = false;
       },
       error: () => {

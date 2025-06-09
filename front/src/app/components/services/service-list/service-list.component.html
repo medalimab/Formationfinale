@@ -48,7 +48,7 @@
   </div>
 
   <div class="services-grid" *ngIf="!loading && !error && filteredServices.length > 0">
-    <div class="service-card" *ngFor="let service of filteredServices">
+    <div class="service-card" *ngFor="let service of paginatedServices()">
       <div class="service-image">
         <ng-container *ngIf="service.image && service.image !== 'undefined' && service.image !== '/uploads/undefined' && service.image.trim() !== '' && service.image.startsWith('/uploads/'); else defaultImage">
           <img [src]="'http://localhost:5000' + service.image" [alt]="service.titre">
@@ -92,6 +92,28 @@
           <a *ngIf="!(userRole === 'admin' || userRole === 'formateur')" [routerLink]="['/contact']" [queryParams]="{service: service._id}" class="btn btn-outline">Demander un devis</a>
         </div>
       </div>
+    </div>
+  </div>
+  
+  <!-- Pagination -->
+  <div class="pagination-container" *ngIf="filteredServices.length > itemsPerPage && !loading && !error">
+    <div class="pagination">
+      <button [disabled]="currentPage === 1" 
+              (click)="changerPage(currentPage - 1)" 
+              class="pagination-btn">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button *ngFor="let page of getPages()" 
+              (click)="changerPage(page)" 
+              class="pagination-btn" 
+              [class.active]="currentPage === page">
+        {{ page }}
+      </button>
+      <button [disabled]="currentPage === totalPages" 
+              (click)="changerPage(currentPage + 1)" 
+              class="pagination-btn">
+        <i class="fas fa-chevron-right"></i>
+      </button>
     </div>
   </div>
 

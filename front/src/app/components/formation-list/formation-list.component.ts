@@ -15,7 +15,7 @@ import Swal from 'sweetalert2';
   templateUrl: './formation-list.component.html',
   styleUrls: ['./formation-list.component.css']
 })
-export class formationListComponent implements OnInit {
+export class FormationListComponent implements OnInit {
   articles: Formation[] = [];
   isLoading = true;
   error: string | null = null;

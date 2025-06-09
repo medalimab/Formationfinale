@@ -19,37 +19,48 @@ export class DevisListAdminComponent implements OnInit {
   loading = true;
   error = '';
 
+  // Variables de pagination
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  totalPages: number = 0;
+
   constructor(private devisService: DevisService) {}
 
   ngOnInit(): void {
     this.fetchDevis();
-  }  filterDevis(): void {
+  }  
+  
+  filterDevis(): void {
     if (!this.searchTerm.trim()) {
       this.filteredDevisList = this.devisList;
-      return;
+    } else {
+      const term = this.searchTerm.toLowerCase();
+      this.filteredDevisList = this.devisList.filter(devis => {
+        // Gérer le cas où service est un objet ou une chaîne
+        const serviceTitle = typeof devis.service === 'object' && devis.service ? 
+                            (devis.service as any).titre : 
+                            (typeof devis.service === 'string' ? devis.service : '');
+        
+        // Gérer le cas où client est un objet ou une chaîne
+        const clientName = typeof devis.client === 'object' && devis.client ? 
+                        ((devis.client as any).nom || (devis.client as any).name || '') : 
+                        (typeof devis.client === 'string' ? devis.client : '');
+                        
+        const clientEmail = typeof devis.client === 'object' && devis.client ? 
+                        ((devis.client as any).email || '') : '';
+        
+        return serviceTitle.toLowerCase().includes(term) ||
+               (devis.description || '').toLowerCase().includes(term) ||
+               (devis.statut || '').toLowerCase().includes(term) ||
+               clientName.toLowerCase().includes(term) ||
+               clientEmail.toLowerCase().includes(term);
+      });
     }
     
-    const term = this.searchTerm.toLowerCase();
-    this.filteredDevisList = this.devisList.filter(devis => {
-      // Gérer le cas où service est un objet ou une chaîne
-      const serviceTitle = typeof devis.service === 'object' && devis.service ? 
-                          (devis.service as any).titre : 
-                          (typeof devis.service === 'string' ? devis.service : '');
-      
-      // Gérer le cas où client est un objet ou une chaîne
-      const clientName = typeof devis.client === 'object' && devis.client ? 
-                      ((devis.client as any).nom || (devis.client as any).name || '') : 
-                      (typeof devis.client === 'string' ? devis.client : '');
-                      
-      const clientEmail = typeof devis.client === 'object' && devis.client ? 
-                      ((devis.client as any).email || '') : '';
-      
-      return serviceTitle.toLowerCase().includes(term) ||
-             (devis.description || '').toLowerCase().includes(term) ||
-             (devis.statut || '').toLowerCase().includes(term) ||
-             clientName.toLowerCase().includes(term) ||
-             clientEmail.toLowerCase().includes(term);
-    });
+    // Recalculer les pages après le filtrage
+    this.calculerPages();
+    // Revenir à la première page quand on change le filtre
+    this.currentPage = 1;
   }
 
   fetchDevis() {
@@ -59,6 +70,8 @@ export class DevisListAdminComponent implements OnInit {
         this.devisList = res.data || [];
         this.filteredDevisList = this.devisList;
         this.loading = false;
+        // Calculer le nombre de pages après chargement
+        this.calculerPages();
       },
       error: err => {
         this.error = err.error?.message || 'Erreur lors du chargement des devis';
@@ -138,5 +151,29 @@ export class DevisListAdminComponent implements OnInit {
     if (typeof service === 'object' && service.titre) return service.titre;
     if (typeof service === 'string') return service;
     return '';
+  }
+  
+  // Méthodes de pagination
+  calculerPages(): void {
+    this.totalPages = Math.ceil(this.filteredDevisList.length / this.itemsPerPage);
+  }
+  
+  paginatedDevisList(): Devis[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.filteredDevisList.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+  
+  changerPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+  
+  getPages(): number[] {
+    const pages: number[] = [];
+    for (let i = 1; i <= this.totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
   }
 }

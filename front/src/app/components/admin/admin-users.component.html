@@ -33,7 +33,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let user of filteredUsers">
+      <tr *ngFor="let user of paginatedUsers()">
         <td>{{ user.nom || user.name }}</td>
         <td>{{ user.email }}</td>
         <td>{{ user.role }}</td>
@@ -44,5 +44,28 @@
       </tr>
     </tbody>
   </table>
+
+  <!-- Contrôles de pagination -->
+  <div class="pagination-container" *ngIf="filteredUsers.length > itemsPerPage">
+    <div class="pagination">
+      <button [disabled]="currentPage === 1" 
+              (click)="changerPage(currentPage - 1)" 
+              class="pagination-btn">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+      <button *ngFor="let page of getPages()" 
+              (click)="changerPage(page)" 
+              class="pagination-btn" 
+              [class.active]="currentPage === page">
+        {{ page }}
+      </button>
+      <button [disabled]="currentPage === totalPages" 
+              (click)="changerPage(currentPage + 1)" 
+              class="pagination-btn">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+
   <div *ngIf="!loading && users.length === 0" class="alert alert-info">Aucun utilisateur trouvé.</div>
 </div>

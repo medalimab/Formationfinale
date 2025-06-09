@@ -381,6 +381,53 @@
   box-shadow: 0 6px 15px rgba(52, 152, 219, 0.35);
 }
 
+/* Styles pour la pagination */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.pagination {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.pagination-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #e2e8f0;
+  background-color: white;
+  border-radius: 0.375rem;
+  color: #4b5563;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background-color: #f3f4f6;
+  border-color: #3498db;
+}
+
+.pagination-btn.active {
+  background-color: #3498db;
+  border-color: #3498db;
+  color: white;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 @media (max-width: 768px) {
   .services-grid {
     grid-template-columns: 1fr;

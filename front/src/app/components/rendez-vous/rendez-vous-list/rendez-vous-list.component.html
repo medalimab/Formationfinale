@@ -34,10 +34,9 @@
                class="search-input">
       </div>
     </div>
-  </div>
-  <div *ngIf="!loading && !error">
+  </div>  <div *ngIf="!loading && !error">
     <ul class="rdv-list" *ngIf="filteredRendezVousList.length > 0">
-      <li *ngFor="let rdv of filteredRendezVousList" class="rdv-item">
+      <li *ngFor="let rdv of paginatedRendezVous()" class="rdv-item">
         <div class="rdv-card">
           <div class="rdv-info">
             <h3 class="rdv-service">{{ getServiceTitle(rdv.service) }}</h3>
@@ -90,11 +89,43 @@
         </div>
       </li>
     </ul>
-    
-    <div *ngIf="rendezVousList.length === 0" class="empty-state">
+      <div *ngIf="rendezVousList.length === 0" class="empty-state">
       <i class="bi bi-calendar-x"></i>
       <p>Vous n'avez pas encore de rendez-vous planifiés.</p>
       <p>Cliquez sur "Nouveau rendez-vous" pour en créer un.</p>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="pagination-container" *ngIf="filteredRendezVousList.length > itemsPerPage">
+      <div class="pagination">
+        <button 
+          [disabled]="currentPage === 1" 
+          (click)="changerPage(currentPage - 1)"
+          class="pagination-btn"
+        >
+          &laquo; Précédent
+        </button>
+        
+        <button 
+          *ngFor="let page of getPages()"
+          [class.active]="page === currentPage"
+          (click)="changerPage(page)"
+          class="pagination-btn page-number"
+        >
+          {{ page }}
+        </button>
+        
+        <button 
+          [disabled]="currentPage === totalPages" 
+          (click)="changerPage(currentPage + 1)"
+          class="pagination-btn"
+        >
+          Suivant &raquo;
+        </button>
+      </div>
+      <div class="pagination-info">
+        Page {{ currentPage }} sur {{ totalPages }}
+      </div>
     </div>
   </div>
 </div>

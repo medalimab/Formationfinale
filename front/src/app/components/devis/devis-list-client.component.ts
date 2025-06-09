@@ -18,28 +18,38 @@ export class DevisListClientComponent implements OnInit {
   searchTerm: string = '';
   loading: boolean = true;
   error: string | null = null;
+  
+  // Variables de pagination
+  currentPage: number = 1;
+  itemsPerPage: number = 5;
+  totalPages: number = 0;
 
   constructor(private devisService: DevisService) { }
 
   ngOnInit(): void {
     this.fetchDevis();
-  }  filterDevis(): void {
+  }  
+  
+  filterDevis(): void {
     if (!this.searchTerm.trim()) {
       this.filteredDevisList = this.devisList;
-      return;
+    } else {
+      const term = this.searchTerm.toLowerCase();
+      this.filteredDevisList = this.devisList.filter(devis => {
+        // Gérer le cas où service est un objet ou une chaîne
+        const serviceTitle = typeof devis.service === 'object' && devis.service ? 
+                            (devis.service as any).titre : 
+                            (typeof devis.service === 'string' ? devis.service : '');
+        
+        return serviceTitle.toLowerCase().includes(term) ||
+              (devis.description || '').toLowerCase().includes(term) ||
+              (devis.statut || '').toLowerCase().includes(term);
+      });
     }
-    
-    const term = this.searchTerm.toLowerCase();
-    this.filteredDevisList = this.devisList.filter(devis => {
-      // Gérer le cas où service est un objet ou une chaîne
-      const serviceTitle = typeof devis.service === 'object' && devis.service ? 
-                           (devis.service as any).titre : 
-                           (typeof devis.service === 'string' ? devis.service : '');
-      
-      return serviceTitle.toLowerCase().includes(term) ||
-             (devis.description || '').toLowerCase().includes(term) ||
-             (devis.statut || '').toLowerCase().includes(term);
-    });
+    // Recalculer les pages après le filtrage
+    this.calculerPages();
+    // Revenir à la première page quand on change le filtre
+    this.currentPage = 1;
   }
 
   fetchDevis(): void {
@@ -52,6 +62,8 @@ export class DevisListClientComponent implements OnInit {
         });
         this.filteredDevisList = this.devisList;
         this.loading = false;
+        // Calculer le nombre de pages après chargement
+        this.calculerPages();
       },
       error: (err) => {
         this.error = "Erreur lors du chargement de vos devis.";
@@ -72,5 +84,29 @@ export class DevisListClientComponent implements OnInit {
     if (typeof service === 'object' && service.titre) return service.titre;
     if (typeof service === 'string') return service;
     return '';
+  }
+  
+  // Méthodes de pagination
+  calculerPages(): void {
+    this.totalPages = Math.ceil(this.filteredDevisList.length / this.itemsPerPage);
+  }
+  
+  paginatedDevisList(): Devis[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.filteredDevisList.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+  
+  changerPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+  
+  getPages(): number[] {
+    const pages: number[] = [];
+    for (let i = 1; i <= this.totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
   }
 }

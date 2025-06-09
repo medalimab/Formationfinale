@@ -27,7 +27,7 @@
 
   <div *ngIf="!loading && !error">
     <ul class="devis-list" *ngIf="filteredDevisList.length > 0">
-      <li *ngFor="let devis of filteredDevisList" class="devis-item">
+      <li *ngFor="let devis of paginatedDevisList()" class="devis-item">
         <div class="devis-card">
           <div class="devis-info">
             <h3 class="devis-service">{{ getServiceTitle(devis.service) }}</h3>
@@ -50,7 +50,31 @@
           </div>
         </div>
       </li>
-    </ul>    <div *ngIf="devisList.length === 0" class="empty-state">
+    </ul>
+    
+    <!-- Pagination -->
+    <div class="pagination-container" *ngIf="filteredDevisList.length > itemsPerPage">
+      <div class="pagination">
+        <button [disabled]="currentPage === 1" 
+                (click)="changerPage(currentPage - 1)" 
+                class="pagination-btn">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+        <button *ngFor="let page of getPages()" 
+                (click)="changerPage(page)" 
+                class="pagination-btn" 
+                [class.active]="currentPage === page">
+          {{ page }}
+        </button>
+        <button [disabled]="currentPage === totalPages" 
+                (click)="changerPage(currentPage + 1)" 
+                class="pagination-btn">
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="devisList.length === 0" class="empty-state">
       <i class="bi bi-file-earmark-text"></i>
       <p>Vous n'avez pas encore de devis. Cliquez sur "Ajouter un devis" pour faire une demande.</p>
     </div>

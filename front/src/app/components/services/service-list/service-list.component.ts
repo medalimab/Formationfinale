@@ -7,7 +7,8 @@ import { StorageService } from '../../../services/storage.service';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 
-@Component({  selector: 'app-service-list',
+@Component({  
+  selector: 'app-service-list',
   templateUrl: './service-list.component.html',
   styleUrls: ['./service-list.component.css'],
   imports: [CommonModule, RouterModule, CurrencyPipe, SlicePipe, FormsModule],
@@ -23,15 +24,22 @@ export class ServiceListComponent implements OnInit {
   userRole: string = 'user';
   searchTerm: string = '';
 
+  // Variables de pagination
+  currentPage: number = 1;
+  itemsPerPage: number = 6;
+  totalPages: number = 0;
+
   constructor(
     private serviceApi: ServiceApiService,
     private storageService: StorageService
   ) { }
+  
   ngOnInit(): void {
     this.loadServices();
     const role = this.storageService.getItem('userRole');
     this.userRole = role || 'user';
   }
+  
   loadServices(): void {
     this.loading = true;
     this.serviceApi.getServices().subscribe(
@@ -59,6 +67,7 @@ export class ServiceListComponent implements OnInit {
     });
     this.categories = Array.from(categoriesSet);
   }
+  
   filterByCategory(category: string): void {
     this.selectedCategory = category;
     this.applyFilters();
@@ -89,6 +98,11 @@ export class ServiceListComponent implements OnInit {
     }
     
     this.filteredServices = filtered;
+    
+    // Recalculer les pages après le filtrage
+    this.calculerPages();
+    // Revenir à la première page
+    this.currentPage = 1;
   }
 
   deleteService(id: string | undefined): void {
@@ -108,6 +122,8 @@ export class ServiceListComponent implements OnInit {
           next: () => {
             this.services = this.services.filter(s => s._id !== id);
             this.filteredServices = this.filteredServices.filter(s => s._id !== id);
+            // Recalculer les pages après suppression
+            this.calculerPages();
             Swal.fire('Supprimé !', 'Le service a été supprimé.', 'success');
           },
           error: (err) => {
@@ -128,5 +144,29 @@ export class ServiceListComponent implements OnInit {
         });
       }
     });
+  }
+  
+  // Méthodes de pagination
+  calculerPages(): void {
+    this.totalPages = Math.ceil(this.filteredServices.length / this.itemsPerPage);
+  }
+  
+  paginatedServices(): Service[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.filteredServices.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+  
+  changerPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+  
+  getPages(): number[] {
+    const pages: number[] = [];
+    for (let i = 1; i <= this.totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
   }
 }

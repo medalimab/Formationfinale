@@ -1,4 +1,4 @@
-import { formationListComponent } from './components/formation-list/formation-list.component';
+import { FormationListComponent } from './components/formation-list/formation-list.component';
 import { Formation } from './models/formation.model';
 import { TemoignageComponent } from './components/temoignage/temoignage.component';
 import { DevisListAdminComponent } from './components/devis/devis-list-admin.component';
@@ -59,7 +59,7 @@ export const routes: Routes = [
   
   // Routes authentifiées
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
-  { path: 'formations', component: formationListComponent },
+  { path: 'formations', component: FormationListComponent },
   { path: 'formations/:id', component: FormationDetailComponent },
   { path: 'cart', component: CartComponent, canActivate: [AuthGuard] },
   
@@ -98,7 +98,7 @@ export const routes: Routes = [
   { path: 'admin/blog/new', component: BlogFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
   { path: 'admin/blog/:id/edit', component: BlogFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
   { path: 'admin/blog/:id', component: BlogDetailComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
-  { path: 'admin/formations', component: formationListComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
+  { path: 'admin/formations', component: FormationListComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
   { path: 'admin/formations/new', component: FormationFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
   { path: 'admin/formations/:id', component: FormationDetailComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
   { path: 'admin/formations/:id/edit', component: FormationFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },

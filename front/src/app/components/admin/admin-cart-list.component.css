@@ -19,38 +19,53 @@
 /* Styles pour la barre de recherche */
 .action-bar {
   margin-bottom: 1.5rem;
+}
+
+/* Styles pour la pagination */
+.pagination-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.pagination {
+  display: flex;
+  gap: 0.5rem;
   align-items: center;
 }
 
-.search-container {
-  width: 100%;
-  max-width: 500px;
-}
-
-.search-box {
-  position: relative;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  background: #fff;
-}
-
-.search-input {
-  width: 100%;
-  padding: 0.8rem 1rem 0.8rem 2.5rem;
+.pagination-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0.5rem;
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%236b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>') no-repeat 0.8rem center;
+  background-color: white;
+  border-radius: 0.375rem;
+  color: #4b5563;
+  font-size: 0.875rem;
   transition: all 0.2s ease;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-.search-input:focus {
-  outline: none;
-  border-color: #4299e1;
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+.pagination-btn:hover:not(:disabled) {
+  background-color: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.pagination-btn.active {
+  background-color: #3498db;
+  border-color: #3498db;
+  color: white;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Styles pour les alertes */

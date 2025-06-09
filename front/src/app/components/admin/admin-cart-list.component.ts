@@ -22,6 +22,11 @@ export class AdminCartListComponent implements OnInit {
   loading = true;
   error = '';
   searchTerm: string = '';
+  
+  // Variables de pagination
+  currentPage: number = 1;
+  itemsPerPage: number = 6;
+  totalPages: number = 0;
 
   constructor(private panierService: PanierService) {}
 
@@ -42,6 +47,8 @@ export class AdminCartListComponent implements OnInit {
         });
         this.applySearch();
         this.loading = false;
+        // Calculer le nombre de pages après chargement
+        this.calculerPages();
       },
       error: (err) => {
         this.error = err?.error?.message || 'Erreur lors du chargement des paniers';
@@ -49,41 +56,46 @@ export class AdminCartListComponent implements OnInit {
       }
     });
   }
+  
   applySearch(): void {
     const term = this.searchTerm.trim().toLowerCase();
     if (!term) {
       this.filteredPaniers = this.paniers;
-      return;
-    }
-    this.filteredPaniers = this.paniers.filter(panier => {
-      if (panier.user && typeof panier.user === 'object') {
-        const user = panier.user as User;
-        // Vérifier le nom et l'email du client
-        if ((user.nom && user.nom.toLowerCase().includes(term)) ||
-            (user.email && user.email.toLowerCase().includes(term))) {
+    } else {
+      this.filteredPaniers = this.paniers.filter(panier => {
+        if (panier.user && typeof panier.user === 'object') {
+          const user = panier.user as User;
+          // Vérifier le nom et l'email du client
+          if ((user.nom && user.nom.toLowerCase().includes(term)) ||
+              (user.email && user.email.toLowerCase().includes(term))) {
+            return true;
+          }
+        }
+        
+        // Vérifier si le terme est dans le total du panier
+        if (panier.total && panier.total.toString().includes(term)) {
           return true;
         }
-      }
-      
-      // Vérifier si le terme est dans le total du panier
-      if (panier.total && panier.total.toString().includes(term)) {
-        return true;
-      }
-      
-      // Vérifier si le terme est dans les formations du panier
-      if (panier.formations && panier.formations.length > 0) {
-        for (const item of panier.formations) {
-          if (item.formation && typeof item.formation === 'object') {
-            if ((item.formation.titre && item.formation.titre.toLowerCase().includes(term)) ||
-                (item.formation.description && item.formation.description.toLowerCase().includes(term))) {
-              return true;
+        
+        // Vérifier si le terme est dans les formations du panier
+        if (panier.formations && panier.formations.length > 0) {
+          for (const item of panier.formations) {
+            if (item.formation && typeof item.formation === 'object') {
+              if ((item.formation.titre && item.formation.titre.toLowerCase().includes(term)) ||
+                  (item.formation.description && item.formation.description.toLowerCase().includes(term))) {
+                return true;
+              }
             }
           }
         }
-      }
-      
-      return false;
-    });
+        
+        return false;
+      });
+    }
+    // Recalculer les pages après le filtrage
+    this.calculerPages();
+    // Revenir à la première page
+    this.currentPage = 1;
   }
 
   onSearchChange(): void {
@@ -125,5 +137,29 @@ export class AdminCartListComponent implements OnInit {
       next: () => this.fetchAllPaniers(),
       error: (err) => alert('Erreur lors de la mise à jour du panier')
     });
+  }
+  
+  // Méthodes de pagination
+  calculerPages(): void {
+    this.totalPages = Math.ceil(this.filteredPaniers.length / this.itemsPerPage);
+  }
+  
+  paginatedPaniers(): PanierWithUser[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.filteredPaniers.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+  
+  changerPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+  
+  getPages(): number[] {
+    const pages: number[] = [];
+    for (let i = 1; i <= this.totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
   }
 }

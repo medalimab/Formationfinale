@@ -24,11 +24,17 @@ export class BlogListComponent implements OnInit {
   canCreateBlog: boolean = false;
   userRole: string = 'user';
   
+  // Variables de pagination
+  currentPage: number = 1;
+  itemsPerPage: number = 6;
+  totalPages: number = 0;
+  
   constructor(
     private blogService: BlogService,
     private authFixService: AuthFixService,
     private storageService: StorageService
   ) { }
+  
   ngOnInit(): void {
     this.fetchArticles();
     this.checkUserPermissions();
@@ -49,6 +55,8 @@ export class BlogListComponent implements OnInit {
         this.articles = response.data;
         this.filteredArticles = this.articles;
         this.loading = false;
+        // Calculer le nombre de pages après chargement
+        this.calculerPages();
       },
       error: (err) => {
         this.error = "Une erreur s'est produite lors du chargement des articles";
@@ -62,13 +70,17 @@ export class BlogListComponent implements OnInit {
     const term = this.searchTerm.trim().toLowerCase();
     if (!term) {
       this.filteredArticles = this.articles;
-      return;
+    } else {
+      this.filteredArticles = this.articles.filter(article =>
+        article.titre.toLowerCase().includes(term) ||
+        (article.contenu && article.contenu.toLowerCase().includes(term)) ||
+        (article.categories && article.categories.some((cat: string) => cat.toLowerCase().includes(term)))
+      );
     }
-    this.filteredArticles = this.articles.filter(article =>
-      article.titre.toLowerCase().includes(term) ||
-      (article.contenu && article.contenu.toLowerCase().includes(term)) ||
-      (article.categories && article.categories.some((cat: string) => cat.toLowerCase().includes(term)))
-    );
+    // Recalculer les pages après le filtrage
+    this.calculerPages();
+    // Revenir à la première page
+    this.currentPage = 1;
   }
 
   formatDate(date: Date): string {
@@ -104,6 +116,8 @@ export class BlogListComponent implements OnInit {
           next: () => {
             this.articles = this.articles.filter(a => a._id !== id);
             this.filteredArticles = this.filteredArticles.filter(a => a._id !== id);
+            // Recalculer les pages après suppression
+            this.calculerPages();
             Swal.fire('Supprimé !', 'L\'article a été supprimé.', 'success');
           },
           error: (err) => {
@@ -117,5 +131,29 @@ export class BlogListComponent implements OnInit {
         });
       }
     });
+  }
+  
+  // Méthodes de pagination
+  calculerPages(): void {
+    this.totalPages = Math.ceil(this.filteredArticles.length / this.itemsPerPage);
+  }
+  
+  paginatedArticles(): Blog[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.filteredArticles.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+  
+  changerPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+  
+  getPages(): number[] {
+    const pages: number[] = [];
+    for (let i = 1; i <= this.totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
   }
 }
