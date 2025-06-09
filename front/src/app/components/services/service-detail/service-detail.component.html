@@ -39,12 +39,11 @@
           <button *ngIf="service.disponible && !(userRole === 'admin' || userRole === 'formateur')" class="action-button primary-button" (click)="demanderDevis()">
             <i class="bi bi-file-earmark-text"></i> Demander un devis
           </button>
-          
-          <button *ngIf="service.disponible && !(userRole === 'admin' || userRole === 'formateur')" class="action-button secondary-button" (click)="prendreRendezVous()">
+            <button *ngIf="service.disponible && !(userRole === 'admin' || userRole === 'formateur')" class="action-button secondary-button" (click)="prendreRendezVous()">
             <i class="bi bi-calendar-check"></i> Prendre rendez-vous
           </button>
           
-          <a href="tel:+33123456789" class="action-button secondary-button" *ngIf="service.disponible && !(userRole === 'admin' || userRole === 'formateur')">
+          <a routerLink="/contact" [queryParams]="{service: service.titre}" class="action-button secondary-button" *ngIf="service.disponible && !(userRole === 'admin' || userRole === 'formateur')">
             <i class="bi bi-telephone"></i> Nous contacter
           </a>
           

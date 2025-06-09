@@ -5,6 +5,7 @@ import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { Contact } from '../../models/contact.model';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-contact',
@@ -24,11 +25,11 @@ export class ContactComponent implements OnInit {
   contactsLoading = false;
   search = '';
   selectedContact: Contact | null = null;
-
   constructor(
     private formBuilder: FormBuilder,
     private contactService: ContactService,
-    private authService: AuthService
+    private authService: AuthService,
+    private route: ActivatedRoute
   ) {
     this.contactForm = this.formBuilder.group({
       nom: ['', [Validators.required]],
@@ -38,12 +39,21 @@ export class ContactComponent implements OnInit {
       message: ['', [Validators.required, Validators.minLength(10)]],
     });
   }
-
   ngOnInit(): void {
     this.userRole = this.authService.getUserRole();
     if (this.userRole === 'admin' || this.userRole === 'formateur') {
       this.loadContacts();
     }
+    
+    // Récupérer les paramètres de l'URL
+    this.route.queryParams.subscribe(params => {
+      if (params['service']) {
+        // Préremplir le formulaire avec le sujet contenant le nom du service
+        this.contactForm.patchValue({
+          sujet: `Demande d'information pour le service: ${params['service']}`
+        });
+      }
+    });
   }
 
   loadContacts(): void {
