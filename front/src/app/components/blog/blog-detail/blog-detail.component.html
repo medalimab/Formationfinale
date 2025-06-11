@@ -1,5 +1,5 @@
 <div class="article-container">
-  <a routerLink="/blog" class="back-link">
+  <a [routerLink]="isAdminRoute() ? '/admin/blog' : '/blog'" class="back-link">
     <i class="bi bi-arrow-left"></i> Retour aux articles
   </a>
 

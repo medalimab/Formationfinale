@@ -84,4 +84,8 @@ export class BlogDetailComponent implements OnInit {
       year: 'numeric'
     });
   }
+
+  isAdminRoute(): boolean {
+    return this.router.url.startsWith('/admin');
+  }
 }
