@@ -18,7 +18,6 @@ export class RegisterComponent {
   errorMessage: string | null = null;
   isLoading = false;  roles = [
     { label: 'Client', value: 'user' },
-    { label: 'Formateur', value: 'formateur' },
     { label: 'Administrateur', value: 'admin' }
   ];
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
