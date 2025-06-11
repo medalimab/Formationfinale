@@ -20,6 +20,13 @@
                class="search-input">
       </div>
     </div>
+    <div class="pagination-settings">
+      <label for="itemsPerPage">Afficher&nbsp;:</label>
+      <select id="itemsPerPage" [(ngModel)]="itemsPerPage" (change)="currentPage = 1; calculerPages()">
+        <option *ngFor="let n of [5, 10, 20, 50, 100]" [value]="n">{{ n }}</option>
+      </select>
+      <span class="total-count">({{ filteredDevisList.length }} devis trouvés)</span>
+    </div>
   </div>
 
   <div *ngIf="!loading && devisList.length === 0" class="alert alert-info">
@@ -81,6 +88,9 @@
                 class="pagination-btn">
           <i class="bi bi-chevron-right"></i>
         </button>
+      </div>
+      <div class="pagination-info">
+        Page {{ currentPage }} sur {{ totalPages }}
       </div>
     </div>
   </div>
