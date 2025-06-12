@@ -124,7 +124,8 @@
       <p>Aucun service ne correspond à vos critères de recherche.</p>
       <button class="btn btn-primary" (click)="resetFilters()">Réinitialiser les filtres</button>
     </div>
-  </div>  <div class="formation-contact-section">
+  </div>  <!-- Suppression de la section formation-contact-section pour l'admin -->
+  <div class="formation-contact-section" *ngIf="userRole !== 'admin'">
     <div class="formation-contact-content">
       <h2>Besoin d'un service personnalisé?</h2>
       <p>Contactez-nous pour discuter de vos besoins spécifiques et obtenir une solution sur mesure.</p>

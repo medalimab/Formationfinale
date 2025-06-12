@@ -114,7 +114,8 @@
     </div>
   </div>
 
-  <div class="formation-contact-section">
+  <!-- Suppression de la section formation-contact-section pour l'admin -->
+  <div class="formation-contact-section" *ngIf="userRole !== 'admin'">
     <div class="formation-contact-content">
       <h2>Besoin d'une formation personnalisée&nbsp;?</h2>
       <p>Contactez-nous pour discuter de vos besoins spécifiques et obtenir une formation sur mesure.</p>
